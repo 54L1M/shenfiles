@@ -1,0 +1,5 @@
+tmux/plugins/
+.DS_Store
+zsh/.zcomp*
+zsh/.zsh_*
+p4/p4p

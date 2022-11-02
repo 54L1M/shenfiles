@@ -1,0 +1,31 @@
+# p4m Sessions Configuration
+# Each session defines a development environment
+
+ats:
+  virtualenv: ats3.9
+  path: ~/Documents/Workstation/In2Dialog/I2D_ATS/
+  env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
+
+prod:
+  virtualenv: ats3.9
+  path: ~/Documents/Workstation/In2Dialog/prod/
+  env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
+
+staging:
+  virtualenv: ats3.9
+  path: ~/Documents/Workstation/In2Dialog/staging/
+  env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
+
+bot:
+  virtualenv: bot3.9
+  path: ~/Documents/Workstation/In2Dialog/I2D_Companion/
+  env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
+
+i2desktop:
+  path: ~/Documents/Workstation/In2Dialog/i2desktop/
+
+i2c:
+  path: ~/Documents/Workstation/In2Dialog/i2c/
+
+shen:
+  path: ~/shenfiles/

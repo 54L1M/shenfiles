@@ -1,0 +1,33 @@
+- name: Install Fail2Ban
+  apt:
+    name: fail2ban
+    state: present
+
+- name: Ensure Fail2Ban is running
+  service:
+    name: fail2ban
+    state: started
+    enabled: yes
+
+- name: Setup UFW (Firewall)
+  ufw:
+    state: enabled
+    policy: deny
+    rule: allow
+    name: OpenSSH
+
+- name: Disable Root SSH Login
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^PermitRootLogin"
+    line: "PermitRootLogin no"
+    state: present
+  notify: Restart SSH
+
+- name: Disable Password Authentication
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: "^PasswordAuthentication"
+    line: "PasswordAuthentication no"
+    state: present
+  notify: Restart SSH

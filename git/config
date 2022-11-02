@@ -1,0 +1,13 @@
+[user]
+	name = 54L1M
+	email = themhsalimi@gmail.com
+
+
+[url "git@github.com:"]
+	insteadOf = https://github.com/
+
+[push]
+  autoSetupRemote = true
+
+[core]
+  excludesfile = ~/.config/git/ignore

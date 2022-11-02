@@ -1,0 +1,96 @@
+#compdef p4e
+
+# Zsh completion for p4e
+# Place in your completions directory
+
+_p4e() {
+  local context state state_descr line
+  typeset -A opt_args
+
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[Show this help message]' \
+    '(-c --config)'{-c,--config}'[Use alternative config file]:config file:_files' \
+    '1:command:->commands' \
+    '*:arg:->args' && return 0
+
+  # Helper function to get the config file path, respecting -c/--config
+  _get_config_path() {
+    local config_path="$HOME/.config/p4/p4e.yaml"
+    if [[ -n "$opt_args[-c]" ]]; then
+        config_path="$opt_args[-c]"
+    elif [[ -n "$opt_args[--config]" ]]; then
+        config_path="$opt_args[--config]"
+    fi
+    echo "$config_path"
+  }
+  
+  local config_file=$(_get_config_path)
+
+  # Check for yq and config file before proceeding with complex completions
+  _check_deps() {
+    if ! command -v yq >/dev/null; then
+      _message "yq is required for completions"
+      return 1
+    fi
+    if [ ! -f "$config_file" ]; then
+      _message "Config file not found: $config_file"
+      return 1
+    fi
+    return 0
+  }
+
+  case $state in
+    commands)
+      local -a p4e_commands
+      p4e_commands=(
+        'switch:Switch to a specific environment'
+        'link:Create symlink for project .env'
+      )
+      _describe 'command' p4e_commands
+      ;;
+    args)
+      # Exit if dependencies for argument completion are not met
+      ! _check_deps && return 1
+
+      case ${line[1]} in
+        switch|s)
+          local -a completions projects
+          local project project_path env_dir env_file filename env_name
+          projects=($(command yq eval 'keys | .[]' "$config_file" 2>/dev/null))
+
+          for project in "${projects[@]}"; do
+            project_path=$(command yq eval -r ".${project}.path" "$config_file" 2>/dev/null)
+
+            if [[ -z "$project_path" || "$project_path" == "null" ]]; then
+                continue
+            fi
+
+            project_path=${project_path/#\~/$HOME}
+            env_dir="$project_path/ENV"
+
+            if [[ -d "$env_dir" ]]; then
+              # Use zsh globbing to find env files (e.g., .env.dev)
+              for env_file in $env_dir/.env.*(N.); do
+                filename=${env_file##*/}
+                local env_name=${filename#.env.}
+                if [[ -n "$env_name" ]]; then
+                    completions+=("${project}.${env_name}")
+                fi
+              done
+            fi
+          done
+          _describe 'project.env' completions
+          ;;
+        link)
+          local -a projects
+          projects=($(yq eval 'keys | .[]' "$config_file" 2>/dev/null))
+          _describe 'project' projects
+          ;;
+      esac
+      ;;
+  esac
+
+  return 0
+}
+
+_p4e "$@"

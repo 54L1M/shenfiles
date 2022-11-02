@@ -1,0 +1,14 @@
+# This file lists repositories to be cloned by the 'create_dirs.sh' script.
+# Each line should contain two parts:
+# 1. The destination directory where the repo should be cloned.
+# 2. The SSH or HTTPS URL of the git repository.
+#
+# Example:
+# ~/Documents/my-projects git@github.com:user/my-cool-repo.git
+
+~/Documents/P4ndaF4ce git@github.com:P4ndaF4ce/P4ndaFrame.git
+~/Documents/P4ndaF4ce git@github.com:P4ndaF4ce/P4ndaBox.git
+~/Documents/Workstation/Freelance git@github.com:54L1M/ceramsite.git
+~/Documents/Workstation/Freelance git@github.com:54L1M/super-farachoob.git
+~/Documents/Workstation/In2Dialog git@github.com:In2Dialog/I2D_ATS.git
+~/Documents/TheGreatLibrary git@github.com:54L1M/TheGreatLibrary.git

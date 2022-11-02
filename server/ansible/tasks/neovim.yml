@@ -1,0 +1,69 @@
+---
+- name: Install Unzip (Required for extraction)
+  apt:
+    name: unzip
+    state: present
+
+- name: Check if Bob is installed
+  stat:
+    path: /usr/local/bin/bob
+  register: bob_stat
+
+- name: Install Bob Binary
+  when: not bob_stat.stat.exists
+  block:
+    - name: Create temporary directory for Bob
+      file:
+        path: /tmp/bob_install
+        state: directory
+
+    - name: Download and Unzip Bob
+      unarchive:
+        src: https://github.com/MordechaiHadad/bob/releases/latest/download/bob-linux-x86_64.zip
+        dest: /tmp/bob_install
+        remote_src: yes
+
+    - name: Find the Bob binary
+      find:
+        paths: /tmp/bob_install
+        patterns: "bob"
+        recurse: yes
+        file_type: file
+      register: bob_binary_found
+
+    - name: Install Bob to /usr/local/bin
+      copy:
+        src: "{{ bob_binary_found.files[0].path }}"
+        dest: /usr/local/bin/bob
+        mode: "0755"
+        remote_src: yes
+
+    - name: Clean up temp directory
+      file:
+        path: /tmp/bob_install
+        state: absent
+
+# --- USER LEVEL TASKS START HERE ---
+
+- name: Install Neovim Stable via Bob
+  become: yes
+  become_user: "{{ user }}"
+  command: /usr/local/bin/bob install stable
+  environment:
+    # Bob needs to know where to put files, even if explicit path isn't set, environment helps
+    HOME: "{{ home }}"
+  register: bob_install
+  changed_when: "'is already installed' not in bob_install.stdout"
+
+- name: Check currently used Neovim version
+  become: yes
+  become_user: "{{ user }}"
+  command: /usr/local/bin/bob list
+  register: bob_list_output
+  changed_when: false
+
+- name: Set Neovim Stable as default
+  become: yes
+  become_user: "{{ user }}"
+  command: /usr/local/bin/bob use stable
+  when: "'Used' not in bob_list_output.stdout"

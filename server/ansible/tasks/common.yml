@@ -1,0 +1,27 @@
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install Essential Tools
+  apt:
+    name:
+      - git
+      - curl
+      - ca-certificates
+      - build-essential
+      - unzip
+      - ripgrep
+      - fd-find
+      - fzf
+      - bat
+      - eza
+      - zoxide
+      - python3.12-venv
+    state: present
+
+- name: Fix 'bat' command
+  file:
+    src: /usr/bin/batcat
+    dest: /usr/local/bin/bat
+    state: link

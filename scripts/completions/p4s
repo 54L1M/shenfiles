@@ -1,0 +1,23 @@
+#compdef p4s
+
+# zsh completion for p4s script
+
+_p4s() {
+    # Function to get profiles from yaml config
+    _get_p4s_profiles() {
+        local config_file="${HOME}/.config/p4/p4s.yaml"
+        if command -v yq &>/dev/null && [[ -f "$config_file" ]]; then
+             yq eval 'keys | .[]' "$config_file" 2>/dev/null
+        fi
+    }
+
+    _arguments -s \
+        '(-d --dir)'{-d,--dir}'[Specify repository path directly]:PATH:_files -/' \
+        '(-m --message)'{-m,--message}'[Use a custom commit message]:MESSAGE:' \
+        '(-c --config)'{-c,--config}'[Use an alternative config file]:CONFIG_FILE:_files' \
+        '(-h --help)'{-h,--help}'[Show this help message]' \
+        '1:Profile:($(_get_p4s_profiles))' 
+        
+}
+
+_p4s "$@"

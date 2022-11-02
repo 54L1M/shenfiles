@@ -1,0 +1,3 @@
+shen:
+  path: ~/shenfiles
+  template: "chore(dotfiles): sync $file_name"

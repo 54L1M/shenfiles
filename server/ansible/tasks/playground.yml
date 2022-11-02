@@ -1,0 +1,53 @@
+- name: Ensure .ssh directory exists
+  become: yes
+  become_user: "{{ user }}"
+  file:
+    path: "{{ home }}/.ssh"
+    state: directory
+    mode: "0700"
+
+- name: Install Playground Deploy Key
+  become: yes
+  become_user: "{{ user }}"
+  copy:
+    content: "{{ playground_deploy_key }}"
+    dest: "{{ home }}/.ssh/id_playground"
+    mode: "0600"
+
+- name: Configure SSH to use Deploy Key for Playground
+  become: yes
+  become_user: "{{ user }}"
+  blockinfile:
+    path: "{{ home }}/.ssh/config"
+    create: yes
+    mode: "0600"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK: PLAYGROUND"
+    block: |
+      Host playground-github
+        HostName github.com
+        User git
+        IdentityFile {{ home }}/.ssh/id_playground
+        IdentitiesOnly yes
+
+- name: Clone Playground Repo (Private)
+  become: yes
+  become_user: "{{ user }}"
+  git:
+    # Use the Host alias we defined above
+    repo: "git@playground-github:54L1M/playground.git"
+    dest: "{{ home }}/playground"
+    accept_hostkey: yes
+    update: yes
+    force: no
+
+- name: Create Organization Directories
+  become: yes
+  become_user: "{{ user }}"
+  file:
+    path: "{{ home }}/playground/{{ item }}"
+    state: directory
+  loop:
+    - codes
+    - notes
+    - books
+    - scratchpad

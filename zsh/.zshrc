@@ -30,6 +30,13 @@ fi
 
 # aliases
 # alias zshconfig="mate ~/.zshrc"
+alias tmp="cd ${HOME}/Shen/tmp"
+alias repos="cd ${HOME}/Shen/Repos"
+alias sf="cd ${HOME}/Shenfiles"
+alias gist="git status"
+alias gish="git push"
+alias giad="git add"
+alias gico="git commit -m"
 
 
 # nvm configs

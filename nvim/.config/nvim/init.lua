@@ -15,6 +15,7 @@ require("shen.plugins.bufdel")
 require("shen.plugins.autopairs")
 require("shen.plugins.treesitter")
 require("shen.plugins.gitsigns")
+require("shen.plugins.neogit")
 -- lsp configs
 require("shen.plugins.lsp.mason")
 require("shen.plugins.lsp.lspsaga")

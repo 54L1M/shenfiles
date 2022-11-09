@@ -62,7 +62,6 @@ lspconfig["gopls"].setup({
 	on_attach = on_attach,
 })
 
-
 -- configure html server
 lspconfig["html"].setup({
 	capabilities = capabilities,

@@ -54,3 +54,5 @@ keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>") -- list available 
 keymap.set("n", "<leader>fe", "<cmd>Telescope file_browser<cr>")
 -- neogit
 keymap.set("n", "<leader>g", "<cmd>Neogit<cr>") -- toggle neogit
+-- glow, md preview
+keymap.set("n", "<leader>m", "<cmd>Glow<cr>") -- toggle neogit

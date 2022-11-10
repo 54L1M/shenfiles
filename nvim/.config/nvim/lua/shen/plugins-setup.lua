@@ -91,8 +91,11 @@ return packer.startup(function(use)
 	-- git integration
 	use("lewis6991/gitsigns.nvim") -- show line modifications on left hand side
 	-- neo git
-
 	use({ "TimUntersberger/neogit", requires = "nvim-lua/plenary.nvim" })
+
+	-- glow, md preview
+	use({ "ellisonleao/glow.nvim" })
+
 	-- Automatically set up your configuration after cloning packer.nvim
 	-- Put this at the end after all plugins
 	if packer_bootstrap then

@@ -56,6 +56,12 @@ for type, icon in pairs(signs) do
 	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
 end
 
+-- configure rust analyzer
+lspconfig["rust_analyzer"].setup({
+	capabilities = capabilities,
+	on_attach = on_attach,
+})
+
 -- configure gopls
 lspconfig["gopls"].setup({
 	capabilities = capabilities,
@@ -78,6 +84,11 @@ typescript.setup({
 
 -- configure css server
 lspconfig["cssls"].setup({
+	capabilities = capabilities,
+	on_attach = on_attach,
+})
+-- configure pylsp
+lspconfig["pylsp"].setup({
 	capabilities = capabilities,
 	on_attach = on_attach,
 })

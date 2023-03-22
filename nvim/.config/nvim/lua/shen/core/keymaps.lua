@@ -40,8 +40,6 @@ keymap.set("n", "<leader>k", "<cmd>BufDel<CR>", opts)
 -- bufferline
 keymap.set("n", "<s-h>", "<cmd>BufferLineCyclePrev<CR>", opts)
 keymap.set("n", "<s-l>", "<cmd>BufferLineCycleNext<CR>", opts)
--- file explorer
-keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", opts)
 -- vim maximizer
 keymap.set("n", "<leader>sm", "<cmd>MaximizerToggle<CR>", opts) -- maximize current split window
 -- telescope

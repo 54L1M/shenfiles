@@ -29,13 +29,14 @@ else
 fi
 
 # aliases
+alias vim="nvim"
 # alias zshconfig="mate ~/.zshrc"
-alias tmp="cd ${HOME}/Shen/tmp"
-alias repos="cd ${HOME}/Shen/Repos"
-alias sf="cd ${HOME}/Shenfiles"
+alias tmp="cd ${HOME}//Documents/tmp"
+alias repos="cd ${HOME}/Documents/0xshen/repos"
+alias sf="cd ${HOME}/shenfiles"
 alias vids="cd ${HOME}/Videos"
 alias downs="cd ${HOME}/Downloads"
-alias series="cd ${HOME}/Videos/Series"
+alias series="cd ${HOME}/Videos/series"
 alias gist="git status"
 alias gish="git push"
 alias giad="git add"

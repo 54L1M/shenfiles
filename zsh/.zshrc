@@ -56,3 +56,7 @@ export PATH=$PATH:$HOME/.emacs.d/bin
 
 # virtualenvwrapper
 export WORKON_HOME=$HOME/.virtualenvs
+
+
+# Load Angular CLI autocompletion.
+source <(ng completion script)

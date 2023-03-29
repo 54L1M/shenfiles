@@ -42,7 +42,7 @@ alias gist="git status"
 alias gish="git push"
 alias giad="git add"
 alias gico="git commit -m"
-
+alias nn="amixer -c 0 sset \"Auto-Mute Mode\" Enabled"
 
 # nvm configs
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"

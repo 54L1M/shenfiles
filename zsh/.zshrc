@@ -57,5 +57,8 @@ export WORKON_HOME=$HOME/.virtualenvs
 export VIRTUALENVWRAPPER_PYTHON=/bin/python3.10
 source /usr/local/bin/virtualenvwrapper.sh
 
+# add user bin to pass
+export PATH=$PATH:$HOME/bin
+
 # Load Angular CLI autocompletion.
 source <(ng completion script)

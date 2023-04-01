@@ -25,7 +25,7 @@ source $ZSH/oh-my-zsh.sh
 if [[ -n $SSH_CONNECTION ]]; then
   export EDITOR='nvim'
 else
-  export EDITOR='nvim'
+  export EDITOR='vim'
 fi
 
 # aliases
@@ -47,16 +47,15 @@ alias nn="amixer -c 0 sset \"Auto-Mute Mode\" Enabled"
 # nvm configs
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+
 # go configs
 export PATH=$PATH:/usr/local/go/bin
 export GOPATH=$HOME/go
 
-# emacs configs
-export PATH=$PATH:$HOME/.emacs.d/bin
-
 # virtualenvwrapper
 export WORKON_HOME=$HOME/.virtualenvs
-
+export VIRTUALENVWRAPPER_PYTHON=/bin/python3.10
+source /usr/local/bin/virtualenvwrapper.sh
 
 # Load Angular CLI autocompletion.
 source <(ng completion script)

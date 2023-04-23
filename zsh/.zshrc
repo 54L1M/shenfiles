@@ -1,3 +1,6 @@
+##########################
+#ZSH STUFF
+##########################
 export ZSH="$HOME/.oh-my-zsh"
 
 # zsh theme
@@ -27,10 +30,23 @@ if [[ -n $SSH_CONNECTION ]]; then
 else
   export EDITOR='vim'
 fi
+##########################
+#ZSH STUFF
+##########################
 
-# aliases
+
+##########################
+#ALIAS
+##########################
+# zsh
+alias reload="echo \"sourcing zshrc\" && source ~/.zshrc"
+# nvim
 alias vim="nvim"
+alias nvimconf="cd ~/.config/nvim/lua/shen/"
+
 # alias zshconfig="mate ~/.zshrc"
+
+# file navigation
 alias tmp="cd ${HOME}//Documents/tmp"
 alias repos="cd ${HOME}/Documents/0xshen/repos"
 alias 0="cd ${HOME}/Documents/0xshen"
@@ -38,11 +54,23 @@ alias sf="cd ${HOME}/shenfiles"
 alias vids="cd ${HOME}/Videos"
 alias downs="cd ${HOME}/Downloads"
 alias series="cd ${HOME}/Videos/series"
+
+# git
 alias gist="git status"
 alias gish="git push"
 alias giad="git add"
 alias gico="git commit -m"
+
+# sound setting
 alias nn="amixer -c 0 sset \"Auto-Mute Mode\" Enabled"
+
+##########################
+#ALIAS
+##########################
+
+##########################
+#PATH STUFF
+##########################
 
 # nvm configs
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
@@ -62,3 +90,7 @@ export PATH=$PATH:$HOME/bin
 
 # Load Angular CLI autocompletion.
 source <(ng completion script)
+
+##########################
+#PATH STUFF
+##########################

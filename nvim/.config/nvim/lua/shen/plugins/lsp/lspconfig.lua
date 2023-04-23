@@ -56,6 +56,18 @@ for type, icon in pairs(signs) do
 	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
 end
 
+-- configure clangd
+lspconfig["clangd"].setup({
+	capabilities = capabilities,
+	on_attach = on_attach,
+})
+
+-- configure ansible-language-server
+lspconfig["ansiblels"].setup({
+	capabilities = capabilities,
+	on_attach = on_attach,
+})
+
 -- configure rust analyzer
 lspconfig["rust_analyzer"].setup({
 	capabilities = capabilities,

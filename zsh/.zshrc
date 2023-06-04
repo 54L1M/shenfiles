@@ -64,6 +64,11 @@ alias gico="git commit -m"
 # sound setting
 alias nn="amixer -c 0 sset \"Auto-Mute Mode\" Enabled"
 
+# Rust CLI Apps
+alias ls="exa -l --git"
+alias cat="bat"
+alias sl="ls"
+
 ##########################
 #ALIAS
 ##########################

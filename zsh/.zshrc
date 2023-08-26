@@ -65,7 +65,7 @@ alias gico="git commit -m"
 alias nn="amixer -c 0 sset \"Auto-Mute Mode\" Enabled"
 
 # Rust CLI Apps
-alias ls="exa -l --git"
+alias ls="exa -l"
 alias cat="bat"
 alias sl="ls"
 
@@ -81,21 +81,26 @@ alias sl="ls"
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
+#pip 
+export PATH=$PATH:$HOME/.local/bin/
+
+
 # go configs
 export PATH=$PATH:/usr/local/go/bin
 export GOPATH=$HOME/go
-
+export PATH="$PATH:$(go env GOPATH)/bin"
 # virtualenvwrapper
 export WORKON_HOME=$HOME/.virtualenvs
-export VIRTUALENVWRAPPER_PYTHON=/bin/python3.10
-source /usr/local/bin/virtualenvwrapper.sh
+export VIRTUALENVWRAPPER_SCRIPT=$HOME/.local/bin/virtualenvwrapper.sh
+source $HOME/.local/bin/virtualenvwrapper_lazy.sh
 
 # add user bin to pass
 export PATH=$PATH:$HOME/bin
 
 # Load Angular CLI autocompletion.
-source <(ng completion script)
+#source <(ng completion script)
 
 ##########################
 #PATH STUFF
 ##########################
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

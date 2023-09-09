@@ -60,6 +60,7 @@ alias gist="git status"
 alias gish="git push"
 alias giad="git add"
 alias gico="git commit -m"
+alias gicl="git clone"
 
 # sound setting
 alias nn="amixer -c 0 sset \"Auto-Mute Mode\" Enabled"
@@ -68,6 +69,12 @@ alias nn="amixer -c 0 sset \"Auto-Mute Mode\" Enabled"
 alias ls="exa -l"
 alias cat="bat"
 alias sl="ls"
+alias upd="sudo apt update"
+alias upg="sudo apt upgrade"
+alias lupg="apt list --upgradable"
+alias in="sudo apt install"
+alias unin="sudo apt remove"
+alias are="sudo apt autoremove"
 
 ##########################
 #ALIAS

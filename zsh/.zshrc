@@ -97,6 +97,7 @@ export PATH=$PATH:/usr/local/go/bin
 export GOPATH=$HOME/go
 export PATH="$PATH:$(go env GOPATH)/bin"
 # virtualenvwrapper
+export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
 export WORKON_HOME=$HOME/.virtualenvs
 export VIRTUALENVWRAPPER_SCRIPT=$HOME/.local/bin/virtualenvwrapper.sh
 source $HOME/.local/bin/virtualenvwrapper_lazy.sh

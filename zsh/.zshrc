@@ -26,9 +26,9 @@ source $ZSH/oh-my-zsh.sh
 
 # set edtitor to neovim
 if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='nvim'
+  export EDITOR='lvim'
 else
-  export EDITOR='vim'
+  export EDITOR='lvim'
 fi
 ##########################
 #ZSH STUFF

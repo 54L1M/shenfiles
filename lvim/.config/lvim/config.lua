@@ -13,6 +13,15 @@ lvim.keys.insert_mode["kj"] = "<ESC>"
 lvim.keys.normal_mode["<leader>t"] = "<cmd>ToggleTerm<CR>"
 lvim.keys.normal_mode["<s-h>"] = "<cmd>BufferLineCyclePrev<CR>"
 lvim.keys.normal_mode["<s-l>"] = "<cmd>BufferLineCycleNext<CR>"
+-- lvim.keys.normal_mode["<leader>f"] = false
+lvim.builtin.which_key.mappings["f"] = {
+    name = "Telescope",
+    f = { "<cmd>Telescope find_files<cr>", "Find Files" },
+    b = { "<cmd>Telescope buffers<cr>", "Buffers" },
+    e = { "<cmd>Telescope file_browser<cr>", "File Browser" },
+    s = { "<cmd>Telescope live_grep<cr>", "Live Grep" },    -- find string in current working directory as you type
+    c = { "<cmd>Telescope grep_string<cr>", "Grep String" } -- find string under cursor in current working directory
+}
 -- OPTIONS--
 -- line numbers
 opt.number = true
@@ -50,5 +59,15 @@ opt.updatetime = 50
 
 
 -- PLUGINS --
-
+lvim.plugins = {
+    {
+        "nvim-telescope/telescope-fzy-native.nvim",
+        build = "make",
+    },
+    { "nvim-telescope/telescope-file-browser.nvim" },
+}
 lvim.builtin.telescope.defaults.initial_mode = "normal"
+lvim.builtin.telescope.on_config_done = function(telescope)
+    pcall(telescope.load_extension, "fzf")
+    pcall(telescope.load_extension, "file_browser")
+end

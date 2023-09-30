@@ -83,7 +83,7 @@ config.font = wezterm.font 'Hack Nerd Font'
 config.bidi_enabled = true
 config.window_decorations = "NONE"
 config.enable_tab_bar = true
-config.tab_bar_at_bottom = true
+config.tab_bar_at_bottom = false
 config.use_fancy_tab_bar = false
 -- config.default_cwd = "Documents/0xshen/"
 config.window_background_opacity = 0.75
@@ -95,9 +95,11 @@ config.leader = {
     timeout_milliseconds = 1000
 }
 config.keys = {
-    { key = 'c', mods = 'LEADER', action = wezterm.action.ShowLauncherArgs { flags = 'FUZZY|COMMANDS' } },
-    { key = 'l', mods = 'LEADER', action = wezterm.action.ShowTabNavigator },
-    { key = 't', mods = 'LEADER', action = wezterm.action.SpawnTab 'CurrentPaneDomain' },
+    { key = 'c', mods = 'LEADER',     action = wezterm.action.ShowLauncherArgs { flags = 'FUZZY|COMMANDS' } },
+    { key = 'l', mods = 'LEADER',     action = wezterm.action.ShowTabNavigator },
+    { key = 't', mods = 'LEADER',     action = wezterm.action.SpawnTab 'CurrentPaneDomain' },
+    { key = '}', mods = 'CTRL|SHIFT', action = wezterm.action.ActivateTabRelative(1) },
+    { key = '{', mods = 'CTRL|SHIFT', action = wezterm.action.ActivateTabRelative(-1) },
     {
         key = 'r',
         mods = 'LEADER',

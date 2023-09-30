@@ -79,13 +79,14 @@ end
 
 -- For example, changing the color scheme:
 config.color_scheme = 'Github Dark'
+config.font = wezterm.font 'Hack Nerd Font'
 config.bidi_enabled = true
 config.window_decorations = "NONE"
 config.enable_tab_bar = true
 config.tab_bar_at_bottom = true
 config.use_fancy_tab_bar = false
 -- config.default_cwd = "Documents/0xshen/"
-config.window_background_opacity = 0.6
+config.window_background_opacity = 0.75
 -- config.text_background_opacity = 0.3
 config.bidi_direction = "AutoLeftToRight"
 config.leader = {

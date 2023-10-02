@@ -4,7 +4,6 @@ local opt = vim.opt
 lvim.transparent_window = true
 -- format on save
 lvim.format_on_save = true
-
 -- keymaps
 -- insert mode
 lvim.keys.insert_mode["jk"] = "<ESC>"
@@ -57,7 +56,12 @@ opt.cmdheight = 1
 -- delays and poor user experience.
 opt.updatetime = 50
 
-
+-- LSP --
+lvim.lsp.automatic_servers_installation = false
+vim.list_extend(lvim.lsp.automatic_configuration.skipped_servers, { "pyright" })
+lvim.lsp.automatic_configuration.skipped_servers = vim.tbl_filter(function(server)
+    return server ~= "pylsp"
+end, lvim.lsp.automatic_configuration.skipped_servers)
 -- PLUGINS --
 lvim.plugins = {
     {

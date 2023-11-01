@@ -95,11 +95,11 @@ config.leader = {
     timeout_milliseconds = 1000
 }
 config.keys = {
-    { key = 'c', mods = 'LEADER',     action = wezterm.action.ShowLauncherArgs { flags = 'FUZZY|COMMANDS' } },
-    { key = 'l', mods = 'LEADER',     action = wezterm.action.ShowTabNavigator },
-    { key = 't', mods = 'LEADER',     action = wezterm.action.SpawnTab 'CurrentPaneDomain' },
-    { key = '}', mods = 'CTRL|SHIFT', action = wezterm.action.ActivateTabRelative(1) },
-    { key = '{', mods = 'CTRL|SHIFT', action = wezterm.action.ActivateTabRelative(-1) },
+    { key = 'c', mods = 'LEADER', action = wezterm.action.ShowLauncherArgs { flags = 'FUZZY|COMMANDS' } },
+    { key = 'l', mods = 'LEADER', action = wezterm.action.ShowTabNavigator },
+    { key = 't', mods = 'LEADER', action = wezterm.action.SpawnTab 'CurrentPaneDomain' },
+    { key = 'n', mods = 'LEADER', action = wezterm.action.ActivateTabRelative(1) },
+    { key = 'p', mods = 'LEADER', action = wezterm.action.ActivateTabRelative(-1) },
     {
         key = 'r',
         mods = 'LEADER',

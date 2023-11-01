@@ -68,10 +68,29 @@ lvim.plugins = {
         "nvim-telescope/telescope-fzy-native.nvim",
         build = "make",
     },
+    { 'jvgrootveld/telescope-zoxide' },
+    { 'nvim-lua/popup.nvim' },
     { "nvim-telescope/telescope-file-browser.nvim" },
+    {
+        "zbirenbaum/copilot-cmp",
+        event = "InsertEnter",
+        dependencies = { "zbirenbaum/copilot.lua" },
+        config = function()
+            vim.defer_fn(function()
+                require("copilot").setup()     -- https://github.com/zbirenbaum/copilot.lua/blob/master/README.md#setup-and-configuration
+                require("copilot_cmp").setup() -- https://github.com/zbirenbaum/copilot-cmp/blob/master/README.md#configuration
+            end, 100)
+        end,
+    },
 }
 lvim.builtin.telescope.defaults.initial_mode = "normal"
 lvim.builtin.telescope.on_config_done = function(telescope)
     pcall(telescope.load_extension, "fzf")
+    pcall(telescope.load_extension, "zoxide")
     pcall(telescope.load_extension, "file_browser")
 end
+lvim.builtin.telescope.extensions = {
+    file_browser = {
+        hijack_netrw = true,
+    }
+}

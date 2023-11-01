@@ -47,9 +47,13 @@ alias nvimconf="cd ~/.config/nvim/lua/shen/"
 # alias zshconfig="mate ~/.zshrc"
 
 # file navigation
-alias tmp="cd ${HOME}//Documents/tmp"
+alias tmp="cd ${HOME}//Documents/0xshen/tmp"
 alias repos="cd ${HOME}/Documents/0xshen/repos"
 alias 0="cd ${HOME}/Documents/0xshen"
+alias ghaaf="cd ${HOME}/Documents/0xshen/ghaaf"
+alias amper="cd ${HOME}/Documents/0xshen/amper"
+alias side="cd ${HOME}/Documents/0xshen/side"
+alias mearn="cd ${HOME}/Documents/0xshen/mearn"
 alias sf="cd ${HOME}/shenfiles"
 alias vids="cd ${HOME}/Videos"
 alias downs="cd ${HOME}/Downloads"
@@ -113,3 +117,5 @@ export PATH=$PATH:$HOME/bin
 #PATH STUFF
 ##########################
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# eval "$(zoxide init zsh)"

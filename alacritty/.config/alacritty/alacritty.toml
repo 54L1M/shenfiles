@@ -3,3 +3,5 @@ family = "Hack Nerd Font"
 
 [window]
 opacity = 0.75
+[font]
+size = 18

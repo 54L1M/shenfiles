@@ -1,23 +1,16 @@
--- Packer
-require("shen.plugins-setup") -- should be at top
--- core configs
-require("shen.core.colorscheme")
-require("shen.core.keymaps")
-require("shen.core.options")
--- plugins configs
-require("shen.plugins.comment")
-require("shen.plugins.lualine")
-require("shen.plugins.nvim-cmp")
-require("shen.plugins.telescope")
-require("shen.plugins.transparent")
-require("shen.plugins.bufferline")
-require("shen.plugins.bufdel")
-require("shen.plugins.autopairs")
-require("shen.plugins.treesitter")
-require("shen.plugins.gitsigns")
-require("shen.plugins.neogit")
--- lsp configs
-require("shen.plugins.lsp.mason")
-require("shen.plugins.lsp.lspsaga")
-require("shen.plugins.lsp.lspconfig")
-require("shen.plugins.lsp.null-ls")
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
+
+require("opts.options")
+require("opts.keymaps")
+require("lazy").setup("plugins")

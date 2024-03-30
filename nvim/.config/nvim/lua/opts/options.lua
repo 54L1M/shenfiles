@@ -7,8 +7,8 @@ opt.number = true
 opt.relativenumber=true
 
 -- tabs & indentation
-opt.tabstop = 4
-opt.shiftwidth = 4
+opt.tabstop = 2
+opt.shiftwidth = 2
 opt.expandtab = true
 opt.autoindent = true
 
@@ -46,3 +46,5 @@ vim.opt.cmdheight = 1
 -- Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 -- delays and poor user experience.
 vim.opt.updatetime = 50
+-- colors
+vim.o.termguicolors = true

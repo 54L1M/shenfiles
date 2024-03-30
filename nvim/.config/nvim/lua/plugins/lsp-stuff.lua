@@ -11,7 +11,7 @@ return {
     lazy = false,
     opts = {
       ensure_installed = {"lua_ls","tsserver","gopls","pyright"},
-      auto_install = false,
+      auto_install = true,
     },
   },
   {

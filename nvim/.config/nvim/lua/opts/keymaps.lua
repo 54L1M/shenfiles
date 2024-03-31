@@ -30,4 +30,8 @@ keymap.set("n", "<leader>tc", "<cmd>tabclose<CR>", opts) -- close tab
 keymap.set("n", "<leader>tn", "<cmd>tabnext<CR>", opts) -- go to next tab
 keymap.set("n", "<leader>tp", "<cmd>tabprevious<CR>", opts) -- go to previous tab
 
-
+-- Navigate vim panes better
+vim.keymap.set('n', '<c-k>', ':wincmd k<CR>')
+vim.keymap.set('n', '<c-j>', ':wincmd j<CR>')
+vim.keymap.set('n', '<c-h>', ':wincmd h<CR>')
+vim.keymap.set('n', '<c-l>', ':wincmd l<CR>')

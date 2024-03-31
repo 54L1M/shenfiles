@@ -26,9 +26,9 @@ source $ZSH/oh-my-zsh.sh
 
 # set edtitor to neovim
 if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='lvim'
+  export EDITOR='nvim'
 else
-  export EDITOR='lvim'
+  export EDITOR='vim'
 fi
 ##########################
 #ZSH STUFF
@@ -113,10 +113,10 @@ source /Library/Frameworks/Python.framework/Versions/3.12/bin/virtualenvwrapper.
 # add user bin to pass
 export PATH=$PATH:$HOME/bin
 
-# Load Angular CLI autocompletion.
-#source <(ng completion script)
-
-##########################
+# tmuxifier
+export PATH="$HOME/.tmuxifier/bin:$PATH"##########################
+eval "$(tmuxifier init -)"
+export TMUXIFIER_LAYOUT_PATH="$HOME/.tmuxifier-layouts"
 #PATH STUFF
 ##########################
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

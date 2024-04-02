@@ -25,11 +25,7 @@ plugins=(git
 source $ZSH/oh-my-zsh.sh
 
 # set edtitor to neovim
-if [[ -n $SSH_CONNECTION ]]; then
-  export EDITOR='nvim'
-else
-  export EDITOR='vim'
-fi
+export EDITOR='nvim'
 ##########################
 #ZSH STUFF
 ##########################

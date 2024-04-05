@@ -118,3 +118,5 @@ export TMUXIFIER_LAYOUT_PATH="$HOME/.tmuxifier-layouts"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 # eval "$(zoxide init zsh)"
+
+eval $(thefuck --alias)

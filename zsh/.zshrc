@@ -69,7 +69,9 @@ alias nn="amixer -c 0 sset \"Auto-Mute Mode\" Enabled"
 alias ls="exa -l"
 alias cat="bat"
 #############
-alias sl="ls"
+alias tf="tmuxifier"
+alias f="fuck"
+#alias sl="ls"
 alias upd="sudo apt update"
 alias upg="sudo apt upgrade"
 alias lupg="apt list --upgradable"
@@ -120,3 +122,9 @@ export TMUXIFIER_LAYOUT_PATH="$HOME/.tmuxifier-layouts"
 # eval "$(zoxide init zsh)"
 
 eval $(thefuck --alias)
+neofetch
+export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
+fpath+=~/.zfunc
+autoload -Uz compinit
+compinit -D
+

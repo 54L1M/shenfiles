@@ -10,7 +10,7 @@
 
   outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew }:
     let
-      configuration = { pkgs, ... }: {
+      configuration = { pkgs,config, ... }: {
 
         nixpkgs.config.allowUnfree = true;
         # List packages installed in system profile. To search by name, run:
@@ -59,8 +59,8 @@
         };
         fonts.packages = [
           (pkgs.nerdfonts.override { fonts = [ "HackMono" ]; })
-        ]
-          };
+        ];
+          
         system.activationScripts.applications.text =
           let
             env = pkgs.buildEnv {

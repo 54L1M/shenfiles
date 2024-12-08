@@ -43,13 +43,12 @@ alias nvimconf="cd ~/.config/nvim/lua/shen/"
 # alias zshconfig="mate ~/.zshrc"
 
 # file navigation
-alias tmp="cd ${HOME}//Documents/0xshen/tmp"
-alias repos="cd ${HOME}/Documents/0xshen/repos"
-alias 0="cd ${HOME}/Documents/0xshen"
-alias ghaaf="cd ${HOME}/Documents/0xshen/ghaaf"
-alias amper="cd ${HOME}/Documents/0xshen/amper"
-alias side="cd ${HOME}/Documents/0xshen/side"
-alias mearn="cd ${HOME}/Documents/0xshen/mearn"
+alias tmp="cd ${HOME}//Documents/WorkStation/tmp"
+alias repos="cd ${HOME}/Documents/WorkStation/repos"
+alias 0="cd ${HOME}/Documents/WorkStation"
+alias ghaaf="cd ${HOME}/Documents/WorkStation/ghaaf"
+alias side="cd ${HOME}/Documents/WorkStation/side"
+alias mearn="cd ${HOME}/Documents/WorkStation/mearn"
 alias sf="cd ${HOME}/shenfiles"
 alias vids="cd ${HOME}/Videos"
 alias downs="cd ${HOME}/Downloads"
@@ -93,6 +92,8 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 
 #pip 
 export PATH=$PATH:$HOME/.local/bin/
+#cargo
+export PATH=$PATH:$HOME/.cargo/bin/
 
 
 # go configs
@@ -104,10 +105,10 @@ export PATH="$PATH:$(go env GOPATH)/bin"
 #export WORKON_HOME=$HOME/.virtualenvs
 #export VIRTUALENVWRAPPER_SCRIPT=$HOME/.local/bin/virtualenvwrapper.sh
 #source $HOME/.local/bin/virtualenvwrapper_lazy.sh
-export WORKON_HOME=$HOME/.virtualenvs
-export VIRTUALENVWRAPPER_PYTHON=/Library/Frameworks/Python.framework/Versions/3.12/bin/python3
-export VIRTUALENVWRAPPER_VIRTUALENV=/Library/Frameworks/Python.framework/Versions/3.12/bin/virtualenv
-source /Library/Frameworks/Python.framework/Versions/3.12/bin/virtualenvwrapper.sh
+#export WORKON_HOME=$HOME/.virtualenvs
+#export VIRTUALENVWRAPPER_PYTHON=/Library/Frameworks/Python.framework/Versions/3.12/bin/python3
+#export VIRTUALENVWRAPPER_VIRTUALENV=/Library/Frameworks/Python.framework/Versions/3.12/bin/virtualenv
+#source /Library/Frameworks/Python.framework/Versions/3.12/bin/virtualenvwrapper.sh
 # add user bin to pass
 export PATH=$PATH:$HOME/bin
 

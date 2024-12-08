@@ -9,56 +9,62 @@
   };
 
   outputs = inputs@{ self, nix-darwin, nixpkgs, nix-homebrew }:
+
     let
       configuration = { pkgs,config, ... }: {
 
         nixpkgs.config.allowUnfree = true;
         # List packages installed in system profile. To search by name, run:
         # $ nix-env -qaP | grep wget
-        environment.systemPackages =
-          [
-            pkgs.neovim
-            pkgs.mkalias
-            pkgs.tmux
-            pkgs.htop
-            pkgs.alacritty
-            pkgs.mpv
-            pkgs.go
-            pkgs.gopls
-            pkgs.python313
-            pkgs.sl
-            pkgs.bat
-            pkgs.thefuck
-            pkgs.git
-            pkgs.ffmpeg
-            pkgs.vscode
-            pkgs.postgresql_16
-            pkgs.ripgrep
-            pkgs.nodejs_22
-          ];
+        environment.systemPackages = with pkgs; [
+          alacritty
+          mkalias
+          neovim
+          git
+          tmux
+          tmuxifier
+          rustup
+          mpv
+          go
+          gopls
+          # Adding python with packages directly
+          (python313.withPackages (ps: with ps; [
+            numpy
+          ])) 
+          bat
+          vscode
+          ripgrep
+          nodejs_22
+          thefuck
+          htop
+          ffmpeg
+          postgresql_16
+          python313Packages.pip
+      	  stow
+          oh-my-zsh
+          neofetch
+        ];
         homebrew = {
           enable = true;
           brews = [
             "mas"
-            "exa"
+            "docker"
           ];
           casks = [
-            "hammerspoon"
             "firefox"
-            "iina"
-            "the-unarchiver"
-            "discord"
+            "chatgpt"
+            "android-file-transfer"
+	          "discord"
+            "obsidian"
+            "spotify"
           ];
           masApps = {
-            "Yoink" = 457622435;
-            "Wireguard" = 1451685025;
           };
           onActivation.cleanup = "zap";
-          onActivation.autoUpdate = true;
-          onActivation.upgrade = true;
+
         };
         fonts.packages = [
-          (pkgs.nerdfonts.override { fonts = [ "HackMono" ]; })
+          (pkgs.nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
         ];
           
         system.activationScripts.applications.text =
@@ -89,6 +95,7 @@
             "/Applications/Firefox.app"
             "/System/Applications/Mail.app"
             "/System/Applications/Calendar.app"
+            "/Applications/Spotify.app/"
           ];
           finder.FXPreferredViewStyle = "clmv";
           loginwindow.GuestEnabled = false;
@@ -106,8 +113,6 @@
         # Create /etc/zshrc that loads the nix-darwin environment.
         programs.zsh.enable = true; # default shell on catalina
         # programs.fish.enable = true;
-        # Enable the OpenSSH daemon.
-        services.openssh.enable = true;
         # Set Git commit hash for darwin-version.
         system.configurationRevision = self.rev or self.dirtyRev or null;
 
@@ -122,7 +127,7 @@
     {
       # Build darwin flake using:
       # $ darwin-rebuild build --flake .#simple
-      darwinConfigurations."macpro" = nix-darwin.lib.darwinSystem {
+      darwinConfigurations."shen" = nix-darwin.lib.darwinSystem {
         modules = [
           configuration
           nix-homebrew.darwinModules.nix-homebrew
@@ -139,6 +144,6 @@
       };
 
       # Expose the package set, including overlays, for convenience.
-      darwinPackages = self.darwinConfigurations."macpro".pkgs;
+      darwinPackages = self.darwinConfigurations."shen".pkgs;
     };
 }

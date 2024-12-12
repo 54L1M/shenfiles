@@ -51,6 +51,7 @@ alias side="cd ${HOME}/Documents/WorkStation/side"
 alias mearn="cd ${HOME}/Documents/WorkStation/mearn"
 alias sf="cd ${HOME}/shenfiles"
 alias vids="cd ${HOME}/Videos"
+alias docs="cd ${HOME}/Documents"
 alias downs="cd ${HOME}/Downloads"
 alias series="cd ${HOME}/Videos/series"
 
@@ -129,3 +130,4 @@ fpath+=~/.zfunc
 autoload -Uz compinit
 compinit -D
 
+export PATH="/opt/homebrew/bin:$PATH"

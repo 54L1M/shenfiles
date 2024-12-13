@@ -1,6 +1,10 @@
+[terminal.shell]
+program = ""
 
 [font.normal]
 family = "JetBrainsMono Nerd Font"
+
+[terminal]
 
 [general]
 import = ["~/.config/alacritty/catppuccin-mocha.toml"]

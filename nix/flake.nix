@@ -94,9 +94,12 @@
           dock.persistent-apps = [
             "${pkgs.alacritty}/Applications/Alacritty.app"
             "/Applications/Firefox.app"
-            "/System/Applications/Mail.app"
+            #"/System/Applications/Mail.app"
             "/System/Applications/Calendar.app"
+            "/Applications/Obsidian.app/"
             "/Applications/Spotify.app/"
+            "/Applications/Discord.app/"
+            "/Applications/Google Chrome.app/"
           ];
           finder.FXPreferredViewStyle = "clmv";
           loginwindow.GuestEnabled = false;

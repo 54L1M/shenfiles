@@ -48,6 +48,7 @@
             "mas"
             "hugo"
             "yq"
+            "lazygit"
           ];
           casks = [
             "firefox"

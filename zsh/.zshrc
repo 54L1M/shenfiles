@@ -131,3 +131,5 @@ autoload -Uz compinit
 compinit -D
 
 export PATH="/opt/homebrew/bin:$PATH"
+
+source <(fzf --zsh)

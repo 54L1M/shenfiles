@@ -1,4 +1,5 @@
 { config, pkgs, ... }:
+
 {
   environment.systemPackages = with pkgs; [
     alacritty
@@ -6,18 +7,19 @@
     neovim
     git
     tmux
+    tmuxifier
     rustup
     mpv
     go
     gopls
-    python313
     bat
     vscode
     ripgrep
-    nodejs_22
     thefuck
     htop
     ffmpeg
-    postgresql_16
+    stow
+    oh-my-zsh
+    neofetch
   ];
 }

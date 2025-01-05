@@ -21,6 +21,9 @@ in
     ".config/nvim" = {
       source = "${dotfilesPath}/nvim/.config/nvim";
     };
+    ".config/alacritty" = {
+      source = "${dotfilesPath}/alacritty/.config/alacritty";
+    };
   };
 
   # Install essential packages

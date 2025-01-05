@@ -15,6 +15,7 @@
       "yarn"
       "python@3.9"
       "python@3.13"
+      "argon2"
     ];
     casks = [
       "firefox"

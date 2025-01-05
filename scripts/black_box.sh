@@ -91,7 +91,7 @@ encrypt_file() {
   fi 
   # Generate encryption key using Argon2
   ENCRYPTION_KEY=$(echo -n "$PASSWORD" | argon2 "$SALT" -t "$ARGON2_TIME" -m "$ARGON2_MEMORY" -p "$ARGON2_PARALLEL" -l "$ARGON2_KEYLEN" | cut -d'$' -f7)
-  
+
   # Encrypt the file using the generated key
   openssl enc -aes-256-cbc -pbkdf2 -salt -in "$INPUT_FILE" -out "$OUTPUT_FILE" -pass pass:"$ENCRYPTION_KEY"
   chmod 600 "$OUTPUT_FILE"

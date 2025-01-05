@@ -21,7 +21,7 @@ plugins=(git
     zsh-autosuggestions
     zsh-syntax-highlighting
 #    zsh-vi-mode
-    zsh-z       )
+    z       )
 source $ZSH/oh-my-zsh.sh
 
 # set edtitor to neovim

@@ -25,6 +25,8 @@
       "obsidian"
       "spotify"
       "ghostty"
+      "google-chrome"
+      "alacritty"
     ];
     masApps = {};
     onActivation.cleanup = "zap";

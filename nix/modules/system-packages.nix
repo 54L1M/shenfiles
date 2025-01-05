@@ -2,7 +2,6 @@
 
 {
   environment.systemPackages = with pkgs; [
-    alacritty
     mkalias
     neovim
     git
@@ -19,7 +18,6 @@
     htop
     ffmpeg
     stow
-    oh-my-zsh
     neofetch
   ];
 }

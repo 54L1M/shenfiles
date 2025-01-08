@@ -60,6 +60,7 @@ alias downs="cd ${HOME}/Downloads"
 alias series="cd ${HOME}/Videos/series"
 alias i2d="cd ${HOME}/Documents/WorkStation/In2Dialog"
 alias ats="cd ${HOME}/Documents/WorkStation/In2Dialog/I2D_ATS"
+alias comp="cd ${HOME}/Documents/WorkStation/In2Dialog/I2D_Companion"
 # git
 alias gist="git status"
 alias gish="git push"

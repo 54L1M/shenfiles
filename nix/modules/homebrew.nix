@@ -11,7 +11,7 @@
       "zellij"
       "fzf"
       "node"
-      "postgresql"
+      "postgresql@14"
       "yarn"
       "python@3.9"
       "python@3.13"
@@ -19,6 +19,8 @@
       "glib"
       "pango"
       "pgcli"
+      "virtualenv"
+      "virtualenvwrapper"
     ];
     casks = [
       "firefox"

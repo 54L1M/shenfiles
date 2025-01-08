@@ -35,11 +35,15 @@ export EDITOR='nvim'
 #ALIAS
 ##########################
 # zsh
+alias zshconf="cd ~/shenfiles/zsh/ && nvim ."
 alias reload="echo \"sourcing zshrc\" && source ~/.zshrc"
 # nvim
 alias vim="nvim"
 alias nvimconf="cd ~/.config/nvim/lua/shen/"
 
+# nix
+alias nixconf="cd ~/shenfiles/nix/ && nvim ."
+alias rn="darwin-rebuild switch --impure --flake ~/shenfiles/nix#54L1M"
 # alias zshconfig="mate ~/.zshrc"
 
 # file navigation
@@ -134,3 +138,9 @@ compinit -D
 export PATH="/opt/homebrew/bin:$PATH"
 
 source <(fzf --zsh)
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/54l1m/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/54l1m/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/54l1m/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/54l1m/Downloads/google-cloud-sdk/completion.zsh.inc'; fi

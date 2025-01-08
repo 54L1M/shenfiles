@@ -16,6 +16,9 @@
       "python@3.9"
       "python@3.13"
       "argon2"
+      "glib"
+      "pango"
+      "pgcli"
     ];
     casks = [
       "firefox"
@@ -27,6 +30,7 @@
       "ghostty"
       "google-chrome"
       "alacritty"
+      "lens"
     ];
     masApps = {};
     onActivation.cleanup = "zap";

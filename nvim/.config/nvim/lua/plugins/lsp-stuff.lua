@@ -10,7 +10,7 @@ return {
     "williamboman/mason-lspconfig.nvim",
     lazy = false,
     opts = {
-      ensure_installed = { "lua_ls","bashls","ts_ls", "gopls", "pyright" },
+      ensure_installed = { "lua_ls","bashls","ts_ls", "gopls", "pyright", "pylsp" },
       auto_install = true,
     },
   },
@@ -36,7 +36,13 @@ return {
       lspconfig.html.setup({
         capabilities = capabilities,
       })
+      lspconfig.pylsp.setup({
+        capabilities = capabilities,
+      })
       lspconfig.lua_ls.setup({
+        capabilities = capabilities,
+      })
+      lspconfig.django_template_lsp.setup({
         capabilities = capabilities,
       })
 

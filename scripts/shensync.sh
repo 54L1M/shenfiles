@@ -10,14 +10,14 @@ RESET='\033[0m'
 
 # Navigate to the dotfiles directory
 DOTFILES_DIR="$HOME/shenfiles/"
-cd "$DOTFILES_DIR" || { echo -e "${RED}Dotfiles directory not found!${RESET}"; exit 1; }
+cd "$DOTFILES_DIR" || { echo "${RED}Dotfiles directory not found!${RESET}"; exit 1; }
 
 # Check for changes
 git fetch origin
 CHANGES=$(git status --porcelain)
 
 if [[ -z "$CHANGES" ]]; then
-    echo -e "${CYAN}No changes to commit.${RESET}"
+    echo "${CYAN}No changes to commit.${RESET}"
     exit 0
 fi
 
@@ -30,22 +30,22 @@ while IFS= read -r line; do
         " M") # Modified file
             git add "$FILE"
             git commit -m "Update $FILE"
-            echo -e "${GREEN}Committed update for $FILE${RESET}"
+            echo "${GREEN}Committed update for $FILE${RESET}"
             ;;
         "??") # Newly created file
             git add "$FILE"
             git commit -m "Add $FILE"
-            echo -e "${YELLOW}Committed addition of $FILE${RESET}"
+            echo "${YELLOW}Committed addition of $FILE${RESET}"
             ;;
         " D") # Deleted file
             git rm "$FILE"
             git commit -m "Remove $FILE"
-            echo -e "${RED}Committed removal of $FILE${RESET}"
+            echo "${RED}Committed removal of $FILE${RESET}"
             ;;
     esac
 done <<< "$CHANGES"
 
 # Push changes to the repository
 git push origin master
-echo -e "${CYAN}Changes pushed to the repository.${RESET}"
+echo "${CYAN}Changes pushed to the repository.${RESET}"
 

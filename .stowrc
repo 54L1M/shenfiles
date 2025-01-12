@@ -1,1 +1,4 @@
 --ignore=nix/*
+--ignore=glow/*
+--ignore=scripts/*
+--ignore=.DS_Store

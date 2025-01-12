@@ -24,14 +24,14 @@
         ./modules/programs/zsh.nix
         ./modules/users.nix
         # Home Manager user configurations
-        home-manager.darwinModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-
-          # User-specific Home Manager configuration
-          home-manager.users."54l1m" = import ./home.nix;
-        }
+        # home-manager.darwinModules.home-manager
+        # {
+        #   home-manager.useGlobalPkgs = true;
+        #   home-manager.useUserPackages = true;
+        #
+        #   # User-specific Home Manager configuration
+        #   home-manager.users."54l1m" = import ./home.nix;
+        # }
 
         # Homebrew configuration (for Nix homebrew)
         nix-homebrew.darwinModules.nix-homebrew

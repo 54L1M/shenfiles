@@ -18,9 +18,9 @@ in
     ".tmux.conf" = {
       source = "${dotfilesPath}/tmux/.tmux.conf";
     };
-    ".config/nvim" = {
-      source = "${dotfilesPath}/nvim/.config/nvim";
-    };
+    # ".config/nvim" = {
+    #   source = "${dotfilesPath}/nvim/.config/nvim";
+    # };
     ".config/alacritty" = {
       source = "${dotfilesPath}/alacritty/.config/alacritty";
     };

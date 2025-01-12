@@ -20,6 +20,7 @@ plugins=(git
     colored-man-pages
     zsh-autosuggestions
     zsh-syntax-highlighting
+    docker
 #    zsh-vi-mode
     z       )
 source $ZSH/oh-my-zsh.sh
@@ -144,4 +145,7 @@ source <(fzf --zsh)
 if [ -f '/Users/54l1m/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/54l1m/Downloads/google-cloud-sdk/path.zsh.inc'; fi
 
 # The next line enables shell command completion for gcloud.
+
 if [ -f '/Users/54l1m/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/54l1m/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+
+eval "$(starship init zsh)"

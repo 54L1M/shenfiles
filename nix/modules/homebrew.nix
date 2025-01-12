@@ -21,6 +21,7 @@
       "pgcli"
       "virtualenv"
       "virtualenvwrapper"
+      "starship"
     ];
     casks = [
       "firefox"

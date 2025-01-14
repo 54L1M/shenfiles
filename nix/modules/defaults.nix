@@ -5,7 +5,7 @@
     dock = {
       autohide = true;
       persistent-apps = [
-        "${pkgs.alacritty}/Applications/Alacritty.app"
+        "/Applications/Alacritty.app"
         "/Applications/Firefox.app"
         "/Applications/Obsidian.app"
         "/Applications/Spotify.app"

@@ -5,7 +5,6 @@ palette = "catppuccin_mocha"
 # move the rest of the prompt to the right
 right_format = """$all"""
 command_timeout = 1000
-
 [character]
 success_symbol = "[❯](green)"
 error_symbol = "[❯](red)"
@@ -29,7 +28,7 @@ disabled = true
 [docker_context]
 disabled = true
 [gcloud]
-format = '[$symbol$project]($style) '
+format = '[$project]($style) '
 [palettes.catppuccin_mocha]
 rosewater = "#f5e0dc"
 flamingo = "#f2cdcd"

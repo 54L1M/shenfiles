@@ -5,7 +5,6 @@
     mkalias
     neovim
     git
-    tmux
     tmuxifier
     rustup
     mpv

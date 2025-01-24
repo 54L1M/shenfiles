@@ -51,20 +51,20 @@ return {
 
 		-- configure lualine with modified theme
 		lualine.setup({
+			extensions = { "oil", "trouble" },
 			options = {
 				theme = my_lualine_theme,
 			},
 			sections = {
-				lualine_x = {
-					{
-						lazy_status.updates,
-						cond = lazy_status.has_updates,
-						color = { fg = "#ff9e64" },
-					},
-					{ "encoding" },
-					{ "fileformat" },
-					{ "filetype" },
+				lualine_b = {
+					{ "filename", path = 1, shorting_target = 40 },
+					{ "diff" },
+					{ "diagnostics" },
 				},
+				lualine_c = {},
+				lualine_x = {},
+				lualine_y = { { "encoding" }, { "progress" }, { "location" } },
+				lualine_z = { { "branch" } },
 			},
 		})
 	end,

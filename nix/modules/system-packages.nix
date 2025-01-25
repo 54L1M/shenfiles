@@ -5,7 +5,6 @@
     mkalias
     neovim
     git
-    tmux
     tmuxifier
     rustup
     mpv
@@ -20,5 +19,6 @@
     stow
     neofetch
     eza
+    yazi
   ];
 }

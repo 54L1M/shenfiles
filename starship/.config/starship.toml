@@ -14,21 +14,22 @@ style='mauve'
 truncation_length = 0
 
 [git_branch]
-format =  '[$symbol$branch(:$remote_branch) ]($style)'
+format =  '[$symbol$branch]($style)'
 [python]
-format = '[(\($virtualenv\)) ]($style) '
+format = '[(\($virtualenv\))]($style)'
 # disabled=true
 [lua]
 disabled=true
 [nodejs]
 disabled=true
 [golang]
-format = '[ $version](bold cyan)'
+format = '[$version](bold cyan)'
 disabled = true
 [docker_context]
 disabled = true
 [gcloud]
-format = '[$project]($style) '
+disabled = true
+format = '[$project]($style)'
 [palettes.catppuccin_mocha]
 rosewater = "#f5e0dc"
 flamingo = "#f2cdcd"

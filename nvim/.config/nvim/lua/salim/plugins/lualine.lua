@@ -62,9 +62,12 @@ return {
 					{ "diagnostics" },
 				},
 				lualine_c = {},
-				lualine_x = {},
-				lualine_y = { { "encoding" }, { "progress" }, { "location" } },
-				lualine_z = { { "branch" } },
+				lualine_y = {
+					{ "encoding" },
+					{ "progress" },
+				},
+				lualine_z = { { "location" } },
+				lualine_x = { { "branch" } },
 			},
 		})
 	end,

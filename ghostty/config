@@ -1,0 +1,32 @@
+# Theme
+theme = catppuccin-mocha
+background-opacity = 0.7
+
+# Font
+font-family = "JetBrainsMono Nerd Font Mono"
+font-size = 16
+
+
+# Fullscreen
+macos-titlebar-style = "hidden"
+window-decoration = false
+macos-non-native-fullscreen = true
+fullscreen = true
+
+# Cursor
+cursor-style = block
+shell-integration-features = no-cursor
+cursor-style-blink = false
+
+# Mouse 
+mouse-hide-while-typing = true
+
+# Quick terminal
+quick-terminal-position = center
+quick-terminal-animation-duration = 0
+
+# quit
+quit-after-last-window-closed = true
+
+# keymaps
+keybind = global:cmd+`=toggle_quick_terminal

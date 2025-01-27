@@ -2,7 +2,7 @@
 #ZSH STUFF
 ##########################
 export ZSH="$HOME/.oh-my-zsh"
-
+export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
 # zsh theme
 ZSH_THEME="muse"
 # ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
@@ -37,7 +37,7 @@ export EDITOR='nvim'
 ##########################
 # zsh
 alias zshconf="cd ~/shenfiles/zsh/ && nvim ."
-alias reload="echo \"sourcing zshrc\" && source ~/.zshrc"
+alias reload="echo \"sourcing zshrc\" && source ~/.config/zsh/.zshrc"
 # nvim
 alias vim="nvim"
 alias nvimconf="cd ~/.config/nvim/lua/shen/"
@@ -123,7 +123,7 @@ export PATH=$PATH:$HOME/bin
 # tmuxifier
 export PATH="$HOME/.tmuxifier/bin:$PATH"##########################
 eval "$(tmuxifier init -)"
-export TMUXIFIER_LAYOUT_PATH="$HOME/.tmuxifier-layouts"
+export TMUXIFIER_LAYOUT_PATH="$HOME/.config/tmux/.tmuxifier-layouts"
 #PATH STUFF
 ##########################
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
@@ -148,3 +148,4 @@ if [ -f '/Users/54l1m/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users
 
 if [ -f '/Users/54l1m/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/54l1m/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
 eval "$(starship init zsh)"
+export STARSHIP_CONFIG=~/.config/starship/starship.toml

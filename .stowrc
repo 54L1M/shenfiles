@@ -1,4 +1,4 @@
---ignore=nix/*
---ignore=glow/*
---ignore=scripts/*
+--target=~/.config
+--ignore=.stowrc
 --ignore=.DS_Store
+--ignore=scripts/*

@@ -36,6 +36,7 @@
       "google-chrome"
       "alacritty"
       "lens"
+      "slack"
     ];
     masApps = {};
     onActivation.cleanup = "zap";

@@ -20,5 +20,6 @@
     neofetch
     eza
     yazi
+    glow
   ];
 }

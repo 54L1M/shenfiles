@@ -1,4 +1,6 @@
 # Dotfiles
 Install with stow:
 
-`stow .`
+```bash
+stow .
+```

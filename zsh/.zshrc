@@ -73,10 +73,13 @@ alias gicl="git clone"
 alias nn="amixer -c 0 sset \"Auto-Mute Mode\" Enabled"
 
 # Rust CLI Apps
+alias y="yazi"
 alias ls="eza -l --icons --git"
 alias cat="bat"
+alias catc="bat -p"
 #############
 alias tf="tmuxifier"
+alias tx="tmux"
 alias f="fuck"
 #alias sl="ls"
 alias upd="sudo apt update"

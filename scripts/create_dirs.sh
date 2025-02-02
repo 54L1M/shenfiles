@@ -7,6 +7,7 @@ DOCUMENTS_DIR="$HOME/Documents"
 declare -A structure=(
   ["Workstation"]="Freelance Ghaaf In2Dialog Miscellaneous"
   ["TheGreatLibrary"]=""
+  ["TheSandBox"]=""
   ["Books"]="Fiction Non-Fiction Technical"
   ["GeneralFiles"]="HTMLTemplates Scripts Miscellaneous"
   ["P4ndaF4ce"]="SharedResources"
@@ -18,6 +19,7 @@ declare -A repos=(
   ["Workstation/Freelance"]="git@github.com:54L1M/ceramsite.git git@github.com:54L1M/super-farachoob.git"
   ["Workstation/In2Dialog"]="git@github.com:In2Dialog/I2D_ATS.git"
   ["TheGreatLibrary"]="git@github.com:54L1M/TheGreatLibrary.git"
+  ["TheSandBox"]=""
 )
 
 # Create directories with existence checks

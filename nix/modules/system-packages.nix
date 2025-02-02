@@ -21,5 +21,7 @@
     eza
     yazi
     glow
+    unrar
+    tree
   ];
 }

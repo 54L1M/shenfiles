@@ -25,6 +25,16 @@ return {
 		telescope.setup({
 			defaults = {
 				path_display = { "smart" },
+				file_ignore_patterns = {
+					"node_modules",
+					"src/fonts",
+					"src/images",
+					"src/js",
+					"src/json",
+					"src/lang",
+					"src/scss",
+					"static",
+				},
 				mappings = {
 					i = {
 						["<C-k>"] = actions.move_selection_previous, -- move to prev result

@@ -69,6 +69,14 @@ return {
 				lualine_z = { { "location" } },
 				lualine_x = { { "branch" } },
 			},
+			tabline = {
+				lualine_a = { { "buffers", mode = 3, hide_filename_extension = true, icons_enabled = false } },
+				lualine_b = {},
+				lualine_c = {},
+				lualine_x = {},
+				lualine_y = {},
+				lualine_z = { "tabs" },
+			},
 		})
 	end,
 }

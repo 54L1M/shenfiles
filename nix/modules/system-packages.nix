@@ -21,5 +21,6 @@
     eza
     yazi
     glow
+    aerospace
   ];
 }

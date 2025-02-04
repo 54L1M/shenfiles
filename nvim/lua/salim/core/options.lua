@@ -38,7 +38,7 @@ opt.termguicolors = true
 opt.background = "dark"
 
 -- set column at charachter 80
-opt.colorcolumn = "80"
+opt.colorcolumn = "88"
 
 -- Give more space for displaying messages.
 vim.opt.cmdheight = 1

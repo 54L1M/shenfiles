@@ -6,13 +6,13 @@
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
     nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # home-manager = {
+    #   url = "github:nix-community/home-manager";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
   };
 
-  outputs = { self, nixpkgs, nix-darwin, nix-homebrew, home-manager, ... }: {
+  outputs = { self, nixpkgs, nix-darwin, nix-homebrew, ... }: {
     darwinConfigurations."54L1M" = nix-darwin.lib.darwinSystem {
       modules = [
         ./modules/darwin.nix

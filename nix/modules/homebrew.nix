@@ -37,6 +37,7 @@
       "alacritty"
       "lens"
       "slack"
+      "postman"
     ];
     masApps = {};
     onActivation.cleanup = "zap";

@@ -153,3 +153,5 @@ if [ -f '/Users/54l1m/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users
 if [ -f '/Users/54l1m/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/54l1m/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
 eval "$(starship init zsh)"
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
+
+. "$HOME/.local/bin/env"

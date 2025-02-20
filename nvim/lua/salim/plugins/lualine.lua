@@ -3,7 +3,6 @@ return {
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 	config = function()
 		local lualine = require("lualine")
-		local lazy_status = require("lazy.status") -- to configure lazy pending updates count
 
 		local colors = {
 			blue = "#65D1FF",
@@ -48,34 +47,33 @@ return {
 				c = { bg = colors.inactive_bg, fg = colors.semilightgray },
 			},
 		}
-
 		-- configure lualine with modified theme
 		lualine.setup({
-			extensions = { "oil", "trouble" },
+			extensions = { "oil", "trouble", "mason", "quickfix", "ctrlspace" },
 			options = {
 				theme = my_lualine_theme,
+				section_separators = "",
+				component_separators = "",
 			},
 			sections = {
+				lualine_a = { {
+					"mode",
+					fmt = function(str)
+						return str:sub(1, 1)
+					end,
+				} },
 				lualine_b = {
-					{ "filename", path = 1, shorting_target = 40 },
-					{ "diff" },
-					{ "diagnostics" },
+					{ "filename", path = 1, shorting_target = 40, symbols = { modified = "●" } },
 				},
-				lualine_c = {},
-				lualine_y = {
-					{ "encoding" },
-					{ "progress" },
+				lualine_c = { { "diagnostics" } },
+				lualine_x = { { "diff" } },
+				lualine_y = { { "branch" } },
+				lualine_z = {
+					{
+						"progress",
+						color = { bg = colors.bg, fg = colors.fg },
+					},
 				},
-				lualine_z = { { "location" } },
-				lualine_x = { { "branch" } },
-			},
-			tabline = {
-				lualine_a = { { "buffers", mode = 3, hide_filename_extension = true, icons_enabled = false } },
-				lualine_b = {},
-				lualine_c = {},
-				lualine_x = {},
-				lualine_y = {},
-				lualine_z = { "tabs" },
 			},
 		})
 	end,

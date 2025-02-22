@@ -70,7 +70,7 @@ return {
 				lualine_y = { { "branch" } },
 				lualine_z = {
 					{
-						"progress",
+						"location",
 						color = { bg = colors.bg, fg = colors.fg },
 					},
 				},

@@ -3,14 +3,14 @@ family = "JetBrainsMono Nerd Font"
 
 
 [general]
-import = ["~/.config/alacritty/tokyonight-storm.toml"]
+import = ["~/.config/alacritty/catppuccin-macchiato.toml"]
 
 [env]
 TERM = "xterm-256color"
 
 [window]
 decorations = "None"
-opacity = 1                       #0.75
+# opacity = 0.75
 startup_mode = "SimpleFullscreen"
 
 [font]

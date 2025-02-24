@@ -5,21 +5,15 @@ return {
 		local lualine = require("lualine")
 
 		local colors = {
-			-- blue = "#65D1FF",
 			blue = "#8aadf4",
-			-- green = "#3EFFDC",
 			green = "#a6da95",
-			-- violet = "#FF61EF",
 			violet = "#c6a0f6",
-			-- yellow = "#FFDA7B",
 			yellow = "#eed49f",
-			-- red = "#FF4A4A",
 			red = "#ed8796",
-			-- fg = "#c3ccdc",
 			fg = "#cad3f5",
-			-- bg = "#112638",
 			bg = "#363a4f",
-			inactive_bg = "#2c3043",
+			semilightgray = "#5b6078",
+			inactive_bg = "#181926",
 		}
 
 		local my_lualine_theme = {
@@ -81,6 +75,21 @@ return {
 						color = { bg = colors.bg, fg = colors.fg },
 					},
 				},
+			},
+			inactive_sections = {
+				lualine_a = { {
+					"mode",
+					fmt = function(str)
+						return str:sub(1, 1)
+					end,
+				} },
+				lualine_b = {
+					{ "filename", path = 1, shorting_target = 40, symbols = { modified = "●" } },
+				},
+				lualine_c = {},
+				lualine_x = {},
+				lualine_y = {},
+				lualine_z = { { "location" } },
 			},
 		})
 	end,

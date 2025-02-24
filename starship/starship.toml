@@ -6,12 +6,12 @@ palette = "catppuccin_macchiato"
 right_format = """$all"""
 command_timeout = 1000
 [character]
-# success_symbol = "[;](bold green)"
-# error_symbol = "[;](bold red)"
-# vimcmd_symbol = "[;](bold yellow)"
-success_symbol = "[❯](green)"
-error_symbol = "[❯](red)"
-vimcmd_symbol = "[❮](yellow)"
+success_symbol = "[;](bold green)"
+error_symbol = "[;](bold red)"
+vimcmd_symbol = "[;](bold yellow)"
+# success_symbol = "[❯](green)"
+# error_symbol = "[❯](red)"
+# vimcmd_symbol = "[❮](yellow)"
 [directory]
 style = 'mauve'
 truncation_length = 0

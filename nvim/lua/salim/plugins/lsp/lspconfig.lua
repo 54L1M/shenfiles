@@ -102,12 +102,24 @@ return {
 					},
 				})
 			end,
+			["ruff"] = function()
+				lspconfig["ruff"].setup({
+					init_options = {
+						settings = {
+							lint = {
+								ignore = { "F403", "F405" },
+							},
+						},
+					},
+				})
+			end,
 			["pyright"] = function()
 				lspconfig["pyright"].setup({
 					capabilities = capabilities,
 					settings = {
 						python = {
 							analysis = {
+								ignore = { "*" },
 								autoSearchPaths = true,
 								typeCheckingMode = "off",
 								diagnosticMode = "openFilesOnly",

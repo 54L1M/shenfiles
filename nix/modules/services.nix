@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  services.nix-daemon.enable = true;
+  # services.nix-daemon.enable = true;
 
   system.activationScripts.applications.text = let
     env = pkgs.buildEnv {

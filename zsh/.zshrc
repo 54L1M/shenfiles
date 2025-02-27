@@ -138,6 +138,7 @@ export TMUXIFIER_LAYOUT_PATH="$HOME/.config/tmux/.tmuxifier-layouts"
 eval $(thefuck --alias)
 neofetch
 export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
+fpath+=($HOME/.zsh/completions $fpath)
 fpath+=~/.zfunc
 autoload -Uz compinit
 compinit -D

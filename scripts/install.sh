@@ -14,6 +14,7 @@ COMPLETIONS_DIR="$SCRIPTS_DIR/completions"
 
 # Destination directory for symlinks (typically in PATH)
 INSTALL_DIR="$HOME/.local/bin"
+INSTALL_DIR_LIB="$HOME/.local/lib"
 
 # Function to create the installation directory if it doesn't exist
 create_install_dir() {
@@ -25,28 +26,40 @@ create_install_dir() {
   fi
 }
 
-# Function to create symlinks for executable scripts
+# Function to create symlinks for scripts and libraries
 create_symlinks() {
   local source_dir="$1"
 
   if [ ! -d "$source_dir" ]; then
     p4_error "Source directory not found: $source_dir"
-    return 1
   fi
 
   p4_step "Processing scripts in: $source_dir"
 
-  # gfind all executable files (excluding directories)
-  for script in $(gfind "$source_dir" -type f -executable -not -path "*/\.*"); do
+  # Find executable files in bin and all .sh files in lib
+  local find_pattern="-type f"
+  if [[ "$source_dir" == "$BIN_DIR" ]]; then
+    find_pattern="-type f -executable"
+  fi
+
+  while IFS= read -r script; do
     script_name=$(basename "$script")
 
     # Remove .sh extension if present
     symlink_name="${script_name%.sh}"
 
-    # Create the symlink
-    ln -sf "$script" "$INSTALL_DIR/$symlink_name"
-    p4_info "Created symlink: $symlink_name -> $script"
-  done
+    # Preserve subdirectory structure for lib files
+    if [[ "$source_dir" == "$LIB_DIR" ]]; then
+      relative_path="${script#"$LIB_DIR/"}"
+      target_path="$INSTALL_DIR_LIB/$relative_path"
+      mkdir -p "$(dirname "$target_path")"
+      ln -sf "$script" "$target_path"
+      p4_info "Created symlink: $target_path -> $script"
+    else
+      ln -sf "$script" "$INSTALL_DIR/$symlink_name"
+      p4_info "Created symlink: $symlink_name -> $script"
+    fi
+  done < <(gfind "$source_dir" $find_pattern -not -path "*/\.*")
 }
 
 # Install zsh completions
@@ -119,12 +132,13 @@ main() {
   p4_title "Creating script symlinks"
   create_symlinks "$BIN_DIR"
 
-  # Handle subdirectories in bin (like P4ndaMux)
-  for subdir in "$BIN_DIR"/*; do
-    if [ -d "$subdir" ]; then
-      create_symlinks "$subdir"
-    fi
-  done
+  create_symlinks "$LIB_DIR"
+  # # Handle subdirectories in bin (like P4ndaMux)
+  # for subdir in "$BIN_DIR"/*; do
+  #   if [ -d "$subdir" ]; then
+  #     create_symlinks "$subdir"
+  #   fi
+  # done
 
   # Install zsh completions
   p4_title "Setting up zsh completions"

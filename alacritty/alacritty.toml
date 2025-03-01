@@ -15,3 +15,9 @@ startup_mode = "SimpleFullscreen"
 
 [font]
 size = 16
+
+[keyboard]
+bindings = [
+  # Toggle Simple Fullscreen (macOS only)
+  { key = "F", mods = "Control|Shift", action = "ToggleSimpleFullscreen" },
+]

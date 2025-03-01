@@ -1,0 +1,71 @@
+#compdef p4m
+
+# P4ndaMux ZSH completion script
+
+_p4m_commands() {
+  local -a commands
+  commands=(
+    'create:Create a new tmux session with specified layout'
+    'list:List all available tmux sessions'
+    'attach:Attach to an existing tmux session'
+    'kill:Kill a tmux session'
+    'layouts:List available layouts'
+    'help:Show help message'
+  )
+  _describe 'command' commands
+}
+
+_p4m_sessions() {
+  local -a sessions
+  sessions=(${(f)"$(tmux list-sessions 2>/dev/null | cut -d: -f1)"})
+  _describe 'sessions' sessions
+}
+
+_p4m_layouts() {
+  local -a layouts
+  # Path to the layouts file - adapt if needed
+  local layout_file="${HOME}/bin/lib/tmux/tmux_layouts.sh"
+  
+  # If the file exists, extract layout names
+  if [[ -f "$layout_file" ]]; then
+    layouts=(${(f)"$(grep -E '^function layout_' "$layout_file" | cut -d'_' -f2 | cut -d'(' -f1 | sort)"})
+  else
+    # Fallback to common layouts if file not found
+    layouts=(
+      'python:Python development layout'
+      'go:Go development layout'
+      'web:Web development layout'
+      'terminal:Simple terminal layout'
+      'split:Split pane layout'
+    )
+  fi
+  
+  _describe 'layouts' layouts
+}
+
+_p4m() {
+  local curcontext="$curcontext" state line ret=1
+  
+  _arguments -C \
+    '1: :_p4m_commands' \
+    '*::args:->args' && ret=0
+  
+  case $state in
+    args)
+      case $line[1] in
+        create)
+          _arguments \
+            '1:session name:' \
+            '2:layout:_p4m_layouts' && ret=0
+          ;;
+        attach|kill)
+          _arguments '1:session:_p4m_sessions' && ret=0
+          ;;
+      esac
+      ;;
+  esac
+  
+  return ret
+}
+
+_p4m "$@"

@@ -59,38 +59,5 @@ return {
 			":e ~/TheGreatLibrary/index.norg<CR>",
 			{ noremap = true, silent = true }
 		)
-
-		-- Create commands for quick template access
-		-- vim.api.nvim_create_user_command('GTLWork', function()
-		--   require('p4template').new_note_from_template('work', '~/The Great Library/Work')
-		-- end, {})
-		--
-		-- vim.api.nvim_create_user_command('GTLProject', function()
-		--   require('p4template').new_note_from_template('project', '~/The Great Library/Projects')
-		-- end, {})
-		--
-		-- vim.api.nvim_create_user_command('GTLLearn', function()
-		--   require('p4template').new_note_from_template('learning', '~/The Great Library/Learning')
-		-- end, {})
-		--
-		-- vim.api.nvim_create_user_command('GTLPersonal', function()
-		--   require('p4template').new_note_from_template('personal', '~/The Great Library/Personal')
-		-- end, {})
-		--
-		-- Autocommands for Neorg files
-		-- vim.api.nvim_create_autocmd({"BufEnter", "BufWinEnter"}, {
-		--   pattern = {"*.norg"},
-		--   callback = function()
-		--     -- Set up Neorg-specific settings
-		--     vim.opt_local.wrap = true
-		--     vim.opt_local.conceallevel = 2
-		--     -- Add custom keybindings
-		--     vim.api.nvim_buf_set_keymap(0, 'n', '<Leader>nt', ':P4Template<CR>', { noremap = true, silent = true })
-		--     vim.api.nvim_buf_set_keymap(0, 'n', '<Leader>nw', ':P4Work<CR>', { noremap = true, silent = true })
-		--     vim.api.nvim_buf_set_keymap(0, 'n', '<Leader>np', ':P4Project<CR>', { noremap = true, silent = true })
-		--     vim.api.nvim_buf_set_keymap(0, 'n', '<Leader>nl', ':P4Learning<CR>', { noremap = true, silent = true })
-		--     vim.api.nvim_buf_set_keymap(0, 'n', '<Leader>nj', ':P4Personal<CR>', { noremap = true, silent = true })
-		--   end
-		-- })
 	end,
 }

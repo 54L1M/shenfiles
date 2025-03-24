@@ -24,5 +24,6 @@
     aerospace
     unrar
     tree
+    libffi
   ];
 }

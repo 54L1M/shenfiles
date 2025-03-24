@@ -136,7 +136,8 @@ export TMUXIFIER_LAYOUT_PATH="$HOME/.config/tmux/.tmuxifier-layouts"
 # eval "$(zoxide init zsh)"
 
 eval $(thefuck --alias)
-neofetch
+# neofetch
+fm6000 -r -c "random"
 export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
 fpath+=($HOME/.zsh/completions $fpath)
 fpath+=~/.zfunc

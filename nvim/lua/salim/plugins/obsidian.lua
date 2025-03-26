@@ -374,7 +374,7 @@ return {
 		vim.keymap.set("n", "<leader>ohp", "<cmd>ObsidianOpen project-hub<CR>", { desc = "Open project hub" })
 		vim.keymap.set("n", "<leader>ohl", "<cmd>ObsidianOpen learning-hub<CR>", { desc = "Open learning hub" })
 		-- Quick capture
-		vim.keymap.set("n", "<leader>oc", "<cmd>ObsidianQuickSwitch<CR>", { desc = "Quick capture" })
+		vim.keymap.set("n", "<leader>oc", "<cmd>ObsidianQuickSwitch<CR>", { desc = "Quick switch" })
 		-- Follow link under cursor
 		vim.keymap.set("n", "<leader>og", "<cmd>ObsidianFollowLink<CR>", { desc = "Follow link" })
 		-- Close all markdown files - Only save markdown files

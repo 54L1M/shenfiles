@@ -40,6 +40,9 @@ opt.background = "dark"
 -- set column at charachter 80
 opt.colorcolumn = "88"
 
+-- conceallevel
+opt.conceallevel = 1
+
 -- Give more space for displaying messages.
 vim.opt.cmdheight = 1
 

@@ -40,7 +40,7 @@ alias zshconf="cd ~/shenfiles/zsh/ && nvim ."
 alias reload="echo \"sourcing zshrc\" && source ~/.config/zsh/.zshrc"
 # nvim
 alias vim="nvim"
-alias nvimconf="cd ~/.config/nvim/lua/shen/"
+alias nvimconf="cd ~/.config/nvim && nvim ."
 
 # nix
 alias nixconf="cd ~/shenfiles/nix/ && nvim ."
@@ -58,7 +58,7 @@ alias sf="cd ${HOME}/shenfiles"
 alias vids="cd ${HOME}/Videos"
 alias docs="cd ${HOME}/Documents"
 alias downs="cd ${HOME}/Downloads"
-alias tsb="cd ${HOME}/Documents/TheSandBox"
+alias tgl="cd ${HOME}/Documents/TheGreatLibrary"
 alias series="cd ${HOME}/Videos/series"
 alias i2d="cd ${HOME}/Documents/WorkStation/In2Dialog"
 alias ats="cd ${HOME}/Documents/WorkStation/In2Dialog/I2D_ATS"

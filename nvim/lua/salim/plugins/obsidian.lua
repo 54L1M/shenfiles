@@ -11,7 +11,7 @@ return {
 		workspaces = {
 			{
 				name = "TheGreatLibrary",
-				path = "~/Documents/TheGreatLibrary/",
+				path = "~/Library/Mobile Documents/iCloud~md~obsidian/Documents/TheGreatLibrary",
 			},
 		},
 		templates = {
@@ -26,7 +26,7 @@ return {
 		},
 		wiki_link_func = "prepend_note_id",
 		preferred_link_style = "wiki",
-		open_notes_in = "vsplit",
+		-- open_notes_in = "vsplit",
 		ui = {
 			enable = true,
 			update_debounce = 200,

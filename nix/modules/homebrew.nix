@@ -23,7 +23,7 @@
       "virtualenvwrapper"
       "starship"
       "tmux"
-      "nushell"
+      "k9s"
     ];
     casks = [
       "firefox"

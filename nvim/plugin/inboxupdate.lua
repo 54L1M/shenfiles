@@ -2,7 +2,7 @@ local M = {}
 
 -- Configuration (adjust paths as needed)
 M.config = {
-	vault_path = "~/Documents/TheGreatLibrary/",
+	vault_path = "~/Library/Mobile Documents/iCloud~md~obsidian/Documents/TheGreatLibrary",
 	inbox_file = "inbox.md",
 	-- Exclude certain directories or files
 	exclude_paths = {

@@ -27,6 +27,7 @@ return {
 		wiki_link_func = "prepend_note_id",
 		preferred_link_style = "wiki",
 		-- open_notes_in = "vsplit",
+		open_app_foreground = true,
 		ui = {
 			enable = true,
 			update_debounce = 200,

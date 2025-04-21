@@ -97,6 +97,8 @@ return {
 		local work_hub_id = "work-hub"
 		local project_hub_id = "project-hub"
 		local learning_hub_id = "learning-hub"
+		local contact_hub_id = "contact-hub"
+		local personal_hub_id = "personal-hub"
 
 		-- Updated note_id_func
 		opts.note_id_func = function(title)
@@ -186,7 +188,8 @@ return {
 				work = work_hub_id,
 				project = project_hub_id,
 				learning = learning_hub_id,
-				contact = work_hub_id, -- Added contact type
+				contact = contact_hub_id,
+				personal = personal_hub_id,
 			}
 			if type_to_hub[parsed.type] then
 				up_link = "[[" .. type_to_hub[parsed.type] .. "]]"

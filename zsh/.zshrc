@@ -58,7 +58,9 @@ alias sf="cd ${HOME}/shenfiles"
 alias vids="cd ${HOME}/Videos"
 alias docs="cd ${HOME}/Documents"
 alias downs="cd ${HOME}/Downloads"
-alias tgl="cd ${HOME}/Documents/TheGreatLibrary"
+tgl() {
+  cd "${HOME}/Library/Mobile Documents/iCloud~md~obsidian/Documents/TheGreatLibrary"
+}
 alias series="cd ${HOME}/Videos/series"
 alias i2d="cd ${HOME}/Documents/WorkStation/In2Dialog"
 alias ats="cd ${HOME}/Documents/WorkStation/In2Dialog/I2D_ATS"
@@ -158,3 +160,4 @@ eval "$(starship init zsh)"
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
 
 . "$HOME/.local/bin/env"
+

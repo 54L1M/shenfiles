@@ -18,6 +18,9 @@ truncation_length = 0
 
 [git_branch]
 format = '[$symbol$branch]($style)'
+[kubernetes]
+disabled = false
+format = '[$context](dimmed green) '
 [python]
 format = '[(\($virtualenv\))]($style)'
 # disabled=true

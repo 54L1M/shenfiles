@@ -14,6 +14,16 @@ return {
 				path = "~/Library/Mobile Documents/iCloud~md~obsidian/Documents/TheGreatLibrary",
 			},
 		},
+		daily_notes = {
+			-- Store daily notes in a dedicated directory
+			folder = "00-Notes/Daily",
+			-- Add day of week to filenames
+			date_format = "%d-%m-%Y-%a",
+			-- Default tags to apply to daily notes
+			default_tags = { "daily" },
+			-- Template for new daily notes
+			template = "daily-note-template",
+		},
 		templates = {
 			folder = "02-Templates",
 			date_format = "%d-%m-%Y",
@@ -99,6 +109,7 @@ return {
 		local learning_hub_id = "learning-hub"
 		local contact_hub_id = "contact-hub"
 		local personal_hub_id = "personal-hub"
+		local daily_notes_hub_id = "daily-notes-hub"
 
 		-- Updated note_id_func
 		opts.note_id_func = function(title)
@@ -166,12 +177,53 @@ return {
 				}
 			end
 
+			-- Special case for daily notes
+			-- Check if this is a daily note - first try by path, then by id
+			local is_daily_note = false
+			if note.path and type(note.path) == "string" and note.path:match("^" .. opts.daily_notes.folder) then
+				is_daily_note = true
+			elseif note.id and type(note.id) == "string" then
+				-- Also check if the ID matches a date pattern (for daily notes being created)
+				local date_pattern = "^%d%d%-%d%d%-%d%d%d%d%-%a%a%a$"
+				if note.id:match(date_pattern) then
+					is_daily_note = true
+				end
+			end
+
+			if is_daily_note then
+				-- Extract date and day of week from ID or use current date
+				local date_str, day_of_week
+
+				if note.id and note.id:match("^%d%d%-%d%d%-%d%d%d%d%-%a%a%a$") then
+					-- Extract components from ID
+					date_str, day_of_week = note.id:match("^(%d%d%-%d%d%-%d%d%d%d)%-(%a%a%a)$")
+				else
+					-- Fallback to current date
+					date_str = current_date
+					local day, month, year = date_str:match("^(%d%d)%-(%d%d)%-(%d%d%d%d)$")
+					local timestamp = os.time({
+						year = tonumber(year),
+						month = tonumber(month),
+						day = tonumber(day),
+					})
+					day_of_week = os.date("%a", timestamp)
+				end
+
+				-- Create standard frontmatter for daily notes
+				return {
+					id = note.id,
+					title = "Daily Note: " .. date_str .. " (" .. day_of_week .. ")",
+					date = date_str,
+					created = current_date,
+					modified = current_date,
+					tags = opts.daily_notes.default_tags or { "daily" },
+					-- You can link to dashboard or daily notes hub
+					up = "[[" .. daily_notes_hub_id .. "]]",
+				}
+			end
+
 			-- Parse the title for regular new notes
 			local parsed = parse_structured_title(note.title)
-
-			-- Determine frontmatter title and details
-			local frontmatter_title = parsed.title or parsed.original or "Untitled Note"
-			local frontmatter_details = parsed.details or ""
 
 			-- Define tags
 			local tags = {}
@@ -190,6 +242,7 @@ return {
 				learning = learning_hub_id,
 				contact = contact_hub_id,
 				personal = personal_hub_id,
+				daily = daily_notes_hub_id,
 			}
 			if type_to_hub[parsed.type] then
 				up_link = "[[" .. type_to_hub[parsed.type] .. "]]"
@@ -210,8 +263,10 @@ return {
 
 			return frontmatter
 		end
+
 		-- Initialize Obsidian with updated opts
 		require("obsidian").setup(opts)
+
 		-- Basic note operations
 		vim.keymap.set("n", "<leader>on", "<cmd>ObsidianNew<CR>", { desc = "New note" })
 		-- Search and note management
@@ -227,6 +282,10 @@ return {
 		vim.keymap.set("n", "<leader>oc", "<cmd>ObsidianQuickSwitch<CR>", { desc = "Quick switch" })
 		-- Follow link under cursor
 		vim.keymap.set("n", "<leader>og", "<cmd>ObsidianFollowLink<CR>", { desc = "Follow link" })
+		-- Daily notes - using built-in commands
+		vim.keymap.set("n", "<leader>od", "<cmd>ObsidianToday<CR>", { desc = "Open today's daily note" })
+		vim.keymap.set("n", "<leader>oy", "<cmd>ObsidianYesterday<CR>", { desc = "Open yesterday's daily note" })
+		vim.keymap.set("n", "<leader>om", "<cmd>ObsidianTomorrow<CR>", { desc = "Open tomorrow's daily note" })
 		-- Close all markdown files - Only save markdown files
 		vim.keymap.set("n", "<leader>oq", function()
 			-- Save all modified markdown buffers

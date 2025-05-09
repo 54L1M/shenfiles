@@ -24,6 +24,8 @@
       "starship"
       "tmux"
       "k9s"
+      "kubectx"
+      "httpie"
     ];
     casks = [
       "firefox"

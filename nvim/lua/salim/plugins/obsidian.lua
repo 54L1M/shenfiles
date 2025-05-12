@@ -103,13 +103,13 @@ return {
 		end
 
 		-- Define hub note IDs (keeping your existing hub notes)
-		local dashboard_id = "dashboard"
-		local work_hub_id = "work-hub"
-		local project_hub_id = "project-hub"
-		local learning_hub_id = "learning-hub"
-		local contact_hub_id = "contact-hub"
-		local personal_hub_id = "personal-hub"
-		local daily_notes_hub_id = "daily-notes-hub"
+		local dashboard_id = "00-dashboard"
+		local daily_notes_hub_id = "01-daily-notes-hub"
+		local contact_hub_id = "03-contact-hub"
+		local learning_hub_id = "04-learning-hub"
+		local personal_hub_id = "05-personal-hub"
+		local project_hub_id = "06-project-hub"
+		local work_hub_id = "07-work-hub"
 
 		-- Updated note_id_func
 		opts.note_id_func = function(title)
@@ -274,10 +274,10 @@ return {
 		vim.keymap.set("n", "<leader>ob", "<cmd>ObsidianBacklinks<CR>", { desc = "Show backlinks" })
 		vim.keymap.set("n", "<leader>ot", "<cmd>ObsidianTemplate<CR>", { desc = "Insert template" })
 		-- Quick hub access
-		vim.keymap.set("n", "<leader>ohd", "<cmd>ObsidianOpen dashboard<CR>", { desc = "Open dashboard" })
-		vim.keymap.set("n", "<leader>ohw", "<cmd>ObsidianOpen work-hub<CR>", { desc = "Open work hub" })
-		vim.keymap.set("n", "<leader>ohp", "<cmd>ObsidianOpen project-hub<CR>", { desc = "Open project hub" })
-		vim.keymap.set("n", "<leader>ohl", "<cmd>ObsidianOpen learning-hub<CR>", { desc = "Open learning hub" })
+		vim.keymap.set("n", "<leader>ohd", "<cmd>ObsidianOpen 00-dashboard<CR>", { desc = "Open dashboard" })
+		vim.keymap.set("n", "<leader>ohw", "<cmd>ObsidianOpen 07-work-hub<CR>", { desc = "Open work hub" })
+		vim.keymap.set("n", "<leader>ohp", "<cmd>ObsidianOpen 06-project-hub<CR>", { desc = "Open project hub" })
+		vim.keymap.set("n", "<leader>ohl", "<cmd>ObsidianOpen 04-learning-hub<CR>", { desc = "Open learning hub" })
 		-- Quick capture
 		vim.keymap.set("n", "<leader>oc", "<cmd>ObsidianQuickSwitch<CR>", { desc = "Quick switch" })
 		-- Follow link under cursor

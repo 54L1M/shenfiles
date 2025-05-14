@@ -4,16 +4,27 @@ return {
 	config = function()
 		local lualine = require("lualine")
 
+		-- local colors = {
+		-- 	blue = "#8aadf4",
+		-- 	green = "#a6da95",
+		-- 	violet = "#c6a0f6",
+		-- 	yellow = "#eed49f",
+		-- 	red = "#ed8796",
+		-- 	fg = "#cad3f5",
+		-- 	bg = "#363a4f",
+		-- 	semilightgray = "#5b6078",
+		-- 	inactive_bg = "#181926",
+		-- }
 		local colors = {
-			blue = "#8aadf4",
-			green = "#a6da95",
-			violet = "#c6a0f6",
-			yellow = "#eed49f",
-			red = "#ed8796",
-			fg = "#cad3f5",
-			bg = "#363a4f",
-			semilightgray = "#5b6078",
-			inactive_bg = "#181926",
+			blue = "#7FB4CA",
+			green = "#98BB6C",
+			violet = "#957FB8",
+			yellow = "#E6C384",
+			red = "#E46876",
+			fg = "#938AA9",
+			bg = "#2A2A37	",
+			semilightgray = "#54546D",
+			inactive_bg = "#1F1F28",
 		}
 
 		local my_lualine_theme = {

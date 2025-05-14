@@ -3,7 +3,8 @@ family = "JetBrainsMono Nerd Font"
 
 
 [general]
-import = ["~/.config/alacritty/catppuccin-macchiato.toml"]
+# import = ["~/.config/alacritty/catppuccin-macchiato.toml"]
+import = ["~/.config/alacritty/kanagawa-wave.toml"]
 
 [env]
 TERM = "xterm-256color"

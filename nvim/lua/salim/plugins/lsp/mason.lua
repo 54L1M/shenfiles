@@ -7,9 +7,6 @@ return {
 	config = function()
 		-- import mason
 		local mason = require("mason")
-		-- import mason-lspconfig
-		local mason_lspconfig = require("mason-lspconfig")
-		local mason_tool_installer = require("mason-tool-installer")
 		-- enable mason and configure icons
 		mason.setup({
 			ui = {
@@ -20,17 +17,22 @@ return {
 				},
 			},
 		})
-		mason_lspconfig.setup({
-			-- list of servers for mason to install
+
+		-- Configure mason-lspconfig
+		require("mason-lspconfig").setup({
+			-- List of servers for mason to install
 			ensure_installed = {
-				"ts_ls",
 				"html",
+				"cssls",
 				"lua_ls",
-				"pyright", -- Main Python LSP for code intelligence
-				"ruff", -- Python linter
+				"pyright",
 				"gopls",
 			},
+			automatic_enable = false,
 		})
+
+		-- Set up tool installer
+		local mason_tool_installer = require("mason-tool-installer")
 		mason_tool_installer.setup({
 			ensure_installed = {
 				"prettier", -- prettier formatter

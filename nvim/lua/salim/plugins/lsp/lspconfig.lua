@@ -3,60 +3,13 @@ return {
 	event = { "BufReadPre", "BufNewFile" },
 	dependencies = {
 		"hrsh7th/cmp-nvim-lsp",
+		"williamboman/mason-lspconfig.nvim",
 		{ "antosha417/nvim-lsp-file-operations", config = true },
 		{ "folke/neodev.nvim", opts = {} },
 	},
 	config = function()
 		local lspconfig = require("lspconfig")
-		local mason_lspconfig = require("mason-lspconfig")
 		local cmp_nvim_lsp = require("cmp_nvim_lsp")
-		local keymap = vim.keymap
-
-		vim.api.nvim_create_autocmd("LspAttach", {
-			group = vim.api.nvim_create_augroup("UserLspConfig", {}),
-			callback = function(ev)
-				local opts = { buffer = ev.buf, silent = true }
-
-				opts.desc = "Show LSP references"
-				keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts)
-
-				opts.desc = "Go to declaration"
-				keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-
-				opts.desc = "Show LSP definitions"
-				keymap.set("n", "gd", "<cmd>Telescope lsp_definitions<CR>", opts)
-
-				opts.desc = "Show LSP implementations"
-				keymap.set("n", "gi", "<cmd>Telescope lsp_implementations<CR>", opts)
-
-				opts.desc = "Show LSP type definitions"
-				keymap.set("n", "gt", "<cmd>Telescope lsp_type_definitions<CR>", opts)
-
-				opts.desc = "See available code actions"
-				keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
-
-				opts.desc = "Smart rename"
-				keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-
-				opts.desc = "Show buffer diagnostics"
-				keymap.set("n", "<leader>D", "<cmd>Telescope diagnostics bufnr=0<CR>", opts)
-
-				opts.desc = "Show line diagnostics"
-				keymap.set("n", "<leader>d", vim.diagnostic.open_float, opts)
-
-				opts.desc = "Go to previous diagnostic"
-				keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-
-				opts.desc = "Go to next diagnostic"
-				keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-
-				opts.desc = "Show documentation for what is under cursor"
-				keymap.set("n", "K", vim.lsp.buf.hover, opts)
-
-				opts.desc = "Restart LSP"
-				keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts)
-			end,
-		})
 
 		-- Default capabilities for all servers
 		local default_capabilities = cmp_nvim_lsp.default_capabilities()
@@ -70,68 +23,88 @@ return {
 					[vim.diagnostic.severity.INFO] = " ",
 				},
 			},
+			virtual_text = true, -- Specify Enable virtual text for diagnostics
+			underline = true, -- Specify Underline diagnostics
+			update_in_insert = false, -- Keep diagnostics active in insert mode
 		})
 
-		mason_lspconfig.setup_handlers({
-			function(server_name)
-				lspconfig[server_name].setup({
-					capabilities = default_capabilities,
-				})
-			end,
-
-			["lua_ls"] = function()
-				lspconfig["lua_ls"].setup({
-					capabilities = default_capabilities,
-					settings = {
-						Lua = {
-							diagnostics = {
-								globals = { "vim" },
-							},
-							completion = {
-								callSnippet = "Replace",
-							},
+		-- Lua LSP setup with "vim" recognized as a global
+		lspconfig.lua_ls.setup({
+			capabilities = default_capabilities,
+			settings = {
+				Lua = {
+					diagnostics = {
+						globals = { "vim" },
+					},
+					completion = {
+						callSnippet = "Replace",
+					},
+					workspace = {
+						library = {
+							vim.api.nvim_get_runtime_file("", true),
+							-- checkThirdParty = false,
+							[vim.fn.expand("$VIMRUNTIME/lua")] = true,
+							[vim.fn.stdpath("config") .. "/lua"] = true,
 						},
 					},
-				})
-			end,
+				},
+			},
+		})
 
-			["ruff"] = function()
-				lspconfig["ruff"].setup({
-					capabilities = default_capabilities,
-					init_options = {
-						settings = {
-							lint = {
-								ignore = { "F403", "F405" },
-							},
-						},
+		-- Enhanced Python/Django configuration
+		lspconfig.pyright.setup({
+			capabilities = default_capabilities,
+			settings = {
+				python = {
+					analysis = {
+						ignore = { "*" },
+						autoSearchPaths = true,
+						useLibraryCodeForTypes = true,
+						diagnosticMode = "workspace",
+						typeCheckingMode = "off", -- Not too strict for Django
+						extraPaths = {}, -- Will be populated dynamically
 					},
-				})
-			end,
-
-			["pyright"] = function()
-				lspconfig["pyright"].setup({
-					capabilities = default_capabilities,
-					settings = {
-						python = {
-							analysis = {
-								ignore = { "*" },
-								autoSearchPaths = true,
-								typeCheckingMode = "off",
-								diagnosticMode = "openFilesOnly",
-								useLibraryCodeForTypes = true,
-							},
-						},
+				},
+			},
+		})
+		-- Ruff LSP setup
+		lspconfig.ruff.setup({
+			capabilities = default_capabilities,
+			init_options = {
+				settings = {
+					lint = {
+						-- Ignore common Django patterns
+						ignore = { "F403", "F405", "E501" },
 					},
-				})
-			end,
+				},
+			},
+		})
+		-- Enhanced Go configuration for side projects
+		lspconfig.gopls.setup({
+			capabilities = default_capabilities,
+			settings = {
+				gopls = {
+					analyses = {
+						unusedparams = true,
+						shadow = true,
+						nilness = true,
+						unusedwrite = true,
+						useany = true,
+					},
+					staticcheck = true,
+					gofumpt = true,
+					usePlaceholders = true,
+					completeUnimported = true,
+					experimentalPostfixCompletions = true,
+				},
+			},
+		})
 
-			["clangd"] = function()
-				lspconfig["clangd"].setup({
-					capabilities = vim.tbl_deep_extend("force", default_capabilities, {
-						offsetEncoding = { "utf-16" },
-					}),
-				})
-			end,
+		-- Clangd setup with utf-16 encoding
+		lspconfig.clangd.setup({
+			capabilities = vim.tbl_deep_extend("force", default_capabilities, {
+				offsetEncoding = { "utf-16" },
+			}),
 		})
 	end,
 }

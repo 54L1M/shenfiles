@@ -29,6 +29,7 @@ return {
 			date_format = "%d-%m-%Y",
 			time_format = "%H:%M",
 		},
+		picker = { name = "fzf-lua" },
 		notes_subdir = "00-Notes",
 		new_notes_location = "notes_subdir",
 		attachments = {

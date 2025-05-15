@@ -31,10 +31,7 @@ return {
 				open_link = "gx",
 				open_browser = "!chrome",
 			},
-			-- Make finder use telescope if available
 			finder = {
-				-- Method to use: 'lsp' or 'telescope'
-				method = "telescope",
 				max_height = 0.5,
 				left_width = 0.3,
 				right_width = 0.7,
@@ -54,26 +51,26 @@ return {
 				local opts = { buffer = args.buf, silent = true }
 
 				-- Override standard LSP keymaps with Lspsaga
-				vim.keymap.set("n", "K", "<cmd>Lspsaga hover_doc<CR>", opts)
-				vim.keymap.set("n", "gd", "<cmd>Lspsaga goto_definition<CR>", opts)
-				vim.keymap.set("n", "gD", "<cmd>Lspsaga goto_type_definition<CR>", opts)
-				vim.keymap.set("n", "gR", "<cmd>Lspsaga finder<CR>", opts)
-				vim.keymap.set("n", "<leader>ca", "<cmd>Lspsaga code_action<CR>", opts)
-				vim.keymap.set("n", "<leader>rn", "<cmd>Lspsaga rename<CR>", opts)
-				vim.keymap.set("n", "<leader>ol", "<cmd>Lspsaga outline<CR>", opts)
+				vim.keymap.set("n", "<leader>lk", "<cmd>Lspsaga hover_doc<CR>", opts)
+				vim.keymap.set("n", "<leader>lgd", "<cmd>Lspsaga goto_definition<CR>", opts)
+				vim.keymap.set("n", "<leader>lgD", "<cmd>Lspsaga goto_type_definition<CR>", opts)
+				vim.keymap.set("n", "<leader>lgr", "<cmd>Lspsaga finder<CR>", opts)
+				vim.keymap.set("n", "<leader>lca", "<cmd>Lspsaga code_action<CR>", opts)
+				vim.keymap.set("n", "<leader>lrn", "<cmd>Lspsaga rename<CR>", opts)
+				vim.keymap.set("n", "<leader>lol", "<cmd>Lspsaga outline<CR>", opts)
 				vim.keymap.set("n", "[d", "<cmd>Lspsaga diagnostic_jump_prev<CR>", opts)
 				vim.keymap.set("n", "]d", "<cmd>Lspsaga diagnostic_jump_next<CR>", opts)
-				vim.keymap.set("n", "<leader>d", "<cmd>Lspsaga show_line_diagnostics<CR>", opts)
-				vim.keymap.set("n", "<leader>cd", "<cmd>Lspsaga show_cursor_diagnostics<CR>", opts)
-				vim.keymap.set("n", "<leader>sb", "<cmd>Lspsaga show_buf_diagnostics<CR>", opts)
+				vim.keymap.set("n", "<leader>ld", "<cmd>Lspsaga show_line_diagnostics<CR>", opts)
+				vim.keymap.set("n", "<leader>lcd", "<cmd>Lspsaga show_cursor_diagnostics<CR>", opts)
+				vim.keymap.set("n", "<leader>lbd", "<cmd>Lspsaga show_buf_diagnostics<CR>", opts)
 
 				-- Add Lspsaga preview functionality
-				vim.keymap.set("n", "gp", "<cmd>Lspsaga peek_definition<CR>", opts)
-				vim.keymap.set("n", "gP", "<cmd>Lspsaga peek_type_definition<CR>", opts)
+				vim.keymap.set("n", "<leader>lgp", "<cmd>Lspsaga peek_definition<CR>", opts)
+				vim.keymap.set("n", "<leader>lgP", "<cmd>Lspsaga peek_type_definition<CR>", opts)
 
 				-- Enhanced callhierarchy
-				vim.keymap.set("n", "<leader>ci", "<cmd>Lspsaga incoming_calls<CR>", opts)
-				vim.keymap.set("n", "<leader>co", "<cmd>Lspsaga outgoing_calls<CR>", opts)
+				vim.keymap.set("n", "<leader>lci", "<cmd>Lspsaga incoming_calls<CR>", opts)
+				vim.keymap.set("n", "<leader>lco", "<cmd>Lspsaga outgoing_calls<CR>", opts)
 			end,
 		})
 	end,

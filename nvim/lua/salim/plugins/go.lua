@@ -13,22 +13,26 @@ return {
 			-- Go command
 			go = "go",
 			-- Use gopls for import organization
-			goimport = "gopls",
+			goimports = "gopls",
 			fillstruct = "gopls",
 			-- Use gofumpt for enhanced formatting
 			gofmt = "gofumpt",
-			max_line_len = 120,
+			-- max_line_len = 120,
 			tag_transform = false,
 			-- Format on save
 			lsp_format_on_save = true,
 			-- Use treesitter for syntax
+			lsp_cfg = true,
 			lsp_gofumpt = true,
 			lsp_on_attach = true,
 			-- Use Lspsaga for the UI - skip the default keymaps
 			lsp_keymaps = false,
 			lsp_codelens = true,
-			lsp_diag_hdlr = true,
-			lsp_diag_virtual_text = true,
+			diagnostic = {
+				hdlr = true,
+				virtual_text = true, -- Updated from lsp_diag_virtual_text
+				underline = true,
+			},
 			-- Use the enhanced UI for lspsaga
 			lsp_inlay_hints = {
 				enable = true,

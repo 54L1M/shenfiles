@@ -40,7 +40,13 @@ alias zshconf="cd ~/shenfiles/zsh/ && nvim ."
 alias reload="echo \"sourcing zshrc\" && source ~/.config/zsh/.zshrc"
 # nvim
 alias vim="nvim"
-alias v="nvim"
+v(){
+  if [[ -z $1 ]]; then
+    nvim .
+  else 
+    nvim 
+  fi
+}
 alias nvimconf="cd ~/.config/nvim && nvim ."
 # kubectl
 alias k="kubectl"

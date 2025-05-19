@@ -21,6 +21,7 @@ return {
 			modes_allowlist = { "n" },
 			-- Other configurations
 			under_cursor = true, -- Highlights the word under the cursor
+			min_count_to_highlight = 2,
 		})
 
 		-- Set highlight groups if desired

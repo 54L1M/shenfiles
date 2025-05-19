@@ -40,8 +40,10 @@ alias zshconf="cd ~/shenfiles/zsh/ && nvim ."
 alias reload="echo \"sourcing zshrc\" && source ~/.config/zsh/.zshrc"
 # nvim
 alias vim="nvim"
+alias v="nvim"
 alias nvimconf="cd ~/.config/nvim && nvim ."
-
+# kubectl
+alias k="kubectl"
 # nix
 alias nixconf="cd ~/shenfiles/nix/ && nvim ."
 alias rn="darwin-rebuild switch --impure --flake ~/shenfiles/nix#54L1M"

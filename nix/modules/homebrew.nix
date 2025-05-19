@@ -26,6 +26,9 @@
       "k9s"
       "kubectx"
       "httpie"
+      "sshpass"
+      "fd"
+      "coreutils"
     ];
     casks = [
       "firefox"

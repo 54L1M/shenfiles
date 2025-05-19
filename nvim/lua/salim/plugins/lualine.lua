@@ -4,6 +4,7 @@ return {
 	config = function()
 		local lualine = require("lualine")
 
+		--catppuccin colors
 		-- local colors = {
 		-- 	blue = "#8aadf4",
 		-- 	green = "#a6da95",
@@ -15,6 +16,7 @@ return {
 		-- 	semilightgray = "#5b6078",
 		-- 	inactive_bg = "#181926",
 		-- }
+		-- kanagawa colors
 		local colors = {
 			blue = "#7FB4CA",
 			green = "#98BB6C",
@@ -26,7 +28,6 @@ return {
 			semilightgray = "#54546D",
 			inactive_bg = "#1F1F28",
 		}
-
 		local my_lualine_theme = {
 			normal = {
 				a = { bg = colors.blue, fg = colors.bg, gui = "bold" },
@@ -61,11 +62,13 @@ return {
 		}
 		-- configure lualine with modified theme
 		lualine.setup({
+
 			extensions = { "oil", "trouble", "mason", "quickfix", "ctrlspace" },
 			options = {
 				theme = my_lualine_theme,
 				section_separators = "",
 				component_separators = "",
+				globalstatus = false,
 			},
 			sections = {
 				lualine_a = { {
@@ -75,7 +78,7 @@ return {
 					end,
 				} },
 				lualine_b = {
-					{ "filename", path = 1, shorting_target = 40, symbols = { modified = "●" } },
+					{ "filename", path = 4, shorting_target = 110, symbols = { modified = "●" } },
 				},
 				lualine_c = { { "diagnostics" } },
 				lualine_x = { { "diff" } },

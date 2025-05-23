@@ -19,9 +19,19 @@ return {
 		{
 			"<leader>ff",
 			function()
-				require("fzf-lua").files()
+				require("fzf-lua").files({
+					fd_opts = "--color=never --type f --hidden --follow --exclude .git --exclude node_modules --exclude .next --exclude dist --exclude build --exclude src --exclude static",
+					rg_opts = "--color=never --files --hidden --follow -g '!.git' -g '!node_modules' -g '!.next' -g '!dist' -g '!build' -g '!src' -g '!static'",
+				})
 			end,
 			desc = "[F]ind [F]iles",
+		},
+		{
+			"<leader>fa",
+			function()
+				require("fzf-lua").files()
+			end,
+			desc = "[F]ind [A]ll Files",
 		},
 		{
 			"<leader>fg",

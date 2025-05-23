@@ -51,6 +51,13 @@ return {
 			},
 		})
 
+		lspconfig.docker_compose_language_service.setup({
+			capabilities = default_capabilities,
+		})
+		lspconfig.dockerls.setup({
+			capabilities = default_capabilities,
+		})
+
 		-- Enhanced Python/Django configuration
 		lspconfig.pyright.setup({
 			capabilities = default_capabilities,

@@ -51,10 +51,10 @@ return {
 				local opts = { buffer = args.buf, silent = true }
 
 				-- Override standard LSP keymaps with Lspsaga
-				vim.keymap.set("n", "<leader>lk", "<cmd>Lspsaga hover_doc<CR>", opts)
-				vim.keymap.set("n", "<leader>lgd", "<cmd>Lspsaga goto_definition<CR>", opts)
-				vim.keymap.set("n", "<leader>lgD", "<cmd>Lspsaga goto_type_definition<CR>", opts)
-				vim.keymap.set("n", "<leader>lgr", "<cmd>Lspsaga finder<CR>", opts)
+				vim.keymap.set("n", "K", "<cmd>Lspsaga hover_doc<CR>", opts)
+				vim.keymap.set("n", "gd", "<cmd>Lspsaga goto_definition<CR>", opts)
+				vim.keymap.set("n", "gD", "<cmd>Lspsaga goto_type_definition<CR>", opts)
+				vim.keymap.set("n", "gR", "<cmd>Lspsaga finder<CR>", opts)
 				vim.keymap.set("n", "<leader>lca", "<cmd>Lspsaga code_action<CR>", opts)
 				vim.keymap.set("n", "<leader>lrn", "<cmd>Lspsaga rename<CR>", opts)
 				vim.keymap.set("n", "<leader>lol", "<cmd>Lspsaga outline<CR>", opts)
@@ -65,8 +65,8 @@ return {
 				vim.keymap.set("n", "<leader>lbd", "<cmd>Lspsaga show_buf_diagnostics<CR>", opts)
 
 				-- Add Lspsaga preview functionality
-				vim.keymap.set("n", "<leader>lgp", "<cmd>Lspsaga peek_definition<CR>", opts)
-				vim.keymap.set("n", "<leader>lgP", "<cmd>Lspsaga peek_type_definition<CR>", opts)
+				vim.keymap.set("n", "gp", "<cmd>Lspsaga peek_definition<CR>", opts)
+				vim.keymap.set("n", "gP", "<cmd>Lspsaga peek_type_definition<CR>", opts)
 
 				-- Enhanced callhierarchy
 				vim.keymap.set("n", "<leader>lci", "<cmd>Lspsaga incoming_calls<CR>", opts)

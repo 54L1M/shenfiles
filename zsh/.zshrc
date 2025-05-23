@@ -44,7 +44,7 @@ v(){
   if [[ -z $1 ]]; then
     nvim .
   else 
-    nvim 
+    nvim $1
   fi
 }
 alias nvimconf="cd ~/.config/nvim && nvim ."
@@ -52,7 +52,7 @@ alias nvimconf="cd ~/.config/nvim && nvim ."
 alias k="kubectl"
 # nix
 alias nixconf="cd ~/shenfiles/nix/ && nvim ."
-alias rn="darwin-rebuild switch --impure --flake ~/shenfiles/nix#54L1M"
+alias rn="sudo darwin-rebuild switch --impure --flake ~/shenfiles/nix#54L1M"
 # alias zshconfig="mate ~/.zshrc"
 
 # file navigation

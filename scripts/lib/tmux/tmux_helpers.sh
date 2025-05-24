@@ -137,3 +137,9 @@ function capture_pane_content() {
     return 1
   fi
 }
+
+function tmux_broadcast() {
+   local session_name="$1" 
+   local command="$2"
+    tmux list-panes -s -t "$session_name" -F '#{session_name}:#{window_index}.#{pane_index}' | xargs -I {} tmux send-keys -t {} "$command" Enter
+}

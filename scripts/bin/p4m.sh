@@ -59,6 +59,7 @@ function list_layouts() {
 function create_session() {
   local session_name="$1"
   local layout_name="$2"
+  local working_dir="$3"
 
   # Check if session already exists
   if tmux has-session -t "$session_name" 2>/dev/null; then
@@ -77,8 +78,13 @@ function create_session() {
 
   # Create the session with the specified layout
   p4_info "Creating session '$(p4_highlight "$session_name")' with layout '$(p4_highlight "$layout_name")'..."
-  $layout_function "$session_name"
 
+    if [ -z "$working_dir" ]; then
+  $layout_function "$session_name" 
+   else
+  $layout_function "$session_name" "$working_dir"
+
+    fi
   # Attach to the session if we're not already in tmux
   if [ -z "$TMUX" ]; then
     p4_success "Session created. Attaching..."
@@ -137,6 +143,7 @@ function main() {
   local command="$1"
   local session_name="$2"
   local layout_name="$3"
+  local working_dir="$4"
 
   # Check if tmux is installed
   if ! command_exists tmux; then
@@ -157,7 +164,12 @@ function main() {
       p4_tip "Use 'p4m layouts' to see available layouts."
       return 1
     fi
-    create_session "$session_name" "$layout_name"
+    if [ -z "$working_dir" ]; then
+     create_session "$session_name" "$layout_name" 
+   else
+          create_session "$session_name" "$layout_name" "$working_dir"
+
+    fi
     ;;
   list)
     list_sessions

@@ -57,7 +57,9 @@ return {
 		lspconfig.dockerls.setup({
 			capabilities = default_capabilities,
 		})
-
+		lspconfig.bashls.setup({
+			capabilities = default_capabilities,
+		})
 		-- Enhanced Python/Django configuration
 		lspconfig.pyright.setup({
 			capabilities = default_capabilities,

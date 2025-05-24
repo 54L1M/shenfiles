@@ -7,180 +7,40 @@ BASE_DIR="$(dirname "$(dirname "$SCRIPT_DIR")")"
 LIB_DIR="$BASE_DIR/lib"
 source "$LIB_DIR/tmux/tmux_helpers.sh"
 
-# Python development layout
-# Creates a session with a code editor, Python shell, and terminal
-function layout_python() {
-  # Creates a session with a code editor, Python shell, and terminal
+
+function layout_i2d() {
+  # Creates a session with In2dialog structure
   local session_name="$1"
   local working_dir="${2:-$(pwd)}"
 
-  p4_step "Creating Python development layout"
+  p4_step "Creating In2Dialog layout"
 
-  # Start a new session with a window named 'dev'
-  tmux new-session -d -s "$session_name" -c "$working_dir" -n "dev"
 
-  # Split the window horizontally (creating right pane)
-  tmux split-window -h -t "$session_name:dev" -c "$working_dir"
+  tmux new-session -d -s "$session_name" -c "$working_dir" -n "code"
 
-  # Split the right pane vertically
-  tmux split-window -v -t "$session_name:dev.1" -c "$working_dir"
 
-  # Set up the panes with appropriate commands
-  tmux send-keys -t "$session_name:dev.0" "nvim" C-m
-  tmux send-keys -t "$session_name:dev.1" "python" C-m
-  tmux send-keys -t "$session_name:dev.2" "echo 'Ready for tests/commands'" C-m
-
-  # Set the main left pane to be larger (60%)
-  tmux resize-pane -t "$session_name:dev.0" -x "60%"
-
-  # Select the editor pane
-  tmux select-pane -t "$session_name:dev.0"
-
-  p4_debug "Python session layout created with 3 panes"
-}
-
-# Go development layout
-# Creates a session with a code editor, output window, and test terminal
-function layout_golang() {
-  local session_name="$1"
-  local working_dir="${2:-$(pwd)}"
-
-  p4_step "Creating Go development layout"
-
-  # Start a new session with a window named 'go'
-  tmux new-session -d -s "$session_name" -c "$working_dir" -n "go"
-
-  # Split the window horizontally (creating right pane)
-  tmux split-window -h -t "$session_name:go" -c "$working_dir"
-
-  # Split the right pane vertically
-  tmux split-window -v -t "$session_name:go.1" -c "$working_dir"
-
-  # Set up the panes with appropriate commands
-  tmux send-keys -t "$session_name:go.0" "nvim" C-m
-  tmux send-keys -t "$session_name:go.1" "echo 'Ready for go run'" C-m
-  tmux send-keys -t "$session_name:go.2" "echo 'Ready for go test'" C-m
-
-  # Set the main left pane to be larger (60%)
-  tmux resize-pane -t "$session_name:go.0" -x "60%"
-
-  # Select the editor pane
-  tmux select-pane -t "$session_name:go.0"
-
-  p4_debug "Go session layout created with 3 panes"
-}
-
-# Web development layout (JS, HTML, CSS)
-# Creates a session with a code editor, server/preview, and build terminal
-function layout_web() {
-  local session_name="$1"
-  local working_dir="${2:-$(pwd)}"
-
-  p4_step "Creating Web development layout"
-
-  # Start a new session with a window named 'web'
-  tmux new-session -d -s "$session_name" -c "$working_dir" -n "web"
-
-  # Split the window horizontally (creating right pane)
-  tmux split-window -h -t "$session_name:web" -c "$working_dir"
-
-  # Split the right pane vertically
-  tmux split-window -v -t "$session_name:web.1" -c "$working_dir"
-
-  # Set up the panes with appropriate commands
-  tmux send-keys -t "$session_name:web.0" "nvim" C-m
-  tmux send-keys -t "$session_name:web.1" "echo 'Ready for server'" C-m
-  tmux send-keys -t "$session_name:web.2" "echo 'Ready for npm commands'" C-m
-
-  # Set the main left pane to be larger (60%)
-  tmux resize-pane -t "$session_name:web.0" -x "60%"
-
-  # Add a second window for browser preview (if needed)
-  tmux new-window -t "$session_name" -c "$working_dir" -n "preview"
-  tmux send-keys -t "$session_name:preview" "echo 'Browser preview window'" C-m
-
-  # Go back to the first window
-  tmux select-window -t "$session_name:web"
-  tmux select-pane -t "$session_name:web.0"
-
-  p4_debug "Web session layout created with 3 panes and preview window"
-}
-
-# Django development layout
-# Creates a session with code editor, Django shell, server, and command terminal
-function layout_django() {
-  local session_name="$1"
-  local working_dir="${2:-$(pwd)}"
-
-  p4_step "Creating Django development layout"
-
-  # Start a new session with a window named 'django'
-  tmux new-session -d -s "$session_name" -c "$working_dir" -n "django"
-
-  # Split the window horizontally (creating right pane)
-  tmux split-window -h -t "$session_name:django" -c "$working_dir"
-
-  # Split both panes vertically
-  tmux split-window -v -t "$session_name:django.0" -c "$working_dir"
-  tmux split-window -v -t "$session_name:django.1" -c "$working_dir"
-
-  # Set up the panes with appropriate commands
-  tmux send-keys -t "$session_name:django.0" "nvim" C-m
-  tmux send-keys -t "$session_name:django.1" "echo 'Ready for Django server (python manage.py runserver)'" C-m
-  tmux send-keys -t "$session_name:django.2" "python manage.py shell" C-m
-  tmux send-keys -t "$session_name:django.3" "echo 'Ready for Django commands (migrations, tests, etc.)'" C-m
-
-  # Adjust the pane sizes (50/50 horizontal split)
-  tmux resize-pane -t "$session_name:django.0" -x "50%"
-
-  # Add a window for database
+  tmux new-window -t "$session_name" -c "$working_dir" -n "shell"
+  tmux new-window -t "$session_name" -c "$working_dir" -n "server"
   tmux new-window -t "$session_name" -c "$working_dir" -n "db"
-  tmux send-keys -t "$session_name:db" "echo 'Database window (sqlite, psql, etc.)'" C-m
+  tmux new-window -t "$session_name" -c "$working_dir" -n "misc"
 
-  # Go back to the first window
-  tmux select-window -t "$session_name:django"
-  tmux select-pane -t "$session_name:django.0"
-
-  p4_debug "Django session layout created with 4 panes and database window"
-}
-
-# Bash scripting layout
-# Creates a session with a script editor and test terminal
-function layout_bash() {
-  local session_name="$1"
-  local working_dir="${2:-$(pwd)}"
-
-  p4_step "Creating Bash scripting layout"
-
-  # Start a new session with a window named 'bash'
-  tmux new-session -d -s "$session_name" -c "$working_dir" -n "bash"
-
-  # Split the window horizontally (creating right pane)
-  tmux split-window -h -t "$session_name:bash" -c "$working_dir"
-
-  # Set up the panes with appropriate commands
-  tmux send-keys -t "$session_name:bash.0" "nvim" C-m
-  tmux send-keys -t "$session_name:bash.1" "echo 'Ready to test scripts'" C-m
-
-  # Add a second window for documentation/reference
-  tmux new-window -t "$session_name" -c "$working_dir" -n "docs"
-  tmux send-keys -t "$session_name:docs" "echo 'Documentation window (man pages, help, etc.)'" C-m
-
-  # Go back to the first window
-  tmux select-window -t "$session_name:bash"
-
-  # Set the main left pane to be larger (50%)
-  tmux resize-pane -t "$session_name:bash.0" -x "50%"
+  tmux_broadcast "$session_name" "source $HOME/Documents/Workstation/In2Dialog/I2D_ATS/.env"
+  tmux send-keys -t "$session_name:db.0" 'export LESS="-SRXF"' C-m
+  tmux_broadcast "$session_name" "clear"
+  tmux send-keys -t "$session_name:code.0" "nvim ." C-m
 
   # Select the editor pane
-  tmux select-pane -t "$session_name:bash.0"
+  tmux select-window -t "$session_name:code"
 
-  p4_debug "Bash scripting layout created with 2 panes and docs window"
+  p4_debug "In2dialog layout created"
 }
+
 
 # Project layout with Git integration
 # Creates a session with code editor, git status, and command terminal
 function layout_project() {
+  # Creates a session with code editor, git status, and command terminal
+
   local session_name="$1"
   local working_dir="${2:-$(pwd)}"
 
@@ -222,6 +82,8 @@ function layout_project() {
 # System monitoring layout
 # Creates a session for system monitoring and logs
 function layout_monitor() {
+  # Creates a session for system monitoring and logs
+
   local session_name="$1"
   local working_dir="${2:-$(pwd)}"
 

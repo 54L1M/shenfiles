@@ -26,6 +26,7 @@ function layout_i2d() {
 
   tmux_broadcast "$session_name" "source $HOME/Documents/Workstation/In2Dialog/I2D_ATS/.env"
   tmux send-keys -t "$session_name:db.0" 'export LESS="-SRXF"' C-m
+  tmux_broadcast "$session_name" "workon ats3.9"
   tmux_broadcast "$session_name" "clear"
   tmux send-keys -t "$session_name:code.0" "nvim ." C-m
 

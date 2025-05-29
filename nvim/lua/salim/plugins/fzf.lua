@@ -48,6 +48,13 @@ return {
 			desc = "[F]ind in neovim [C]onfiguration",
 		},
 		{
+			"<leader>fs",
+			function()
+				require("fzf-lua").files({ cwd = vim.fn.expand("$HOME/shenfiles/scripts/") })
+			end,
+			desc = "[F]ind [S]cripts",
+		},
+		{
 			"<leader>fh",
 			function()
 				require("fzf-lua").helptags()

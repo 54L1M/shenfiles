@@ -47,7 +47,7 @@ export P4_ICON_QUESTION="❓ "
 
 # Enable/disable colors based on terminal capabilities and environment
 P4_USE_COLORS=1
-if [ -n "${NO_COLOR}" ] || [ -n "${P4_NO_COLOR}" ] || [ ! -t 1 ]; then
+if [ -n "${NO_COLOR:-}" ] || [ -n "${P4_NO_COLOR:-}" ] || [ ! -t 1 ]; then
   P4_USE_COLORS=0
 fi
 
@@ -87,15 +87,12 @@ p4_color() {
 # Print a header with background color
 p4_header() {
   local text="$1"
-  local padding="$(printf '%*s' ${#text} | tr ' ' '=')"
 
-  echo
   if p4_colors_enabled; then
     echo -e "${P4_BOLD}${P4_BG_BLUE}${P4_WHITE} ${text} ${P4_RESET}"
   else
     echo -e "=== ${text} ==="
   fi
-  echo
 }
 
 # Print title for a section
@@ -116,9 +113,9 @@ p4_cmd() {
   local description="$3"
 
   if p4_colors_enabled; then
-    printf "  ${P4_GREEN}%-10s${P4_RESET} ${P4_YELLOW}%-30s${P4_RESET}  ${description}\n" "$cmd" "$args"
+    printf "${P4_GREEN}%s${P4_RESET} ${P4_YELLOW}%s${P4_RESET} %s\n" "$cmd" "$args" "$description"
   else
-    printf "  %-10s %-30s  %s\n" "$cmd" "$args" "$description"
+    printf "%s %s %s\n" "$cmd" "$args" "$description"
   fi
 }
 
@@ -128,9 +125,9 @@ p4_example() {
   local description="$2"
 
   if p4_colors_enabled; then
-    printf "  ${P4_CYAN}%-40s${P4_RESET}  ${description}\n" "$cmd"
+    printf "${P4_CYAN}%s${P4_RESET} %s\n" "$cmd" "$description"
   else
-    printf "  %-40s  %s\n" "$cmd" "$description"
+    printf "%s %s\n" "$cmd" "$description"
   fi
 }
 
@@ -140,9 +137,9 @@ p4_item() {
   local description="$2"
 
   if p4_colors_enabled; then
-    printf "  ${P4_BOLD}${P4_BLUE}%-15s${P4_RESET}  ${description}\n" "$name"
+    printf "${P4_BOLD}${P4_BLUE}%s${P4_RESET} %s\n" "$name" "$description"
   else
-    printf "  %-15s  %s\n" "$name" "$description"
+    printf "%s %s\n" "$name" "$description"
   fi
 }
 
@@ -192,7 +189,7 @@ p4_error() {
 
 # Print a debug message (only when DEBUG is enabled)
 p4_debug() {
-  if [ -n "$P4_DEBUG" ]; then
+  if [ -n "${P4_DEBUG:-}" ]; then
     local message="$1"
 
     if p4_colors_enabled; then
@@ -249,13 +246,13 @@ p4_print_colored() {
 }
 
 # Format a timestamp
-function format_timestamp() {
+format_timestamp() {
   local format="${1:-%Y-%m-%d %H:%M:%S}"
   date +"$format"
 }
 
 # Log a message with timestamp
-function log_message() {
+log_message() {
   local level="$1"
   local message="$2"
   local timestamp=$(format_timestamp)
@@ -266,7 +263,7 @@ function log_message() {
   "WARN") p4_print_colored "$P4_YELLOW" "[$timestamp] [WARNING] $message" ;;
   "ERROR") p4_print_colored "$P4_RED" "[$timestamp] [ERROR] $message" >&2 ;;
   "DEBUG")
-    if [ -n "$P4_DEBUG" ]; then
+    if [ -n "${P4_DEBUG:-}" ]; then
       p4_print_colored "$P4_DIM" "[$timestamp] [DEBUG] $message" >&2
     fi
     ;;
@@ -275,8 +272,22 @@ function log_message() {
 }
 
 # Log wrapper functions
-function log_info() { log_message "INFO" "$1"; }
-function log_success() { log_message "SUCCESS" "$1"; }
-function log_warn() { log_message "WARN" "$1"; }
-function log_error() { log_message "ERROR" "$1"; }
-function log_debug() { log_message "DEBUG" "$1"; }
+log_info() { log_message "INFO" "$1"; }
+log_success() { log_message "SUCCESS" "$1"; }
+log_warn() { log_message "WARN" "$1"; }
+log_error() { log_message "ERROR" "$1"; }
+log_debug() { log_message "DEBUG" "$1"; }
+
+# Confirmation prompt (uses colors so stays here)
+p4_confirm() {
+    local prompt="${1:-Are you sure?}"
+    echo -e "${P4_YELLOW}${prompt} (y/N)${P4_RESET}"
+    read -r response
+    [[ "$response" =~ ^[Yy]$ ]]
+}
+
+# Error handling (uses colors so stays here)
+p4_die() {
+    p4_error "$1"
+    exit "${2:-1}"
+}

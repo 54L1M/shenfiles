@@ -14,18 +14,41 @@ return {
 		-- Default capabilities for all servers
 		local default_capabilities = cmp_nvim_lsp.default_capabilities()
 
+		-- vim.diagnostic.config({
+		-- 	signs = {
+		-- 		text = {
+		-- 			[vim.diagnostic.severity.ERROR] = " ",
+		-- 			[vim.diagnostic.severity.WARN] = " ",
+		-- 			[vim.diagnostic.severity.HINT] = "󰠠 ",
+		-- 			[vim.diagnostic.severity.INFO] = " ",
+		-- 		},
+		-- 	},
+		-- 	virtual_text = true, -- Specify Enable virtual text for diagnostics
+		-- 	underline = true, -- Specify Underline diagnostics
+		-- 	update_in_insert = false, -- Keep diagnostics active in insert mode
+		-- })
+
 		vim.diagnostic.config({
+			virtual_text = true,
+			underline = true,
+			update_in_insert = false,
+			severity_sort = true,
+			float = {
+				border = "rounded",
+				source = true,
+			},
 			signs = {
 				text = {
-					[vim.diagnostic.severity.ERROR] = " ",
-					[vim.diagnostic.severity.WARN] = " ",
-					[vim.diagnostic.severity.HINT] = "󰠠 ",
-					[vim.diagnostic.severity.INFO] = " ",
+					[vim.diagnostic.severity.ERROR] = "󰅚 ",
+					[vim.diagnostic.severity.WARN] = "󰀪 ",
+					[vim.diagnostic.severity.INFO] = "󰋽 ",
+					[vim.diagnostic.severity.HINT] = "󰌶 ",
+				},
+				numhl = {
+					[vim.diagnostic.severity.ERROR] = "ErrorMsg",
+					[vim.diagnostic.severity.WARN] = "WarningMsg",
 				},
 			},
-			virtual_text = true, -- Specify Enable virtual text for diagnostics
-			underline = true, -- Specify Underline diagnostics
-			update_in_insert = false, -- Keep diagnostics active in insert mode
 		})
 
 		-- Lua LSP setup with "vim" recognized as a global

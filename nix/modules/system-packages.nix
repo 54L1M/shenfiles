@@ -13,7 +13,6 @@
     bat
     vscode
     ripgrep
-    thefuck
     htop
     ffmpeg
     stow

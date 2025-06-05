@@ -41,6 +41,10 @@ return {
 					quit = "q",
 				},
 			},
+			outline = {
+				layout = "float",
+				close_after_jump = true,
+			},
 		})
 
 		-- Create an autocommand to set Lspsaga keymaps as the primary LSP interface

@@ -29,6 +29,7 @@
       "sshpass"
       "fd"
       "coreutils"
+      "findutils"
     ];
     casks = [
       "firefox"

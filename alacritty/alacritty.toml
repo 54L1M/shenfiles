@@ -12,7 +12,7 @@ TERM = "xterm-256color"
 [window]
 decorations = "None"
 opacity = 0.65
-startup_mode = "SimpleFullscreen"
+# startup_mode = "SimpleFullscreen"
 
 [font]
 size = 16

@@ -3,6 +3,12 @@
 {
   homebrew = {
     enable = true;
+    taps = [
+       "nikitabobko/tap"
+       "FelixKratz/formulae"
+       "FelixKratz/formulae"
+    ];
+
     brews = [
       "mas"
       "hugo"
@@ -30,6 +36,8 @@
       "fd"
       "coreutils"
       "findutils"
+      "sketchybar"
+      "borders"
     ];
     casks = [
       "firefox"
@@ -44,6 +52,7 @@
       "lens"
       "slack"
       "postman"
+      "aerospace"
     ];
     masApps = {};
     onActivation.cleanup = "zap";

@@ -1,28 +1,39 @@
-#!/bin/sh
+#!/bin/bash
 
-PERCENTAGE="$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)"
-CHARGING="$(pmset -g batt | grep 'AC Power')"
+# Battery Plugin
+# Path: ~/.config/sketchybar/plugins/battery.sh
 
-if [ "$PERCENTAGE" = "" ]; then
-  exit 0
+# Load colors
+source "$HOME/.config/sketchybar/colors.sh"
+
+# Get battery percentage
+PERCENTAGE=$(pmset -g batt | grep -Eo "\d+%" | cut -d% -f1)
+CHARGING=$(pmset -g batt | grep 'AC Power')
+
+# Exit if no battery info
+if [ -z "$PERCENTAGE" ]; then
+    exit 0
 fi
 
-case "${PERCENTAGE}" in
-  9[0-9]|100) ICON=""
-  ;;
-  [6-8][0-9]) ICON=""
-  ;;
-  [3-5][0-9]) ICON=""
-  ;;
-  [1-2][0-9]) ICON=""
-  ;;
-  *) ICON=""
+# Determine icon and color based on battery level
+case ${PERCENTAGE} in
+    9[0-9]|100) ICON="󰁹" COLOR=$GREEN ;;   # 90-100%
+    [6-8][0-9]) ICON="󰂀" COLOR=$YELLOW ;;  # 60-89%
+    [3-5][0-9]) ICON="󰁾" COLOR=$PEACH ;;   # 30-59%
+    [1-2][0-9]) ICON="󰁻" COLOR=$RED ;;     # 10-29%
+    *) ICON="󰁺" COLOR=$RED ;;              # 0-9%
 esac
 
-if [[ "$CHARGING" != "" ]]; then
-  ICON=""
+# Override if charging
+if [[ -n $CHARGING ]]; then
+    ICON="󰂄"
+    COLOR=$BLUE
 fi
 
-# The item invoking this script (name $NAME) will get its icon and label
-# updated with the current battery status
-sketchybar --set "$NAME" icon="$ICON" label="${PERCENTAGE}%"
+# Update sketchybar item
+sketchybar --set $NAME \
+           icon="$ICON" \
+           icon.color=$COLOR \
+           label="${PERCENTAGE}%" \
+           label.color=$COLOR \
+           background.border_color=$COLOR

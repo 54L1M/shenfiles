@@ -1,87 +1,101 @@
-# This is a demo config to showcase some of the most important commands.
-# It is meant to be changed and configured, as it is intentionally kept sparse.
-# For a (much) more advanced configuration example see my dotfiles:
-# https://github.com/FelixKratz/dotfiles
+#!/bin/bash
 
-PLUGIN_DIR="$CONFIG_DIR/plugins"
+# SketchyBar Main Configuration
+# Path: ~/.config/sketchybar/sketchybarrc
 
-##### Bar Appearance #####
-# Configuring the general appearance of the bar.
-# These are only some of the options available. For all options see:
-# https://felixkratz.github.io/SketchyBar/config/bar
-# If you are looking for other colors, see the color picker:
-# https://felixkratz.github.io/SketchyBar/config/tricks#color-picker
+# Load colors
+source "$HOME/.config/sketchybar/colors.sh"
 
-sketchybar --bar position=top height=40 blur_radius=30 color=0x40000000
+# Bar Configuration
+sketchybar --bar position=top \
+                 height=32 \
+                 blur_radius=30 \
+                 color=$BASE
 
-##### Changing Defaults #####
-# We now change some default values, which are applied to all further items.
-# For a full list of all available item properties see:
-# https://felixkratz.github.io/SketchyBar/config/items
+# Default settings for all items
+sketchybar --default updates=when_shown \
+                     icon.font="SF Pro:Semibold:14.0" \
+                     icon.color=$TEXT \
+                     label.font="SF Pro:Semibold:14.0" \
+                     label.color=$TEXT \
+                     padding_left=5 \
+                     padding_right=5 \
+                     label.padding_left=4 \
+                     label.padding_right=10 \
+                     icon.padding_left=10 \
+                     icon.padding_right=4
 
-default=(
-  padding_left=5
-  padding_right=5
-  icon.font="Hack Nerd Font:Bold:17.0"
-  label.font="Hack Nerd Font:Bold:14.0"
-  icon.color=0xffffffff
-  label.color=0xffffffff
-  icon.padding_left=4
-  icon.padding_right=4
-  label.padding_left=4
-  label.padding_right=4
-)
-sketchybar --default "${default[@]}"
-
-##### Adding Mission Control Space Indicators #####
-# Let's add some mission control spaces:
-# https://felixkratz.github.io/SketchyBar/config/components#space----associate-mission-control-spaces-with-an-item
-# to indicate active and available mission control spaces.
-
+# Create custom events first
 sketchybar --add event aerospace_workspace_change
 
-for sid in $(aerospace list-workspaces --all); do
-    sketchybar --add item space.$sid left \
-        --subscribe space.$sid aerospace_workspace_change \
-        --set space.$sid \
-        background.color=0x44ffffff \
-        background.corner_radius=5 \
-        background.height=20 \
-        background.drawing=off \
-        label="$sid" \
-        click_script="aerospace workspace $sid" \
-        script="$CONFIG_DIR/plugins/aerospace.sh $sid"
+# AEROSPACE WORKSPACES (LEFT)
+for i in {1..9}; do
+  sketchybar --add item space.$i left \
+             --set space.$i icon=$i \
+                          icon.color=$SUBTEXT0 \
+                          icon.highlight_color=$BLUE \
+                          label.drawing=off \
+                          script="$HOME/.config/sketchybar/plugins/aerospace.sh" \
+                          click_script="aerospace workspace $i" \
+             --subscribe space.$i aerospace_workspace_change
 done
 
-##### Adding Left Items #####
-# We add some regular items to the left side of the bar, where
-# only the properties deviating from the current defaults need to be set
+# Add a backup polling item for workspace updates
+sketchybar --add item aerospace_backup left \
+           --set aerospace_backup drawing=off \
+                                 script="$HOME/.config/sketchybar/plugins/aerospace.sh" \
+                                 update_freq=1
 
-sketchybar --add item chevron left \
-           --set chevron icon= label.drawing=off \
-           --add item front_app left \
-           --set front_app icon.drawing=off script="$PLUGIN_DIR/front_app.sh" \
+# FOCUSED APPLICATION (LEFT)
+sketchybar --add item front_app left \
+           --set front_app background.color=$SURFACE0 \
+                          background.corner_radius=6 \
+                          background.height=24 \
+                          icon.color=$BLUE \
+                          icon.drawing=off \
+                          script="$HOME/.config/sketchybar/plugins/front_app.sh" \
            --subscribe front_app front_app_switched
 
-##### Adding Right Items #####
-# In the same way as the left items we can add items to the right side.
-# Additional position (e.g. center) are available, see:
-# https://felixkratz.github.io/SketchyBar/config/items#adding-items-to-sketchybar
+# DATE (RIGHT)
+sketchybar --add item date right \
+           --set date update_freq=30 \
+                     background.color=$SURFACE0 \
+                     background.corner_radius=6 \
+                     background.height=24 \
+                     icon=󰃭 \
+                     icon.color=$PEACH \
+                     script="$HOME/.config/sketchybar/plugins/date.sh"
 
-# Some items refresh on a fixed cycle, e.g. the clock runs its script once
-# every 10s. Other items respond to events they subscribe to, e.g. the
-# volume.sh script is only executed once an actual change in system audio
-# volume is registered. More info about the event system can be found here:
-# https://felixkratz.github.io/SketchyBar/config/events
-
+# CLOCK (RIGHT)
 sketchybar --add item clock right \
-           --set clock update_freq=10 icon=  script="$PLUGIN_DIR/clock.sh" \
-           --add item volume right \
-           --set volume script="$PLUGIN_DIR/volume.sh" \
-           --subscribe volume volume_change \
-           --add item battery right \
-           --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh" \
+           --set clock update_freq=10 \
+                      background.color=$SURFACE0 \
+                      background.corner_radius=6 \
+                      background.height=24 \
+                      icon=󰥔 \
+                      icon.color=$LAVENDER \
+                      script="$HOME/.config/sketchybar/plugins/clock.sh"
+
+# BATTERY (RIGHT)
+sketchybar --add item battery right \
+           --set battery update_freq=120 \
+                        background.color=$SURFACE0 \
+                        background.corner_radius=6 \
+                        background.height=24 \
+                        script="$HOME/.config/sketchybar/plugins/battery.sh" \
            --subscribe battery system_woke power_source_change
 
-##### Force all scripts to run the first time (never do this in a script) #####
+# WIFI (RIGHT)
+# sketchybar --add item wifi right \
+#            --set wifi update_freq=10 \
+#                      background.color=$SURFACE0 \
+#                      background.corner_radius=6 \
+#                      background.height=24 \
+#                      icon=󰖩 \
+#                      icon.color=$GREEN \
+#                      script="$HOME/.config/sketchybar/plugins/wifi.sh"
+#
+# Finalizing Setup
 sketchybar --update
+
+echo "sketchybar configuration loaded..."

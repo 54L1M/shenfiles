@@ -34,6 +34,8 @@ fi
 sketchybar --set $NAME \
            icon="$ICON" \
            icon.color=$COLOR \
+           icon.font="JetBrains Mono:Bold:14.0" \
            label="${PERCENTAGE}%" \
            label.color=$COLOR \
+           label.font="JetBrains Mono:Bold:14.0" \
            background.border_color=$COLOR

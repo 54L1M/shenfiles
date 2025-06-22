@@ -42,11 +42,5 @@ export ROSEWATER=0xfff5e0dc
 # Transparent
 export TRANSPARENT=0x00000000
 
-# Theme variables (matching the aesthetic of the reference)
+# Bar colors
 export BAR_COLOR=$BASE
-export BAR_BORDER_COLOR=$SURFACE1
-export BACKGROUND_COLOR=$SURFACE0
-export BACKGROUND_BORDER_COLOR=$BLUE
-export LABEL_COLOR=$TEXT
-export LABEL_HIGHLIGHT_COLOR=$BLUE
-export ACCENT_COLOR=$BLUE

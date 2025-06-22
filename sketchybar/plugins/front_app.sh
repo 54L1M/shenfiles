@@ -25,5 +25,6 @@ if [ ${#FRONT_APP} -gt 20 ]; then
     FRONT_APP=$(echo "$FRONT_APP" | cut -c 1-20)...
 fi
 
-# Update the sketchybar item
-sketchybar --set $NAME label="$FRONT_APP"
+# Update the sketchybar item with proper font
+sketchybar --set $NAME label="$FRONT_APP" \
+                       label.font="JetBrains Mono:Bold:14.0"

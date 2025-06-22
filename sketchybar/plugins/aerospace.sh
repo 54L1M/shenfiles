@@ -8,21 +8,21 @@ source "$HOME/.config/sketchybar/colors.sh"
 
 # Handle workspace change events
 if [ "$SENDER" = "aerospace_workspace_change" ]; then
-    # Use the FOCUSED parameter sent by aerospace (your config sends FOCUSED=$AEROSPACE_FOCUSED_WORKSPACE)
+    # Use the FOCUSED parameter sent by aerospace
     CURRENT_WORKSPACE="$FOCUSED"
     
-    # Update all workspaces - using original working names
+    # Update all workspaces with proper styling
     for i in {1..9}; do
         if [ "$i" = "$CURRENT_WORKSPACE" ]; then
-            # Active workspace styling - highlighted
+            # Active workspace styling - highlighted and bold
             sketchybar --set space.$i \
-                             icon.color=$LABEL_HIGHLIGHT_COLOR \
-                             icon.font="SF Pro:Bold:14.0"
+                             icon.color=$BLUE \
+                             icon.font="JetBrains Mono:Black:16.0"
         else
-            # Inactive workspace styling
+            # Inactive workspace styling - dimmed
             sketchybar --set space.$i \
                              icon.color=$SUBTEXT0 \
-                             icon.font="SF Pro:Semibold:14.0"
+                             icon.font="JetBrains Mono:Bold:14.0"
         fi
     done
 else
@@ -33,12 +33,12 @@ else
         for i in {1..9}; do
             if [ "$i" = "$CURRENT_WORKSPACE" ]; then
                 sketchybar --set space.$i \
-                                 icon.color=$LABEL_HIGHLIGHT_COLOR \
-                                 icon.font="SF Pro:Bold:14.0"
+                                 icon.color=$BLUE \
+                                 icon.font="JetBrains Mono:Black:16.0"
             else
                 sketchybar --set space.$i \
                                  icon.color=$SUBTEXT0 \
-                                 icon.font="SF Pro:Semibold:14.0"
+                                 icon.font="JetBrains Mono:Bold:14.0"
             fi
         done
     fi

@@ -113,58 +113,59 @@ run = 'move-node-to-workspace 3'
     # All possible commands: https://nikitabobko.github.io/AeroSpace/commands
 
     # Layout commands
-    cmd-ctrl-alt-shift-slash = 'layout tiles horizontal vertical'
-    cmd-ctrl-alt-shift-comma = 'layout accordion horizontal vertical'
+    alt-backtick = 'layout tiles accordion'
 
     # Focus commands (vim-style navigation)
-    cmd-ctrl-alt-shift-h = 'focus left'
-    cmd-ctrl-alt-shift-j = 'focus down'
-    cmd-ctrl-alt-shift-k = 'focus up'
-    cmd-ctrl-alt-shift-l = 'focus right'
+    alt-h = 'focus left'
+    alt-j = 'focus down'
+    alt-k = 'focus up'
+    alt-l = 'focus right'
 
     # Move windows 
-    cmd-ctrl-alt-shift-y = 'move left'    # y = left of hjkl
-    cmd-ctrl-alt-shift-u = 'move down'    # u = down 
-    cmd-ctrl-alt-shift-i = 'move up'      # i = up
-    cmd-ctrl-alt-shift-o = 'move right'   # o = right of hjkl
+    alt-shift-h = 'move left'    
+    alt-shift-j = 'move down'    
+    alt-shift-k = 'move up'      
+    alt-shift-l = 'move right'   
 
     # Resize commands
-    cmd-ctrl-alt-shift-minus = 'resize smart -50'
-    cmd-ctrl-alt-shift-equal = 'resize smart +50'
+    alt-minus = 'resize smart -50'
+    alt-equal = 'resize smart +50'
 
     # Workspace navigation
-    cmd-ctrl-alt-shift-1 = 'workspace 1'
-    cmd-ctrl-alt-shift-2 = 'workspace 2'
-    cmd-ctrl-alt-shift-3 = 'workspace 3'
-    cmd-ctrl-alt-shift-4 = 'workspace 4'
-    cmd-ctrl-alt-shift-5 = 'workspace 5'
-    cmd-ctrl-alt-shift-6 = 'workspace 6'
-    cmd-ctrl-alt-shift-7 = 'workspace 7'
-    cmd-ctrl-alt-shift-8 = 'workspace 8'
-    cmd-ctrl-alt-shift-9 = 'workspace 9'
+    alt-1 = 'workspace 1'
+    alt-2 = 'workspace 2'
+    alt-3 = 'workspace 3'
+    alt-4 = 'workspace 4'
+    alt-5 = 'workspace 5'
+    alt-6 = 'workspace 6'
+    alt-7 = 'workspace 7'
+    alt-8 = 'workspace 8'
+    alt-9 = 'workspace 9'
 
     # Move window to workspace (using q,w,e,r,t for easy access)
-    cmd-ctrl-alt-shift-q = 'move-node-to-workspace 1'
-    cmd-ctrl-alt-shift-w = 'move-node-to-workspace 2'
-    cmd-ctrl-alt-shift-e = 'move-node-to-workspace 3'
-    cmd-ctrl-alt-shift-r = 'move-node-to-workspace 4'
-    cmd-ctrl-alt-shift-t = 'move-node-to-workspace 5'
-    cmd-ctrl-alt-shift-a = 'move-node-to-workspace 6'
-    cmd-ctrl-alt-shift-s = 'move-node-to-workspace 7'
-    cmd-ctrl-alt-shift-d = 'move-node-to-workspace 8'
-    cmd-ctrl-alt-shift-f = 'move-node-to-workspace 9'
+    alt-shift-1 = 'move-node-to-workspace 1'
+    alt-shift-2 = 'move-node-to-workspace 2'
+    alt-shift-3 = 'move-node-to-workspace 3'
+    alt-shift-4 = 'move-node-to-workspace 4'
+    alt-shift-5 = 'move-node-to-workspace 5'
+    alt-shift-6 = 'move-node-to-workspace 6'
+    alt-shift-7 = 'move-node-to-workspace 7'
+    alt-shift-8 = 'move-node-to-workspace 8'
+    alt-shift-9 = 'move-node-to-workspace 9'
 
     # Workspace back-and-forth and monitor switching
-    cmd-ctrl-alt-shift-tab = 'workspace-back-and-forth'
-    cmd-ctrl-alt-shift-space = 'move-workspace-to-monitor --wrap-around next'
+    alt-tab = 'workspace-back-and-forth'
+    alt-space = 'move-workspace-to-monitor --wrap-around next'
 
     # Application launchers
-    cmd-ctrl-alt-shift-c = 'exec-and-forget open -n /Applications/Alacritty.app'
-    cmd-ctrl-alt-shift-b = 'exec-and-forget open -n /Applications/Google\ Chrome.app'
-    cmd-ctrl-alt-shift-g = 'exec-and-forget open -n /Applications/Discord.app'
+    alt-enter = 'exec-and-forget open -n /Applications/Alacritty.app'
+    alt-b = 'exec-and-forget open -n /Applications/Google\ Chrome.app'
+    alt-g = 'exec-and-forget open -n /Applications/Discord.app'
 
     # Service mode
-    cmd-ctrl-alt-shift-semicolon = 'mode service'
+    alt-shift-semicolon = 'mode service'
+    # Basic close window
+    alt-c = 'close --quit-if-last-window'
 
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes

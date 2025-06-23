@@ -95,6 +95,15 @@ sketchybar --add item battery right \
 #                      icon.color=$GREEN \
 #                      script="$HOME/.config/sketchybar/plugins/wifi.sh"
 #
+# DISCORD (RIGHT)
+sketchybar --add item discord right \
+           --set discord update_freq=2 \
+                        background.color=$SURFACE0 \
+                        background.corner_radius=6 \
+                        background.height=24 \
+                        script="$HOME/.config/sketchybar/plugins/discord.sh" \
+                        click_script="$HOME/.config/sketchybar/plugins/discord_click.sh" \
+           --subscribe discord front_app_switched system_woke
 # Finalizing Setup
 sketchybar --update
 

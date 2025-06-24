@@ -1,10 +1,11 @@
 #!/bin/bash
 
-# Enhanced Discord Plugin with Microphone Detection
+# Enhanced Discord Plugin with Centralized Icons and Microphone Detection
 # Path: ~/.config/sketchybar/plugins/discord.sh
 
-# Load colors
+# Load colors and icons
 source "$HOME/.config/sketchybar/colors.sh"
+source "$HOME/.config/sketchybar/icons.sh"
 
 # Function to check if Discord is using microphone
 check_discord_mic() {
@@ -120,7 +121,7 @@ if [ "$DISCORD_RUNNING" = "true" ]; then
     # Determine icon, color, and label based on status
     case "$MIC_STATUS" in
         "mic_active")
-            ICON="󰍬"  # Microphone icon
+            ICON="$ICON_DISCORD_MIC_ACTIVE"  # Microphone icon
             ICON_COLOR=$GREEN
             LABEL_COLOR=$GREEN
             BACKGROUND_COLOR=$SURFACE1
@@ -131,7 +132,7 @@ if [ "$DISCORD_RUNNING" = "true" ]; then
             fi
             ;;
         "mic_background")
-            ICON="󰍬"  # Microphone icon  
+            ICON="$ICON_DISCORD_MIC_ACTIVE"  # Microphone icon  
             ICON_COLOR=$YELLOW
             LABEL_COLOR=$YELLOW
             BACKGROUND_COLOR=$SURFACE1
@@ -139,7 +140,7 @@ if [ "$DISCORD_RUNNING" = "true" ]; then
             ;;
         *)
             # No mic usage
-            ICON="󰙯"  # Discord icon
+            ICON="$ICON_DISCORD"  # Discord icon
             if [[ "$NOTIFICATION_STATUS" == "notifications" ]]; then
                 ICON_COLOR=$RED
                 LABEL_COLOR=$RED
@@ -160,7 +161,7 @@ if [ "$DISCORD_RUNNING" = "true" ]; then
     esac
 else
     # Discord not running
-    ICON="󰙯"
+    ICON="$ICON_DISCORD"
     ICON_COLOR=$SUBTEXT0
     LABEL_COLOR=$SUBTEXT0
     BACKGROUND_COLOR=$SURFACE0

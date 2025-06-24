@@ -164,7 +164,10 @@ run = 'move-node-to-workspace 3'
     # Service mode
     alt-shift-semicolon = ['exec-and-forget sketchybar --set service_mode drawing=on', 'mode service']
     # Basic close window
-    alt-c = 'close --quit-if-last-window'
+    alt-q = 'close --quit-if-last-window'
+
+    alt-f = 'fullscreen'
+
 
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes

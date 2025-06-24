@@ -16,7 +16,7 @@ if [ "$SENDER" = "aerospace_workspace_change" ]; then
         if [ "$i" = "$CURRENT_WORKSPACE" ]; then
             # Active workspace styling - highlighted and bold
             sketchybar --set space.$i \
-                             icon.color=$BLUE \
+                             icon.color=$RED \
                              icon.font="JetBrains Mono:Black:16.0"
         else
             # Inactive workspace styling - dimmed
@@ -33,7 +33,7 @@ else
         for i in {1..9}; do
             if [ "$i" = "$CURRENT_WORKSPACE" ]; then
                 sketchybar --set space.$i \
-                                 icon.color=$BLUE \
+                                 icon.color=$RED \
                                  icon.font="JetBrains Mono:Black:16.0"
             else
                 sketchybar --set space.$i \

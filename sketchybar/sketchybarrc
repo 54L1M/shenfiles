@@ -1,10 +1,11 @@
 #!/bin/bash
 
-# SketchyBar Main Configuration
+# SketchyBar Main Configuration with Service Mode Support and Centralized Icons
 # Path: ~/.config/sketchybar/sketchybarrc
 
-# Load colors
+# Load colors and icons
 source "$HOME/.config/sketchybar/colors.sh"
+source "$HOME/.config/sketchybar/icons.sh"
 
 # Bar Configuration
 sketchybar --bar position=top \
@@ -40,7 +41,7 @@ for i in {1..9}; do
              --subscribe space.$i aerospace_workspace_change
 done
 
-# Add a backup polling item for workspace updates
+# Add a backup polling item for workspace updates (with faster polling for service mode detection)
 sketchybar --add item aerospace_backup left \
            --set aerospace_backup drawing=off \
                                  script="$HOME/.config/sketchybar/plugins/aerospace.sh" \
@@ -52,9 +53,21 @@ sketchybar --add item front_app left \
                           background.corner_radius=6 \
                           background.height=24 \
                           icon.color=$BLUE \
-                          icon.drawing=off \
+                          icon.drawing=on \
+                          icon.font="JetBrains Mono:Bold:16.0" \
                           script="$HOME/.config/sketchybar/plugins/front_app.sh" \
            --subscribe front_app front_app_switched
+
+# SERVICE MODE INDICATOR (LEFT - initially hidden)
+sketchybar --add item service_mode left \
+           --set service_mode icon="$ICON_GEAR" \
+                             icon.color=$RED \
+                             label="SERVICE" \
+                             label.color=$RED \
+                             background.color=$SURFACE1 \
+                             background.corner_radius=6 \
+                             background.height=24 \
+                             drawing=off
 
 # DATE (RIGHT)
 sketchybar --add item date right \
@@ -62,7 +75,7 @@ sketchybar --add item date right \
                      background.color=$SURFACE0 \
                      background.corner_radius=6 \
                      background.height=24 \
-                     icon=󰃭 \
+                     icon="$ICON_DATE" \
                      icon.color=$PEACH \
                      script="$HOME/.config/sketchybar/plugins/date.sh"
 
@@ -72,7 +85,7 @@ sketchybar --add item clock right \
                       background.color=$SURFACE0 \
                       background.corner_radius=6 \
                       background.height=24 \
-                      icon=󰥔 \
+                      icon="$ICON_CLOCK" \
                       icon.color=$LAVENDER \
                       script="$HOME/.config/sketchybar/plugins/clock.sh"
 
@@ -94,7 +107,7 @@ sketchybar --add item battery right \
 #                      icon=󰖩 \
 #                      icon.color=$GREEN \
 #                      script="$HOME/.config/sketchybar/plugins/wifi.sh"
-#
+
 # DISCORD (RIGHT)
 sketchybar --add item discord right \
            --set discord update_freq=2 \
@@ -104,7 +117,8 @@ sketchybar --add item discord right \
                         script="$HOME/.config/sketchybar/plugins/discord.sh" \
                         click_script="$HOME/.config/sketchybar/plugins/discord_click.sh" \
            --subscribe discord front_app_switched system_woke
+
 # Finalizing Setup
 sketchybar --update
 
-echo "sketchybar configuration loaded..."
+echo "sketchybar configuration loaded with service mode support..."

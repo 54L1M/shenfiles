@@ -92,7 +92,6 @@ run = 'move-node-to-workspace 3'
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
 # 'main' binding mode must be always presented
 # Fallback value (if you omit the key): mode.main.binding = {}
-# NOTE: These bindings use hyper key (right cmd mapped to cmd+ctrl+alt+shift)
 [mode.main.binding]
 
     # All possible keys:
@@ -163,28 +162,24 @@ run = 'move-node-to-workspace 3'
     alt-g = 'exec-and-forget open -n /Applications/Discord.app'
 
     # Service mode
-    alt-shift-semicolon = 'mode service'
+    alt-shift-semicolon = ['exec-and-forget sketchybar --set service_mode drawing=on', 'mode service']
     # Basic close window
     alt-c = 'close --quit-if-last-window'
 
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
 [mode.service.binding]
-    esc = ['reload-config', 'mode main']
-    r = ['flatten-workspace-tree', 'mode main'] # reset layout
-    f = ['layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
-    backspace = ['close-all-windows-but-current', 'mode main']
+    esc = ['exec-and-forget sketchybar --set service_mode drawing=off', 'reload-config', 'mode main']
+    r = ['exec-and-forget sketchybar --set service_mode drawing=off','flatten-workspace-tree', 'mode main'] # reset layout
+    f = ['exec-and-forget sketchybar --set service_mode drawing=off','layout floating tiling', 'mode main'] # Toggle between floating and tiling layout
+    backspace = ['exec-and-forget sketchybar --set service_mode drawing=off','close-all-windows-but-current', 'mode main']
 
     # sticky is not yet supported https://github.com/nikitabobko/AeroSpace/issues/2
     #s = ['layout sticky tiling', 'mode main']
 
     # Join commands (vim-style)
-    h = ['join-with left', 'mode main']
-    j = ['join-with down', 'mode main']
-    k = ['join-with up', 'mode main']
-    l = ['join-with right', 'mode main']
+    h = ['exec-and-forget sketchybar --set service_mode drawing=off','join-with left', 'mode main']
+    j = ['exec-and-forget sketchybar --set service_mode drawing=off','join-with down', 'mode main']
+    k = ['exec-and-forget sketchybar --set service_mode drawing=off','join-with up', 'mode main']
+    l = ['exec-and-forget sketchybar --set service_mode drawing=off','join-with right', 'mode main']
 
-    # Volume controls
-    down = 'volume down'
-    up = 'volume up'
-    shift-down = ['volume set 0', 'mode main']

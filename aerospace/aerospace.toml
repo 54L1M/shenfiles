@@ -159,7 +159,7 @@ run = 'move-node-to-workspace 3'
     # Application launchers
     alt-enter = 'exec-and-forget open -n /Applications/Alacritty.app'
     alt-b = 'exec-and-forget open -n /Applications/Google\ Chrome.app'
-    alt-g = 'exec-and-forget open -n /Applications/Discord.app'
+    alt-d = 'exec-and-forget open -n /Applications/Discord.app'
 
     # Service mode
     alt-shift-semicolon = ['exec-and-forget sketchybar --set service_mode drawing=on', 'mode service']

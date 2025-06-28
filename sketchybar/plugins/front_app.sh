@@ -26,6 +26,7 @@ get_app_icon() {
         
         # Development & Terminal
         "Alacritty") echo "$ICON_TERMINAL" ;;
+        "Ghostty") echo "$ICON_TERMINAL_ALT" ;;
         "Terminal") echo "$ICON_TERMINAL_ALT" ;;
         "iTerm2") echo "$ICON_CONSOLE" ;;
         "Warp") echo "$ICON_COMMAND_PROMPT" ;;

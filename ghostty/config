@@ -1,5 +1,5 @@
 # Theme
-theme = catppuccin-mocha
+theme = Kanagawa Wave
 background-opacity = 0.7
 
 # Font
@@ -10,8 +10,8 @@ font-size = 16
 # Fullscreen
 macos-titlebar-style = "hidden"
 window-decoration = false
-macos-non-native-fullscreen = true
-fullscreen = true
+macos-non-native-fullscreen = false
+fullscreen = false
 
 # Cursor
 cursor-style = block

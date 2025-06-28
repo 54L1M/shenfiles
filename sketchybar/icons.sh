@@ -133,3 +133,15 @@ export ICON_WIFI_DISCONNECTED="󰖪"
 # =============================================================================
 export ICON_DISCORD_MIC_ACTIVE="󰍬"
 export ICON_DISCORD_MIC_MUTED="󰍭"
+
+
+# =============================================================================
+# SOUND STATES
+# =============================================================================
+export ICON_VOLUME_HIGH="󰕾"       # High volume (75-100%)
+export ICON_VOLUME_MEDIUM="󰖀"     # Medium volume (25-74%)
+export ICON_VOLUME_LOW="󰕿"        # Low volume (1-24%)
+export ICON_VOLUME_OFF="󰸈"        # Volume at 0%
+export ICON_VOLUME_MUTED="󰸈"      # Volume muted
+export ICON_MICROPHONE="󰍬"        # Microphone active
+export ICON_MICROPHONE_MUTED="󰍭"  # Microphone muted

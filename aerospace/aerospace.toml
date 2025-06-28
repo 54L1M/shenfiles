@@ -73,10 +73,17 @@ automatically-unhide-macos-hidden-apps = false
     outer.right =      20
 
 # Application workspace bindings
+
 # Bind Alacritty to workspace 1
+# [[on-window-detected]]
+# if.app-id = 'org.alacritty'
+# run = 'move-node-to-workspace 1'
+
+# Bind Ghostty to workspace 1
 [[on-window-detected]]
-if.app-id = 'org.alacritty'
+if.app-id = 'com.mitchellh.ghostty'
 run = 'move-node-to-workspace 1'
+
 
 # Bind Chrome to workspace 2
 [[on-window-detected]]
@@ -87,6 +94,12 @@ run = 'move-node-to-workspace 2'
 [[on-window-detected]]
 if.app-id = 'com.hnc.Discord'
 run = 'move-node-to-workspace 3'
+
+# Bind Claude to workspace 4
+[[on-window-detected]]
+if.app-id = 'com.anthropic.claudefordesktop'
+run = 'move-node-to-workspace 4'
+
 
 # 'main' binding mode declaration
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
@@ -157,7 +170,8 @@ run = 'move-node-to-workspace 3'
     alt-space = 'move-workspace-to-monitor --wrap-around next'
 
     # Application launchers
-    alt-enter = 'exec-and-forget open -n /Applications/Alacritty.app'
+    # alt-enter = 'exec-and-forget open -n /Applications/Alacritty.app'
+    alt-enter = 'exec-and-forget open -n /Applications/Ghostty.app'
     alt-b = 'exec-and-forget open -n /Applications/Google\ Chrome.app'
     alt-d = 'exec-and-forget open -n /Applications/Discord.app'
 

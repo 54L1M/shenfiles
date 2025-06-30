@@ -38,6 +38,7 @@
       "findutils"
       "sketchybar"
       "borders"
+      "figlet"
     ];
     casks = [
       "firefox"

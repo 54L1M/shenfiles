@@ -181,7 +181,9 @@ run = 'move-node-to-workspace 4'
     alt-q = 'close --quit-if-last-window'
 
     alt-f = 'fullscreen'
-
+    # Hide
+    alt-m = 'hide'                # 'm' for minimize/hide
+    alt-shift-m = 'unhide-all'
 
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes

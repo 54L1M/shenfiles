@@ -145,3 +145,18 @@ export ICON_VOLUME_OFF="󰸈"        # Volume at 0%
 export ICON_VOLUME_MUTED="󰸈"      # Volume muted
 export ICON_MICROPHONE="󰍬"        # Microphone active
 export ICON_MICROPHONE_MUTED="󰍭"  # Microphone muted
+
+
+# =============================================================================
+# KUBERNETES ICONS
+# =============================================================================
+export ICON_KUBERNETES="󱃾"        # Main Kubernetes icon
+export ICON_KUBERNETES_ALT="⎈"     # Alternative Kubernetes wheel icon
+export ICON_HELM="⎈"              # Helm package manager
+export ICON_KUBECTL="󱃾"           # kubectl CLI tool
+
+# Container orchestration
+export ICON_POD="󰡨"              # Pod icon (using container icon)
+export ICON_DEPLOYMENT="󰅶"        # Deployment icon
+export ICON_SERVICE="󰒋"           # Service icon
+export ICON_NAMESPACE="󰉖"         # Namespace icon

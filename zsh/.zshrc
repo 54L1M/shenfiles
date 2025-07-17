@@ -184,5 +184,7 @@ if [ -f '/Users/54l1m/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '
 eval "$(starship init zsh)"
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
 
+export PATH="/Users/54l1m/.dotnet/tools:$PATH"
+
 . "$HOME/.local/bin/env"
 

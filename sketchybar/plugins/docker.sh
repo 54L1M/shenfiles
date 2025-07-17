@@ -43,8 +43,10 @@ get_compose_services() {
 
 # Function to get Docker system status
 get_docker_status() {
-    local desktop_running=$(check_docker_desktop)
-    local daemon_accessible=$(check_docker_daemon)
+    local desktop_running
+    desktop_running=$(check_docker_desktop)
+    local daemon_accessible
+    daemon_accessible=$(check_docker_daemon)
     
     if [[ "$desktop_running" == "true" && "$daemon_accessible" == "true" ]]; then
         echo "running"
@@ -111,13 +113,13 @@ case "$DOCKER_STATUS" in
 esac
 
 # Update sketchybar item
-sketchybar --set $NAME \
+sketchybar --set "$NAME" \
            icon="$ICON" \
-           icon.color=$ICON_COLOR \
+           icon.color="$ICON_COLOR" \
            icon.font="JetBrains Mono:Bold:16.0" \
            label="$LABEL" \
-           label.color=$LABEL_COLOR \
+           label.color="$LABEL_COLOR" \
            label.font="JetBrains Mono:Bold:12.0" \
-           background.color=$BACKGROUND_COLOR \
+           background.color="$BACKGROUND_COLOR" \
            background.corner_radius=6 \
            background.height=24

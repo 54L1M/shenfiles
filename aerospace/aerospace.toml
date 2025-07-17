@@ -69,8 +69,14 @@ automatically-unhide-macos-hidden-apps = false
     inner.vertical =   20
     outer.left =       20
     outer.bottom =     20
-    outer.top =        16
+    # outer.top =        20
     outer.right =      20
+    # Per-monitor top gaps
+    outer.top = [
+        { monitor.main = 16 },        # Main display gap
+        { monitor.secondary = 40 },   # External monitor gap (adjust as needed)
+        16                            # Default fallback
+    ]
 
 # Application workspace bindings
 
@@ -183,7 +189,14 @@ run = 'move-node-to-workspace 4'
     alt-f = 'fullscreen'
     # Hide
     
-
+[workspace-to-monitor-force-assignment]
+  # Assign workspaces 6-9 to the second monitor
+  1 = 'secondary'    # or use monitor pattern like 'built-in' or specific monitor name
+  5 = 'secondary'    # or use monitor pattern like 'built-in' or specific monitor name
+  6 = 'secondary'    # or use monitor pattern like 'built-in' or specific monitor name
+  7 = 'secondary'
+  8 = 'secondary'  
+  9 = 'secondary'
 # 'service' binding mode declaration.
 # See: https://nikitabobko.github.io/AeroSpace/guide#binding-modes
 [mode.service.binding]

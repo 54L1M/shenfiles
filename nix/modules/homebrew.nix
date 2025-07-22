@@ -39,6 +39,7 @@
       "sketchybar"
       "borders"
       "figlet"
+      "gh"
     ];
     casks = [
       "firefox"

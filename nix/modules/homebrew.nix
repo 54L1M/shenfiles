@@ -40,6 +40,7 @@
       "borders"
       "figlet"
       "gh"
+      "cocoapods"
     ];
     casks = [
       "firefox"

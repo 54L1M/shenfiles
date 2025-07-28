@@ -188,3 +188,4 @@ export PATH="/Users/54l1m/.dotnet/tools:$PATH"
 
 . "$HOME/.local/bin/env"
 
+eval "$(rbenv init -)"

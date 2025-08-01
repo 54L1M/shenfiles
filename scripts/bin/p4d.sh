@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# P4dev - Development Environment Setup Script  
+# p4d - Development Environment Setup Script  
 # Author: P4ndaF4ce
-# Usage: p4dev <session_name> [options]
+# Usage: p4d <session_name> [options]
 
 set -e
 
@@ -14,20 +14,20 @@ LIB_DIR="$BASE_DIR/lib"
 source "$LIB_DIR/colors/colors.sh"
 
 # Configuration
-CONFIG_FILE="$HOME/.config/p4dev/sessions.yaml"
+CONFIG_FILE="$HOME/.config/p4d/sessions.yaml"
 
 # Display help message
 function show_help() {
-  p4_header "P4dev - Development Environment Manager"
-  p4_info "Usage: p4dev <session_name> [options]"
+  p4_header "p4d - Development Environment Manager"
+  p4_info "Usage: p4d <session_name> [options]"
   echo
 
   p4_title "Commands:"
-  p4_cmd "p4dev" "<session_name>" "Create and attach to development session"
-  p4_cmd "p4dev" "list" "List all configured sessions"
-  p4_cmd "p4dev" "sessions" "Show available sessions from config"
-  p4_cmd "p4dev" "edit" "Edit the configuration file"
-  p4_cmd "p4dev" "help" "Show this help message"
+  p4_cmd "p4d" "<session_name>" "Create and attach to development session"
+  p4_cmd "p4d" "list" "List all configured sessions"
+  p4_cmd "p4d" "sessions" "Show available sessions from config"
+  p4_cmd "p4d" "edit" "Edit the configuration file"
+  p4_cmd "p4d" "help" "Show this help message"
   echo
 
   p4_title "Options:"
@@ -37,15 +37,15 @@ function show_help() {
   echo
 
   p4_title "Examples:"
-  p4_example "p4dev mapper" "Start the 'mapper' development session"
-  p4_example "p4dev list" "List all active tmux sessions"
-  p4_example "p4dev sessions" "Show configured sessions"
-  p4_example "p4dev -k mapper" "Kill the 'mapper' session"
+  p4_example "p4d mapper" "Start the 'mapper' development session"
+  p4_example "p4d list" "List all active tmux sessions"
+  p4_example "p4d sessions" "Show configured sessions"
+  p4_example "p4d -k mapper" "Kill the 'mapper' session"
   echo
 
   p4_title "Configuration:"
   p4_info "Config file: $(p4_highlight "$CONFIG_FILE")"
-  p4_tip "Run 'p4dev edit' to configure your sessions"
+  p4_tip "Run 'p4d edit' to configure your sessions"
 }
 
 # Check dependencies
@@ -78,7 +78,7 @@ function check_config() {
     
     # Create example config
     cat > "$CONFIG_FILE" << 'EOF'
-# P4dev Sessions Configuration
+# p4d Sessions Configuration
 # Each session defines a development environment
 
 mapper:
@@ -137,7 +137,7 @@ function list_available_sessions() {
   
   if [ ! -f "$CONFIG_FILE" ]; then
     p4_warn "No configuration file found"
-    p4_tip "Run 'p4dev edit' to create one"
+    p4_tip "Run 'p4d edit' to create one"
     return 1
   fi
 

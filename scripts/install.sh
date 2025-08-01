@@ -375,14 +375,14 @@ uninstall_completions() {
     done
     
     # Ask about removing configuration from .zshrc
-    if [ -f "$HOME/.zshrc" ] && grep -q "Custom script completions" "$HOME/.zshrc"; then
+    if [ -f "$HOME/.config/zsh/.zshrc" ] && grep -q "Custom script completions" "$HOME/.config/zsh/.zshrc"; then
       read -p "Remove custom script completion configuration from ~/.zshrc? [y/N]: " -n 1 -r
       echo
       if [[ $REPLY =~ ^[Yy]$ ]]; then
         # Create a backup
-        cp "$HOME/.zshrc" "$HOME/.zshrc.backup"
+        cp "$HOME/.config/zsh/.zshrc" "$HOME/.config/zsh/.zshrc.backup"
         # Remove custom script completion sections
-        sed -i '/# Custom script completions/,/^$/d' "$HOME/.zshrc"
+        sed -i '/# Custom script completions/,/^$/d' "$HOME/.config/zsh/.zshrc"
         p4_success "Removed completion configuration from ~/.zshrc (backup saved as ~/.zshrc.backup)"
       fi
     fi
@@ -391,16 +391,16 @@ uninstall_completions() {
 
 # Function to remove PATH configuration
 remove_path_config() {
-  if [ -f "$HOME/.zshrc" ] && grep -q "Custom scripts path" "$HOME/.zshrc"; then
+  if [ -f "$HOME/.config/zsh/.zshrc" ] && grep -q "Custom scripts path" "$HOME/.config/zsh/.zshrc"; then
     read -p "Remove custom scripts PATH configuration from ~/.zshrc? [y/N]: " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
       # Create a backup if not already created
-      if [ ! -f "$HOME/.zshrc.backup" ]; then
-        cp "$HOME/.zshrc" "$HOME/.zshrc.backup"
+      if [ ! -f "$HOME/.config/zsh/.zshrc.backup" ]; then
+        cp "$HOME/.config/zsh/.zshrc" "$HOME/.config/zsh/.zshrc.backup"
       fi
       # Remove custom scripts PATH sections
-      sed -i '/# Custom scripts path/,/^$/d' "$HOME/.zshrc"
+      sed -i '/# Custom scripts path/,/^$/d' "$HOME/.config/zsh/.zshrc"
       p4_success "Removed PATH configuration from ~/.zshrc"
     fi
   fi
@@ -433,14 +433,14 @@ install_completions() {
   local completion_code='fpath+=($HOME/.zsh/completions $fpath)'
   local autoload_code='autoload -U compinit && compinit'
 
-  if ! grep -q "$completion_code" "$HOME/.zshrc"; then
+  if ! grep -q "$completion_code" "$HOME/.config/zsh/.zshrc"; then
     p4_step "Adding zsh completions configuration to ~/.zshrc"
-    echo "" >>"$HOME/.zshrc"
-    echo "# Custom script completions" >>"$HOME/.zshrc"
-    echo "$completion_code" >>"$HOME/.zshrc"
+    echo "" >>"$HOME/.config/zsh/.zshrc"
+    echo "# Custom script completions" >>"$HOME/.config/zsh/.zshrc"
+    echo "$completion_code" >>"$HOME/.config/zsh/.zshrc"
 
-    if ! grep -q "compinit" "$HOME/.zshrc"; then
-      echo "$autoload_code" >>"$HOME/.zshrc"
+    if ! grep -q "compinit" "$HOME/.config/zsh/.zshrc"; then
+      echo "$autoload_code" >>"$HOME/.config/zsh/.zshrc"
     fi
 
     p4_success "Added zsh completion configuration to ~/.zshrc"
@@ -455,9 +455,9 @@ check_path() {
     p4_warn "$INSTALL_DIR is not in your PATH"
     p4_step "Adding to ~/.zshrc..."
 
-    echo "" >>"$HOME/.zshrc"
-    echo "# Custom scripts path" >>"$HOME/.zshrc"
-    echo 'export PATH="$HOME/.local/bin:$PATH"' >>"$HOME/.zshrc"
+    echo "" >>"$HOME/.config/zsh/.zshrc"
+    echo "# Custom scripts path" >>"$HOME/.config/zsh/.zshrc"
+    echo 'export PATH="$HOME/.local/bin:$PATH"' >>"$HOME/.config/zsh/.zshrc"
 
     p4_tip "Please restart your shell or run 'source ~/.zshrc' to update your PATH"
   else

@@ -1,0 +1,25 @@
+# p4m Sessions Configuration
+# Each session defines a development environment
+
+mapper:
+  virtualenv: ats3.9
+  path: ~/Documents/Workstation/In2Dialog/ats-mapper/
+  env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
+
+ats:
+  virtualenv: ats3.9
+  path: ~/Documents/Workstation/In2Dialog/I2D_ATS/
+  env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
+  commands:
+    global_commands:
+      - "clear"
+    1:
+      - "echo hello babe!"
+
+integ:
+  virtualenv: ats3.9
+  path: ~/Documents/Workstation/In2Dialog/ats-integeration/
+  env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
+  commands:
+    global_commands:
+      - "clear"

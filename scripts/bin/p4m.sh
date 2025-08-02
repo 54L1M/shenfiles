@@ -82,28 +82,41 @@ function check_config() {
 # Each session defines a development environment
 
 mapper:
-  virtualenv: mapper_env
-  path: ~/projects/mapper
-  env_file: ~/projects/mapper/.env
+  virtualenv: mapper_env      # Optional: Python virtual environment
+  path: ~/projects/mapper     # Required: Working directory
+  env_file: ~/projects/mapper/.env  # Optional: Environment file to source
+  commands:                   # Optional: Custom commands to run in order
+    - "echo 'Setting up mapper project...'"
+    - "npm install"
+    - "echo 'Mapper setup complete!'"
 
 dayjob:
   virtualenv: work_env
   path: ~/work/current-project
   env_file: ~/work/current-project/.env.local
+  commands:
+    - "echo 'Initializing work environment...'"
+    - "composer install"
+    - "php artisan migrate:status"
 
 learning:
-  virtualenv: learning_env
-  path: ~/learning/current-topic
+  path: ~/learning/current-topic  # No virtualenv - just basic setup
   env_file: ~/learning/current-topic/.env
+  commands:
+    - "echo 'Learning environment ready!'"
+    - "git status"
 
 sideproject:
   virtualenv: side_env
   path: ~/projects/P4ndaCli
   env_file: ~/projects/P4ndaCli/.env
+  commands:
+    - "echo 'Side project loaded'"
+    - "go mod tidy"
+    - "echo 'Dependencies updated'"
 
-# Example without env_file (optional)
+# Minimal example - just path required
 quickstart:
-  virtualenv: general_env
   path: ~/scratch
 EOF
 
@@ -122,6 +135,14 @@ function get_session_config() {
   if ! yq eval ".${session_name}.${key} // \"\"" "$CONFIG_FILE" 2>/dev/null; then
     echo ""
   fi
+}
+
+# Get session commands as array
+function get_session_commands() {
+  local session_name="$1"
+  
+  # Get commands as JSON array, then convert to bash array
+  yq eval ".${session_name}.commands // []" "$CONFIG_FILE" 2>/dev/null | yq eval '.[]' 2>/dev/null
 }
 
 # Check if session exists in config
@@ -150,17 +171,24 @@ function list_available_sessions() {
   fi
 
   while IFS= read -r session; do
-    local venv path env_file
+    local venv path env_file commands_count
     venv=$(get_session_config "$session" "virtualenv")
     path=$(get_session_config "$session" "path")
     env_file=$(get_session_config "$session" "env_file")
+    commands_count=$(yq eval ".${session}.commands | length" "$CONFIG_FILE" 2>/dev/null || echo "0")
     
     # Expand tilde in path for display
     path="${path/#\~/$HOME}"
     
-    p4_item "$session" "venv: $venv | path: $path"
+    p4_item "$session" "path: $path"
+    if [ -n "$venv" ]; then
+      p4_info "  ├─ venv: $venv"
+    fi
     if [ -n "$env_file" ]; then
-      p4_info "  └─ env: $env_file"
+      p4_info "  ├─ env: $env_file"
+    fi
+    if [ "$commands_count" != "0" ] && [ "$commands_count" != "null" ]; then
+      p4_info "  └─ commands: $commands_count custom commands"
     fi
   done <<< "$sessions"
 }
@@ -183,12 +211,39 @@ function setup_window() {
   local venv_name="$3"
   local env_file="$4"
   
-  tmux send-keys -t "$session_name:$window_name" "workon $venv_name" Enter
+  # Only activate virtualenv if specified
+  if [ -n "$venv_name" ]; then
+    tmux send-keys -t "$session_name:$window_name" "workon $venv_name" Enter
+  fi
   
+  # Source environment file if specified and exists
   if [ -n "$env_file" ] && [ -f "$env_file" ]; then
     tmux send-keys -t "$session_name:$window_name" "source $env_file" Enter
   else
     p4_debug "Env file not found or not specified: $env_file"
+  fi
+}
+
+# Execute custom commands in a window
+function execute_custom_commands() {
+  local session_name="$1"
+  local window_name="$2"
+  
+  # Get commands for this session
+  local commands
+  mapfile -t commands < <(get_session_commands "$session_name")
+  
+  if [ ${#commands[@]} -gt 0 ]; then
+    p4_info "Executing ${#commands[@]} custom commands in $window_name window..."
+    
+    for command in "${commands[@]}"; do
+      if [ -n "$command" ] && [ "$command" != "null" ]; then
+        p4_debug "Executing: $command"
+        tmux send-keys -t "$session_name:$window_name" "$command" Enter
+        # Add a small delay between commands to ensure they complete
+        sleep 0.5
+      fi
+    done
   fi
 }
 
@@ -217,9 +272,9 @@ function create_session() {
   project_path=$(get_session_config "$session_name" "path")
   env_file=$(get_session_config "$session_name" "env_file")
 
-  # Validate required fields
-  if [ -z "$venv_name" ] || [ -z "$project_path" ]; then
-    p4_error "Session '$session_name' missing required fields (virtualenv, path)"
+  # Validate required fields (only path is required now)
+  if [ -z "$project_path" ]; then
+    p4_error "Session '$session_name' missing required field: path"
     return 1
   fi
 
@@ -237,7 +292,11 @@ function create_session() {
 
   # Create session
   p4_step "Creating session '$(p4_highlight "$session_name")'"
-  p4_info "Virtualenv: $venv_name"
+  if [ -n "$venv_name" ]; then
+    p4_info "Virtualenv: $venv_name"
+  else
+    p4_info "Virtualenv: None (using system Python)"
+  fi
   p4_info "Path: $project_path"
   if [ -n "$env_file" ]; then
     p4_info "Env file: $env_file"
@@ -253,6 +312,9 @@ function create_session() {
   # Create and setup other windows
   tmux new-window -t "$session_name" -n "shell" -c "$project_path"
   setup_window "$session_name" "shell" "$venv_name" "$env_file"
+  
+  # Execute custom commands in shell window
+  execute_custom_commands "$session_name" "shell"
 
   tmux new-window -t "$session_name" -n "server" -c "$project_path"
   setup_window "$session_name" "server" "$venv_name" "$env_file"

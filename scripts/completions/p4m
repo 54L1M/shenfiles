@@ -1,44 +1,43 @@
 #compdef p4m
 
-_p4m_commands() {
-  local -a commands
-  commands=(
-    'list:List all tmux sessions'
-    'sessions:Show configured sessions'
-    'edit:Edit configuration'
-    'help:Show help'
-  )
-  _describe 'command' commands
-}
+# Final Script: Build completions line-by-line to avoid environment bugs.
 
-_p4m_sessions() {
-  local -a sessions
-  sessions=(
-    'mapper:Development session'
-    'dayjob:Work session'  
-  )
-  _describe 'sessions' sessions
-}
-
-_p4m() {
-  local curcontext="$curcontext" state line ret=1
+function _p4m_completion {
+  local state
   
-  _arguments -C \
-    '(-h --help)'{-h,--help}'[Show help message]' \
+  _arguments \
+    '(-h --help)'{-h,--help}'[Show help]' \
     '(-k --kill)'{-k,--kill}'[Kill session]' \
     '(-c --config)'{-c,--config}'[Config file]:file:_files' \
-    '1: :->first_arg' \
-    '*::args:->args' && ret=0
-  
+    '1:command:->commands' \
+    && return 0
+
   case $state in
-    first_arg)
-      _alternative \
-        'commands:commands:_p4m_commands' \
-        'sessions:sessions:_p4m_sessions' && ret=0
+    commands)
+      # Start with the static list of commands.
+      local -a completions=(
+        'list:List tmux sessions'
+        'sessions:Show config sessions'
+        'edit:Edit config'
+        'help:Show help'
+      )
+
+      # Use a simple, robust while/read loop to add dynamic sessions.
+      local config_file="${HOME}/.config/p4m/sessions.yaml"
+      if [[ -f "$config_file" ]] && command -v yq >/dev/null 2>&1; then
+        # Process yq output line-by-line and append directly.
+        # This is the most compatible way to handle command output.
+        while IFS= read -r session; do
+          if [[ -n "$session" ]]; then
+            completions+=("$session:Custom layouts")
+          fi
+        done < <(yq eval 'keys | .[]' "$config_file" 2>/dev/null)
+      fi
+      
+      # Call _describe only ONCE with the fully built list.
+      _describe 'p4m commands' completions
       ;;
   esac
-  
-  return ret
 }
 
-_p4m "$@"
+_p4m_completion "$@"

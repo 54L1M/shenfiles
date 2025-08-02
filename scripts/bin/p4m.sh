@@ -16,6 +16,14 @@ source "$LIB_DIR/colors/colors.sh"
 # Configuration
 CONFIG_FILE="$HOME/.config/p4m/sessions.yaml"
 
+# Window mapping
+declare -A WINDOW_NAMES=(
+  [0]="code"
+  [1]="shell"
+  [2]="server"
+  [3]="db"
+)
+
 # Display help message
 function show_help() {
   p4_header "p4m - Development Environment Manager"
@@ -80,44 +88,60 @@ function check_config() {
     cat > "$CONFIG_FILE" << 'EOF'
 # p4m Sessions Configuration
 # Each session defines a development environment
+# Windows: 0=code, 1=shell, 2=server, 3=db
 
 mapper:
   virtualenv: mapper_env      # Optional: Python virtual environment
   path: ~/projects/mapper     # Required: Working directory
   env_file: ~/projects/mapper/.env  # Optional: Environment file to source
-  commands:                   # Optional: Custom commands to run in order
-    - "echo 'Setting up mapper project...'"
-    - "npm install"
-    - "echo 'Mapper setup complete!'"
+  commands:
+    global_commands:          # Commands that run on ALL windows
+      - "echo 'Setting up mapper project...'"
+      - "export PROJECT_NAME=mapper"
+    0:                        # Code window (window 0)
+      - "echo 'Code window ready'"
+      - "git status"
+    1:                        # Shell window (window 1)  
+      - "npm install"
+      - "echo 'Mapper setup complete!'"
+    2:                        # Server window (window 2)
+      - "echo 'Server window ready'"
+      - "npm run dev"
+    3:                        # DB window (window 3)
+      - "echo 'Database window ready'"
+      - "docker-compose up -d postgres"
 
 dayjob:
   virtualenv: work_env
   path: ~/work/current-project
   env_file: ~/work/current-project/.env.local
   commands:
-    - "echo 'Initializing work environment...'"
-    - "composer install"
-    - "php artisan migrate:status"
+    global_commands:
+      - "echo 'Initializing work environment...'"
+      - "export WORK_MODE=development"
+    0:                        # Code window
+      - "git fetch origin"
+      - "git status"
+    1:                        # Shell window
+      - "composer install"
+      - "php artisan migrate:status"
+    2:                        # Server window
+      - "php artisan serve"
 
 learning:
-  path: ~/learning/current-topic  # No virtualenv - just basic setup
-  env_file: ~/learning/current-topic/.env
+  path: ~/learning/current-topic
   commands:
-    - "echo 'Learning environment ready!'"
-    - "git status"
-
-sideproject:
-  virtualenv: side_env
-  path: ~/projects/P4ndaCli
-  env_file: ~/projects/P4ndaCli/.env
-  commands:
-    - "echo 'Side project loaded'"
-    - "go mod tidy"
-    - "echo 'Dependencies updated'"
+    global_commands:
+      - "echo 'Learning environment ready!'"
+    0:                        # Code window
+      - "git log --oneline -5"
 
 # Minimal example - just path required
 quickstart:
   path: ~/scratch
+  commands:
+    global_commands:
+      - "echo 'Quick start environment loaded'"
 EOF
 
     p4_success "Created example config at: $CONFIG_FILE"
@@ -137,12 +161,21 @@ function get_session_config() {
   fi
 }
 
-# Get session commands as array
-function get_session_commands() {
+# Get global commands as array
+function get_global_commands() {
   local session_name="$1"
   
-  # Get commands as JSON array, then convert to bash array
-  yq eval ".${session_name}.commands // []" "$CONFIG_FILE" 2>/dev/null | yq eval '.[]' 2>/dev/null
+  # Get global_commands as JSON array, then convert to bash array
+  yq eval ".${session_name}.commands.global_commands // []" "$CONFIG_FILE" 2>/dev/null | yq eval '.[]' 2>/dev/null
+}
+
+# Get window-specific commands by index
+function get_window_commands() {
+  local session_name="$1"
+  local window_index="$2"
+  
+  # Get window-specific commands by index
+  yq eval ".${session_name}.commands.${window_index} // []" "$CONFIG_FILE" 2>/dev/null | yq eval '.[]' 2>/dev/null
 }
 
 # Check if session exists in config
@@ -171,11 +204,11 @@ function list_available_sessions() {
   fi
 
   while IFS= read -r session; do
-    local venv path env_file commands_count
+    local venv path env_file global_commands_count
     venv=$(get_session_config "$session" "virtualenv")
     path=$(get_session_config "$session" "path")
     env_file=$(get_session_config "$session" "env_file")
-    commands_count=$(yq eval ".${session}.commands | length" "$CONFIG_FILE" 2>/dev/null || echo "0")
+    global_commands_count=$(yq eval ".${session}.commands.global_commands | length" "$CONFIG_FILE" 2>/dev/null || echo "0")
     
     # Expand tilde in path for display
     path="${path/#\~/$HOME}"
@@ -187,9 +220,21 @@ function list_available_sessions() {
     if [ -n "$env_file" ]; then
       p4_info "  ├─ env: $env_file"
     fi
-    if [ "$commands_count" != "0" ] && [ "$commands_count" != "null" ]; then
-      p4_info "  └─ commands: $commands_count custom commands"
+    if [ "$global_commands_count" != "0" ] && [ "$global_commands_count" != "null" ]; then
+      p4_info "  ├─ global commands: $global_commands_count commands"
     fi
+    
+    # Show window-specific commands
+    for window_index in "${!WINDOW_NAMES[@]}"; do
+      local window_name="${WINDOW_NAMES[$window_index]}"
+      local window_commands_count
+      window_commands_count=$(yq eval ".${session}.commands.${window_index} | length" "$CONFIG_FILE" 2>/dev/null || echo "0")
+      if [ "$window_commands_count" != "0" ] && [ "$window_commands_count" != "null" ]; then
+        p4_info "  ├─ $window_name ($window_index): $window_commands_count commands"
+      fi
+    done
+    
+    echo "  └─"
   done <<< "$sessions"
 }
 
@@ -224,26 +269,76 @@ function setup_window() {
   fi
 }
 
-# Execute custom commands in a window
-function execute_custom_commands() {
+# Execute global commands in a window
+function execute_global_commands() {
   local session_name="$1"
   local window_name="$2"
   
-  # Get commands for this session
+  # Get global commands for this session
   local commands
-  mapfile -t commands < <(get_session_commands "$session_name")
+  mapfile -t commands < <(get_global_commands "$session_name")
   
   if [ ${#commands[@]} -gt 0 ]; then
-    p4_info "Executing ${#commands[@]} custom commands in $window_name window..."
+    p4_debug "Executing ${#commands[@]} global commands in $window_name window..."
     
     for command in "${commands[@]}"; do
       if [ -n "$command" ] && [ "$command" != "null" ]; then
-        p4_debug "Executing: $command"
+        p4_debug "Executing global: $command"
         tmux send-keys -t "$session_name:$window_name" "$command" Enter
         # Add a small delay between commands to ensure they complete
         sleep 0.5
       fi
     done
+  fi
+}
+
+# Execute window-specific commands by index
+function execute_window_commands() {
+  local session_name="$1"
+  local window_name="$2"
+  local window_index="$3"
+  
+  # Get window-specific commands
+  local commands
+  mapfile -t commands < <(get_window_commands "$session_name" "$window_index")
+  
+  if [ ${#commands[@]} -gt 0 ]; then
+    p4_debug "Executing ${#commands[@]} window-specific commands in $window_name ($window_index) window..."
+    
+    for command in "${commands[@]}"; do
+      if [ -n "$command" ] && [ "$command" != "null" ]; then
+        p4_debug "Executing window-specific: $command"
+        tmux send-keys -t "$session_name:$window_name" "$command" Enter
+        # Add a small delay between commands to ensure they complete
+        sleep 0.5
+      fi
+    done
+  fi
+}
+
+# Setup a complete window with all commands
+function setup_complete_window() {
+  local session_name="$1"
+  local window_name="$2"
+  local window_index="$3"
+  local venv_name="$4"
+  local env_file="$5"
+  local open_editor="${6:-false}"
+  
+  p4_debug "Setting up $window_name window (index: $window_index)..."
+  
+  # Basic environment setup
+  setup_window "$session_name" "$window_name" "$venv_name" "$env_file"
+  
+  # Execute global commands
+  execute_global_commands "$session_name" "$window_name"
+  
+  # Execute window-specific commands
+  execute_window_commands "$session_name" "$window_name" "$window_index"
+  
+  # Open editor if this is the code window
+  if [ "$open_editor" = "true" ]; then
+    tmux send-keys -t "$session_name:$window_name" "nvim ." Enter
   fi
 }
 
@@ -302,25 +397,21 @@ function create_session() {
     p4_info "Env file: $env_file"
   fi
 
-  # Create session and first window (code)
+  # Create session and first window (code - index 0)
   tmux new-session -d -s "$session_name" -n "code" -c "$project_path"
 
-  # Setup code window and open neovim
-  setup_window "$session_name" "code" "$venv_name" "$env_file"
-  tmux send-keys -t "$session_name:code" "v ." Enter
+  # Setup code window (with editor opening after commands)
+  setup_complete_window "$session_name" "code" "0" "$venv_name" "$env_file" "true"
 
   # Create and setup other windows
   tmux new-window -t "$session_name" -n "shell" -c "$project_path"
-  setup_window "$session_name" "shell" "$venv_name" "$env_file"
-  
-  # Execute custom commands in shell window
-  execute_custom_commands "$session_name" "shell"
+  setup_complete_window "$session_name" "shell" "1" "$venv_name" "$env_file"
 
   tmux new-window -t "$session_name" -n "server" -c "$project_path"
-  setup_window "$session_name" "server" "$venv_name" "$env_file"
+  setup_complete_window "$session_name" "server" "2" "$venv_name" "$env_file"
 
   tmux new-window -t "$session_name" -n "db" -c "$project_path"
-  setup_window "$session_name" "db" "$venv_name" "$env_file"
+  setup_complete_window "$session_name" "db" "3" "$venv_name" "$env_file"
 
   # Switch back to code window
   tmux select-window -t "$session_name:code"

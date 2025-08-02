@@ -92,7 +92,6 @@ alias catc="bat -p"
 #############
 alias tf="tmuxifier"
 alias tx="tmux"
-alias f="fuck"
 #alias sl="ls"
 alias upd="sudo apt update"
 alias upg="sudo apt upgrade"

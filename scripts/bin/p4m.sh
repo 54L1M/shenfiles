@@ -330,6 +330,9 @@ function setup_complete_window() {
   # Basic environment setup
   setup_window "$session_name" "$window_name" "$venv_name" "$env_file"
   
+  # Clear 
+  tmux send-keys -t "$session_name:$window_name" "clear" Enter
+
   # Execute global commands
   execute_global_commands "$session_name" "$window_name"
   

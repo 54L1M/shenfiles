@@ -41,6 +41,8 @@
       "figlet"
       "gh"
       "cocoapods"
+      "upx"
+      "nsis"
     ];
     casks = [
       "firefox"

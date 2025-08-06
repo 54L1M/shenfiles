@@ -15,3 +15,9 @@ integ:
   virtualenv: ats3.9
   path: ~/Documents/Workstation/In2Dialog/ats-integeration/
   env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
+
+i2desktop:
+  path: ~/Documents/Workstation/In2Dialog/i2desktop/
+
+i2cli:
+  path: ~/Documents/Workstation/In2Dialog/In2cli/

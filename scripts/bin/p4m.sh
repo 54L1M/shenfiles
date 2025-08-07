@@ -32,9 +32,9 @@ function show_help() {
 
   p4_title "Commands:"
   p4_cmd "p4m" "<session_name>" "Create and attach to development session"
-  p4_cmd "p4m" "list" "List all configured sessions"
-  p4_cmd "p4m" "sessions" "Show available sessions from config"
-  p4_cmd "p4m" "edit" "Edit the configuration file"
+  p4_cmd "p4m" "list | ls" "List all configured sessions"
+  p4_cmd "p4m" "sessions | s" "Show available sessions from config"
+  p4_cmd "p4m" "edit | e" "Edit the configuration file"
   p4_cmd "p4m" "help" "Show this help message"
   echo
 
@@ -497,15 +497,15 @@ function parse_args() {
         kill_mode=true
         shift
         ;;
-      list)
+      list|ls)
         command="list"
         shift
         ;;
-      sessions)
+      sessions|s)
         command="sessions"  
         shift
         ;;
-      edit)
+      edit|e)
         command="edit"
         shift
         ;;

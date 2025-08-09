@@ -43,6 +43,7 @@
       "cocoapods"
       "upx"
       "nsis"
+      "cmatrix"
     ];
     casks = [
       "firefox"

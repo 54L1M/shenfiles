@@ -184,6 +184,9 @@ eval "$(starship init zsh)"
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
 
 export PATH="/Users/54l1m/.dotnet/tools:$PATH"
+export PATH="$HOME/.emacs.d/bin:$PATH"
+
+
 
 . "$HOME/.local/bin/env"
 

@@ -7,6 +7,7 @@
        "nikitabobko/tap"
        "FelixKratz/formulae"
        "FelixKratz/formulae"
+       "railwaycat/emacsmacport"
     ];
 
     brews = [
@@ -44,6 +45,9 @@
       "upx"
       "nsis"
       "cmatrix"
+      "emacs-mac"
+      "markdown"
+      "shellcheck"
     ];
     casks = [
       "firefox"

@@ -10,14 +10,17 @@ if not vim.loop.fs_stat(lazypath) then
 	})
 end
 vim.opt.rtp:prepend(lazypath)
-require("lazy").setup({ { import = "salim.plugins" }, { import = "salim.plugins.lsp" } }, {
-	checker = {
-		enabled = true,
-		notify = false,
-	},
-	change_detection = {
-		notify = false,
-	},
-})
+require("lazy").setup(
+	{ { import = "salim.plugins" }, { import = "salim.plugins.lsp" }, { import = "salim.plugins.colorscheme" } },
+	{
+		checker = {
+			enabled = true,
+			notify = false,
+		},
+		change_detection = {
+			notify = false,
+		},
+	}
+)
 -- vim.cmd("colorscheme catppuccin")
 vim.cmd("colorscheme kanagawa")

@@ -4,6 +4,12 @@ return {
 	opts = { -- set to setup table
 	},
 	config = function()
-		require("colorizer").setup()
+		require("colorizer").setup({
+			filetypes = {
+				"css",
+				"javascript",
+				"html",
+			},
+		})
 	end,
 }

@@ -186,6 +186,8 @@ export STARSHIP_CONFIG=~/.config/starship/starship.toml
 export PATH="/Users/54l1m/.dotnet/tools:$PATH"
 export PATH="$HOME/.emacs.d/bin:$PATH"
 
+export ANDROID_HOME=~/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin
 
 
 . "$HOME/.local/bin/env"

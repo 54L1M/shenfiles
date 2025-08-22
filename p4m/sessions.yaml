@@ -19,5 +19,5 @@ integ:
 i2desktop:
   path: ~/Documents/Workstation/In2Dialog/i2desktop/
 
-i2cli:
-  path: ~/Documents/Workstation/In2Dialog/In2cli/
+i2c:
+  path: ~/Documents/Workstation/In2Dialog/i2c/

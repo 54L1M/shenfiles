@@ -48,6 +48,7 @@
       "emacs-mac"
       "markdown"
       "shellcheck"
+      "openjdk"
     ];
     casks = [
       "firefox"

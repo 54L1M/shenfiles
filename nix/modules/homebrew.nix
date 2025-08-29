@@ -49,6 +49,7 @@
       "markdown"
       "shellcheck"
       "openjdk"
+      "wtfutil"
     ];
     casks = [
       "firefox"

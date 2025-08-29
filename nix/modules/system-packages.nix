@@ -16,7 +16,6 @@
     htop
     ffmpeg
     stow
-    neofetch
     eza
     yazi
     glow

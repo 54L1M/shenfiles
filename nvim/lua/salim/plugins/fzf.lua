@@ -7,13 +7,40 @@ return {
 	opts = {},
 	config = function()
 		local fzf = require("fzf-lua")
-		local config = fzf.config
-		config.defaults.keymap.fzf["ctrl-u"] = "half-page-up"
-		config.defaults.keymap.fzf["ctrl-d"] = "half-page-down"
-		config.defaults.keymap.fzf["ctrl-f"] = "preview-page-down"
-		config.defaults.keymap.fzf["ctrl-b"] = "preview-page-up"
-		config.defaults.keymap.builtin["<c-f>"] = "preview-page-down"
-		config.defaults.keymap.builtin["<c-b>"] = "preview-page-up"
+		local actions = require("fzf-lua").actions
+		fzf.setup({
+			files = {
+				git_icons = true,
+			},
+			keymap = {
+				-- Keymaps for the fzf buffer
+				fzf = {
+					["ctrl-u"] = "half-page-up",
+					["ctrl-d"] = "half-page-down",
+					["ctrl-f"] = "preview-page-down",
+					["ctrl-b"] = "preview-page-up",
+				},
+				-- Keymaps for the normal mode buffer
+				builtin = {
+					["<F1>"] = "toggle-help",
+					["<C-f>"] = "preview-page-down",
+					["<C-b>"] = "preview-page-up",
+				},
+			},
+			winopts = {
+				height = 0.85,
+				width = 0.80,
+			},
+			actions = {
+				files = {
+					["ctrl-q"] = actions.file_sel_to_qf,
+					["enter"] = actions.file_edit,
+					["ctrl-s"] = actions.file_split,
+					["ctrl-v"] = actions.file_vsplit,
+					["ctrl-t"] = actions.file_tabedit,
+				},
+			},
+		})
 	end,
 	keys = {
 		{
@@ -36,7 +63,7 @@ return {
 		{
 			"<leader>fg",
 			function()
-				require("fzf-lua").live_grep()
+				require("fzf-lua").grep_project()
 			end,
 			desc = "[F]ind by [G]repping in project directory",
 		},
@@ -78,23 +105,16 @@ return {
 		{
 			"<leader>fw",
 			function()
-				require("fzf-lua").grep_cword()
+				require("fzf-lua").diagnostics_workspace()
 			end,
-			desc = "[F]ind current [W]ord",
-		},
-		{
-			"<leader>fW",
-			function()
-				require("fzf-lua").grep_cWORD()
-			end,
-			desc = "[F]ind current [W]ORD",
+			desc = "[F]ind [W]orkspace Diagnostics",
 		},
 		{
 			"<leader>fd",
 			function()
 				require("fzf-lua").diagnostics_document()
 			end,
-			desc = "[F]ind [D]iagnostics",
+			desc = "[F]ind Buffer [D]iagnostics",
 		},
 		{
 			"<leader>fr",

@@ -124,5 +124,70 @@ return {
 			end,
 			desc = "Live grep the current buffer",
 		},
+		-- LSP keymaps using fzf-lua
+		{
+			"<leader>ld",
+			function()
+				require("fzf-lua").lsp_definitions()
+			end,
+			desc = "LSP Definitions",
+		},
+		{
+			"<leader>lr",
+			function()
+				require("fzf-lua").lsp_references()
+			end,
+			desc = "LSP References",
+		},
+		{
+			"<leader>li",
+			function()
+				require("fzf-lua").lsp_incoming_calls()
+			end,
+			desc = "LSP Incoming Calls",
+		},
+		{
+			"<leader>lo",
+			function()
+				require("fzf-lua").lsp_outgoing_calls()
+			end,
+			desc = "LSP Outgoing Calls",
+		},
+		-- Git keymaps using fzf-lua
+		{
+			"<leader>gc",
+			function()
+				require("fzf-lua").git_commits()
+			end,
+			desc = "Git Commits",
+		},
+		{
+			"<leader>gs",
+			function()
+				require("fzf-lua").git_status()
+			end,
+			desc = "Git Status",
+		},
+		{
+			"<leader>gB",
+			function()
+				require("fzf-lua").git_branches()
+			end,
+			desc = "Git Branches",
+		},
+		{
+			"<leader>gbb",
+			function()
+				require("fzf-lua").git_blame()
+			end,
+			desc = "Git Blame Buffer",
+		},
+		{
+			"<leader>gt",
+			function()
+				require("fzf-lua").git_tags()
+			end,
+			desc = "Git Tags",
+		},
 	},
 }

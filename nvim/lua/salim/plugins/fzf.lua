@@ -140,6 +140,13 @@ return {
 			desc = "LSP References",
 		},
 		{
+			"<leader>lf",
+			function()
+				require("fzf-lua").lsp_finder()
+			end,
+			desc = "LSP Finder",
+		},
+		{
 			"<leader>li",
 			function()
 				require("fzf-lua").lsp_incoming_calls()

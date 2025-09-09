@@ -73,11 +73,11 @@ return {
 					local opts = { buffer = true, silent = true }
 
 					-- Go-specific commands (not handled by LSP)
-					vim.keymap.set("n", "<leader>gi", "<cmd>GoImpl<CR>", opts)
-					vim.keymap.set("n", "<leader>gt", "<cmd>GoAddTag<CR>", opts)
-					vim.keymap.set("n", "<leader>gT", "<cmd>GoRmTag<CR>", opts)
-					vim.keymap.set("n", "<leader>gtt", "<cmd>GoTestFunc<CR>", opts)
-					vim.keymap.set("n", "<leader>gtf", "<cmd>GoTestFile<CR>", opts)
+					vim.keymap.set("n", "<leader>goi", "<cmd>GoImpl<CR>", opts)
+					vim.keymap.set("n", "<leader>got", "<cmd>GoAddTag<CR>", opts)
+					vim.keymap.set("n", "<leader>goT", "<cmd>GoRmTag<CR>", opts)
+					vim.keymap.set("n", "<leader>gott", "<cmd>GoTestFunc<CR>", opts)
+					vim.keymap.set("n", "<leader>gotf", "<cmd>GoTestFile<CR>", opts)
 
 					-- Special handling for P4nda projects
 					local path = vim.fn.expand("%:p")

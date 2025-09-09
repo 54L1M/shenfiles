@@ -11,6 +11,7 @@ keymap.set("i", "jk", "<ESC>", { noremap = true, silent = true, desc = "" }) -- 
 keymap.set("i", "kj", "<ESC>", { noremap = true, silent = true, desc = "" }) -- use kj to exit insert mode
 
 -- normal mode keymaps
+keymap.set("n", "K", vim.lsp.buf.hover, { desc = "LSP Hover" })
 keymap.set("n", "<leader>ww", "<cmd>w!<CR>", { noremap = true, silent = true, desc = "Save Current File" }) -- save current file
 keymap.set("n", "<leader>wa", "<cmd>wa<CR>", { noremap = true, silent = true, desc = "Save All Files" }) -- save all files
 keymap.set("n", "<leader>qq", "<cmd>q<CR>", { noremap = true, silent = true, desc = "Quit" }) -- quit

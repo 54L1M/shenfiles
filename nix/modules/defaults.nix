@@ -5,10 +5,9 @@
     dock = {
       autohide = true;
       persistent-apps = [
-        "/Applications/Alacritty.app"
+        "/Applications/Ghostty.app"
         "/Applications/Firefox.app"
         "/Applications/Obsidian.app"
-        "/Applications/Spotify.app"
         "/Applications/Discord.app"
         "/Applications/Google Chrome.app"
       ];

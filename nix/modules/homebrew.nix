@@ -49,15 +49,12 @@
       "markdown"
       "shellcheck"
       "openjdk"
-      "wtfutil"
     ];
     casks = [
       "firefox"
       "chatgpt"
-      "android-file-transfer"
       "discord"
       "obsidian"
-      "spotify"
       "ghostty"
       "google-chrome"
       "alacritty"

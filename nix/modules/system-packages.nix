@@ -23,5 +23,14 @@
     unrar
     tree
     libffi
+
+    #language server protocols
+    ruff
+    pyright
+    lua-language-server
+    bash-language-server
+    dockerfile-language-server
+    docker-compose-language-service 
+    llvmPackages.clang
   ];
 }

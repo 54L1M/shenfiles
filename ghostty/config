@@ -8,10 +8,11 @@ font-size = 16
 
 
 # Fullscreen
-macos-titlebar-style = "hidden"
-window-decoration = false
-macos-non-native-fullscreen = false
-fullscreen = false
+macos-titlebar-style = "transparent"
+# window-decoration = false
+macos-non-native-fullscreen = "visible-menu"
+macos-window-buttons = "hidden"
+fullscreen = true
 
 # Cursor
 cursor-style = block

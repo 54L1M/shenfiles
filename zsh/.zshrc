@@ -135,9 +135,9 @@ source /opt/homebrew/bin/virtualenvwrapper_lazy.sh
 export PATH=$PATH:$HOME/bin
 
 # tmuxifier
-export PATH="$HOME/.tmuxifier/bin:$PATH"##########################
-eval "$(tmuxifier init -)"
-export TMUXIFIER_LAYOUT_PATH="$HOME/.config/tmux/.tmuxifier-layouts"
+# export PATH="$HOME/.tmuxifier/bin:$PATH"##########################
+# eval "$(tmuxifier init -)"
+# export TMUXIFIER_LAYOUT_PATH="$HOME/.config/tmux/.tmuxifier-layouts"
 #PATH STUFF
 ##########################
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

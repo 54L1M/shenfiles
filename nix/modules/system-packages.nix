@@ -32,5 +32,12 @@
     dockerfile-language-server
     docker-compose-language-service 
     llvmPackages.clang
+
+    #formatters
+    prettier
+    stylua
+    black
+    isort
+    djlint
   ];
 }

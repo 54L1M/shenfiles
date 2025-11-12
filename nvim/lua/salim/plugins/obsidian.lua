@@ -253,7 +253,7 @@ return {
 			local frontmatter = {
 				id = note.id,
 				type = parsed.type,
-				title = frontmatter_title .. (frontmatter_details ~= "" and ": " .. frontmatter_details or ""),
+				title = (parsed.title or "") .. (parsed.details and #parsed.details > 0 and ": " .. parsed.details or ""),
 				created = current_date,
 				modified = current_date,
 				tags = tags,

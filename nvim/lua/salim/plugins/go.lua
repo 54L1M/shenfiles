@@ -25,7 +25,7 @@ return {
         lsp_gofumpt = true,
 
         -- Format on save
-        lsp_format_on_save = true,
+        lsp_format_on_save = false,
         -- Use treesitter for syntax
         -- Use Lspsaga for the UI - skip the default keymaps
         lsp_keymaps = false,

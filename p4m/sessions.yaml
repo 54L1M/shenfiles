@@ -1,7 +1,6 @@
 # p4m Sessions Configuration
 # Each session defines a development environment
 
-
 ats:
   virtualenv: ats3.9
   path: ~/Documents/Workstation/In2Dialog/I2D_ATS/
@@ -15,6 +14,11 @@ prod:
 staging:
   virtualenv: ats3.9
   path: ~/Documents/Workstation/In2Dialog/staging/
+  env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
+
+bot:
+  virtualenv: bot3.9
+  path: ~/Documents/Workstation/In2Dialog/I2D_Companion/
   env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
 
 i2desktop:

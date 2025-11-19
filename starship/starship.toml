@@ -17,7 +17,7 @@ style = 'mauve'
 truncation_length = 0
 
 [git_branch]
-format = '[$symbol$branch]($style)'
+format = '[$symbol$branch](mauve)'
 [kubernetes]
 disabled = false
 format = '[$context](dimmed green) '

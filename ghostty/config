@@ -1,5 +1,6 @@
 # Theme
-theme = Kanagawa Wave
+# theme = Kanagawa Wave
+theme = Gruvbox Dark Hard
 background-opacity = 0.7
 
 # Font

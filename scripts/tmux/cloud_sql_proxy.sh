@@ -28,7 +28,7 @@ case "$1" in
     done
 
     # 4. Open the popup to view the log
-    tmux display-popup -T "#[align=centre]Cloud SQL Proxy" -h 60% -w 80% -S "bg=default" \
+    tmux display-popup -T "#[align=centre,fg=#{@thm_peach}]Cloud SQL Proxy" -h 60% -w 80% -S "bg=#{@thm_bg}" \
       "tail -f $LOGFILE"
     tmux display-message "Cloud SQL Proxy popup closed."
     ;;

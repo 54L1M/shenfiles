@@ -117,7 +117,7 @@ return {
 							-- Floating windows
 							NormalFloat = { bg = colors.mantle },
 							FloatBorder = { bg = colors.mantle, fg = colors.surface2 },
-							FloatTitle = { bg = colors.mantle, fg = colors.text },
+							FloatTitle = { bg = colors.blue, fg = colors.base },
 
 							-- Blink.cmp specific highlighting
 							BlinkCmpMenu = { bg = colors.mantle, fg = colors.text },

@@ -34,11 +34,15 @@ return {
 						width = 0,
 						height = 0.4,
 						border = "none",
-						title = " {title} {live} {flags}",
-						title_pos = "left",
 						{
 							box = "horizontal",
-							{ win = "list", border = "rounded" },
+							{
+								box = "vertical",
+								border = "rounded",
+								title = "{title}",
+								title_pos = "center",
+								{ win = "list", border = "none" },
+							},
 							{ win = "preview", title = "{preview}", width = 0.6, border = "rounded" },
 						},
 						{ win = "input", height = 1, border = "none" },
@@ -100,6 +104,13 @@ return {
 			desc = "Find Config File",
 		},
 		{
+			"<leader>fi",
+			function()
+				Snacks.picker.icons()
+			end,
+			desc = "Find Icons",
+		},
+		{
 			"<leader>ff",
 			function()
 				Snacks.picker.files()
@@ -134,6 +145,21 @@ return {
 			end,
 			desc = "Grep Open Buffers",
 		},
+		{
+			"<leader>fw",
+			function()
+				Snacks.picker.grep_word({ buffers = true, title = "Grep Word Open Buffers" })
+			end,
+			desc = "Grep Word Open Buffers",
+		},
+		{
+			"<leader>fW",
+			function()
+				Snacks.picker.grep_word()
+			end,
+			desc = "Grep Word",
+		},
+
 		{
 			"<leader>fd",
 			function()

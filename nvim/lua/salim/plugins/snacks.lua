@@ -174,6 +174,20 @@ return {
 			end,
 			desc = "Diagnostics",
 		},
+		{
+			"<leader>fm",
+			function()
+				Snacks.picker.man()
+			end,
+			desc = "Man",
+		},
+		{
+			"<leader>fP",
+			function()
+				Snacks.picker.pickers()
+			end,
+			desc = "Available Pickers",
+		},
 
 		-- git
 		{
@@ -224,6 +238,28 @@ return {
 				Snacks.picker.git_log_file()
 			end,
 			desc = "Git Log File",
+		},
+		--lsp
+		{
+			"<leader>lc",
+			function()
+				Snacks.picker.lsp_config()
+			end,
+			desc = "LSP Config",
+		},
+		{
+			"<leader>ld",
+			function()
+				Snacks.picker.lsp_definitions()
+			end,
+			desc = "LSP Definitions",
+		},
+		{
+			"<leader>li",
+			function()
+				Snacks.picker.lsp_implementations()
+			end,
+			desc = "LSP Implementations",
 		},
 
 		{

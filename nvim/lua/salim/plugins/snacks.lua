@@ -342,14 +342,14 @@ return {
 			desc = "C[a]lls Outgoing",
 		},
 		{
-			"<leader>ss",
+			"<leader>ls",
 			function()
 				Snacks.picker.lsp_symbols()
 			end,
 			desc = "LSP Symbols",
 		},
 		{
-			"<leader>sS",
+			"<leader>lS",
 			function()
 				Snacks.picker.lsp_workspace_symbols()
 			end,

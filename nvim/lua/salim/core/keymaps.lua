@@ -16,7 +16,7 @@ keymap.set("n", "<leader>ww", "<cmd>w!<CR>", { noremap = true, silent = true, de
 keymap.set("n", "<leader>wa", "<cmd>wa<CR>", { noremap = true, silent = true, desc = "Save All Files" }) -- save all files
 keymap.set("n", "<leader>qq", "<cmd>q<CR>", { noremap = true, silent = true, desc = "Quit" }) -- quit
 keymap.set("n", "x", '"_x') -- delete single character without copying into register
-keymap.set("n", "<leader>nh", "<cmd>nohl<CR>", { noremap = true, silent = true, desc = "Clear Highlight" }) -- clear highlight
+keymap.set("n", "<leader>h", "<cmd>nohl<CR>", { noremap = true, silent = true, desc = "Clear Highlight" }) -- clear highlight
 
 keymap.set("n", "<leader>sv", "<C-w>v", { noremap = true, silent = true, desc = "Split Window Vertically" }) -- split window vertically
 keymap.set("n", "<leader>sh", "<C-w>s", { noremap = true, silent = true, desc = "Split Window Horizontally" }) -- split window horizontally

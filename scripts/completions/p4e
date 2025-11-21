@@ -1,0 +1,81 @@
+#compdef p4e
+
+# Zsh completion for p4e
+# Place in your completions directory
+
+function _p4e {
+  local context state state_descr line
+  typeset -A opt_args
+
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[Show help message]' \
+    '(-c --config)'{-c,--config}'[Use alternative config file]:config file:_files' \
+    '(-p --project)'{-p,--project}'[Pre-select a project]:project:->projects' \
+    '(-e --env)'{-e,--env}'[Pre-select an env suffix]:environment:->environments' \
+    '(-a --active)'{-a,--active}'[Show active environment]' \
+    '1:command:((link\:"Create symlink for project .env"))' \
+    '*:arg:->args' && return
+
+  local config_file="$HOME/.config/p4e/projects.yaml"
+
+  case $state in
+    projects)
+      local -a projects
+      if [[ -f "$config_file" ]] && command -v yq >/dev/null; then
+        # Extract keys
+        projects=($(yq eval 'keys | .[]' "$config_file" 2>/dev/null))
+        _describe 'projects' projects
+      fi
+      ;;
+
+    environments)
+      local project_name=""
+      
+      # Check for -p or --project in the arguments already typed
+      if [[ -n ${opt_args[-p]} ]]; then
+        project_name=${opt_args[-p]}
+      elif [[ -n ${opt_args[--project]} ]]; then
+        project_name=${opt_args[--project]}
+      fi
+
+      if [[ -n "$project_name" ]] && [[ -f "$config_file" ]]; then
+        # Use -r to get raw path without quotes
+        local project_path
+        project_path=$(yq eval -r ".${project_name}.path" "$config_file" 2>/dev/null)
+        
+        # Expand tilde manually (zsh specific replacement)
+        project_path="${project_path/#\~/$HOME}"
+        
+        if [[ -d "$project_path/ENV" ]]; then
+          local -a envs
+          # List files, filter for .env.*, remove the prefix
+          envs=($(ls -1 "$project_path/ENV" 2>/dev/null | grep "^.env\." | sed 's/^.env.//'))
+          
+          if [[ ${#envs[@]} -gt 0 ]]; then
+            _describe 'environments' envs
+          else
+            _message "No .env.* files found in ENV/"
+          fi
+        else
+           _message "ENV dir not found for: $project_name"
+        fi
+      else
+        _message "Select a project (-p) first"
+      fi
+      ;;
+
+    args)
+      case $line[1] in
+        link)
+          local -a projects
+          if [[ -f "$config_file" ]] && command -v yq >/dev/null; then
+            projects=($(yq eval 'keys | .[]' "$config_file" 2>/dev/null))
+            _describe 'projects' projects
+          fi
+          ;;
+      esac
+      ;;
+  esac
+}
+
+_p4e "$@"

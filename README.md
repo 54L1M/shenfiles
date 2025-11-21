@@ -1,4 +1,4 @@
-# Salim's Shenanigans - Dotfiles
+# 54L1M's Shenanigans - Dotfiles
 
 This repository contains my personal dotfiles and system configuration for macOS. The setup is managed primarily by [Nix](https://nixos.org) and [nix-darwin](https://github.com/LnL7/nix-darwin), with a collection of custom scripts to automate common workflows.
 

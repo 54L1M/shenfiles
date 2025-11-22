@@ -6,9 +6,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/../lib/colors/colors.sh"
 source "$SCRIPT_DIR/../lib/utils/utils.sh"
 
-# Navigate to the dotfiles directory
-DOTFILES_DIR="$HOME/shenfiles/"
-cd "$DOTFILES_DIR" || p4_die "Dotfiles directory not found!"
+# Navigate to the dotfiles directory (repository root)
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+cd "$REPO_ROOT" || p4_die "Dotfiles repository root not found!"
 
 # Check if we're in a git repository
 if ! git_is_repo; then

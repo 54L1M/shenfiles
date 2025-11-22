@@ -23,7 +23,7 @@ function _p4m_completion {
       )
 
       # Use a simple, robust while/read loop to add dynamic sessions.
-      local config_file="${HOME}/.config/p4m/sessions.yaml"
+      local config_file="${HOME}/.config/p4/p4m.yaml"
       if [[ -f "$config_file" ]] && command -v yq >/dev/null 2>&1; then
         # Process yq output line-by-line and append directly.
         # This is the most compatible way to handle command output.

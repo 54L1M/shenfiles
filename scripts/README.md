@@ -4,6 +4,8 @@ This directory contains a collection of custom scripts to automate and simplify 
 
 The `install.sh` script handles the installation of these tools, making them available in your `PATH`. It symlinks the executables from `bin/` into `~/.local/bin/` and also installs their corresponding Zsh completions from the `completions/` directory.
 
+**Note on Configuration:** All `p4*` scripts store their configuration files in a central directory: `~/.config/p4/`.
+
 ## Installation
 
 To install all scripts and their completions, run the installer from the root of the repository:
@@ -45,7 +47,7 @@ A powerful script for creating and managing project-specific `tmux` sessions. It
 - `p4m sessions`: Lists all available sessions from the configuration.
 - `p4m list`: Lists all currently running `tmux` sessions.
 
-The configuration is located at `~/.config/p4m/sessions.yaml`. The script will generate an example config on first run.
+The configuration is located at `~/.config/p4/p4m.yaml`. The script will generate an example config on first run.
 
 ---
 
@@ -53,7 +55,7 @@ The configuration is located at `~/.config/p4m/sessions.yaml`. The script will g
 
 **Project Environment Switcher**
 
-A utility for managing `.env` files for different projects and deployment environments (e.g., dev, staging, prod).
+A utility for managing `.env` files for different projects and deployment environments (e.g., dev, staging, prod). Its configuration is located at `~/.config/p4/p4e.yaml`.
 
 **What it does:**
 - Uses `fzf` for interactively selecting a project and an associated environment profile (e.g., `.env.dev`, `.env.prod`).
@@ -88,7 +90,7 @@ A flexible script to automate the process of staging, committing, and pushing ch
 - Pushes all the new commits to the remote repository.
 
 **Features:**
-- **Config-driven Profiles:** Can be configured with profiles in `~/.config/p4s/config.yaml`. Each profile can specify a repository path and a commit message template.
+- **Config-driven Profiles:** Can be configured with profiles in `~/.config/p4/p4s.yaml`. Each profile can specify a repository path and a commit message template.
 - **Interactive Mode:** When run without arguments (`p4s`), it provides an `fzf`-powered menu to choose a profile.
 - **Manual Mode:** You can target an arbitrary repository using the `-d /path/to/repo` flag.
 - **Custom Commit Messages:** A commit message *template* can be provided with the `-m "your template with $file_name"` flag. This overrides any other settings.

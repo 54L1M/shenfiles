@@ -6,7 +6,7 @@
 # Source your color library
 source "$HOME/shenfiles/scripts/lib/colors/colors.sh"
 
-CONFIG_FILE="$HOME/.config/p4e/projects.yaml"
+CONFIG_FILE="$HOME/.config/p4/p4e.yaml"
 ARG_PROJECT=""
 ARG_ENV=""
 SHOW_ACTIVE=false

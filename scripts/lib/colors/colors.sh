@@ -70,8 +70,8 @@ p4_colors_enabled() {
 
 # Function to apply color formatting, only if colors are enabled
 p4_color() {
-  local color_code="$1"
-  local text="$2"
+  local color_code="${1:-}"
+  local text="${2:-}"
 
   if p4_colors_enabled; then
     echo -e "${color_code}${text}${P4_RESET}"
@@ -86,7 +86,7 @@ p4_color() {
 
 # Print a header with background color
 p4_header() {
-  local text="$1"
+  local text="${1:-}"
 
   if p4_colors_enabled; then
     echo -e "${P4_BOLD}${P4_BG_BLUE}${P4_WHITE} ${text} ${P4_RESET}"
@@ -97,7 +97,7 @@ p4_header() {
 
 # Print title for a section
 p4_title() {
-  local text="$1"
+  local text="${1:-}"
 
   if p4_colors_enabled; then
     echo -e "${P4_BOLD}${P4_CYAN}${text}${P4_RESET}"
@@ -108,9 +108,9 @@ p4_title() {
 
 # Print a command with its description
 p4_cmd() {
-  local cmd="$1"
-  local args="$2"
-  local description="$3"
+  local cmd="${1:-}"
+  local args="${2:-}"
+  local description="${3:-}"
 
   if p4_colors_enabled; then
     printf "${P4_GREEN}%s${P4_RESET} ${P4_YELLOW}%s${P4_RESET} %s\n" "$cmd" "$args" "$description"
@@ -121,8 +121,8 @@ p4_cmd() {
 
 # Print an example command with its description
 p4_example() {
-  local cmd="$1"
-  local description="$2"
+  local cmd="${1:-}"
+  local description="${2:-}"
 
   if p4_colors_enabled; then
     printf "${P4_CYAN}%s${P4_RESET} %s\n" "$cmd" "$description"
@@ -133,8 +133,8 @@ p4_example() {
 
 # Print an item with description
 p4_item() {
-  local name="$1"
-  local description="$2"
+  local name="${1:-}"
+  local description="${2:-}"
 
   if p4_colors_enabled; then
     printf "${P4_BOLD}${P4_BLUE}%s${P4_RESET} %s\n" "$name" "$description"
@@ -145,7 +145,7 @@ p4_item() {
 
 # Print an info message
 p4_info() {
-  local message="$1"
+  local message="${1:-}"
 
   if p4_colors_enabled; then
     echo -e "${P4_ICON_INFO} ${P4_BLUE}${message}${P4_RESET}"
@@ -156,7 +156,7 @@ p4_info() {
 
 # Print a success message
 p4_success() {
-  local message="$1"
+  local message="${1:-}"
 
   if p4_colors_enabled; then
     echo -e "${P4_ICON_SUCCESS} ${P4_GREEN}${message}${P4_RESET}"
@@ -167,7 +167,7 @@ p4_success() {
 
 # Print a warning message
 p4_warn() {
-  local message="$1"
+  local message="${1:-}"
 
   if p4_colors_enabled; then
     echo -e "${P4_ICON_WARNING} ${P4_YELLOW}${message}${P4_RESET}"
@@ -178,7 +178,7 @@ p4_warn() {
 
 # Print an error message
 p4_error() {
-  local message="$1"
+  local message="${1:-}"
 
   if p4_colors_enabled; then
     echo -e "${P4_ICON_ERROR} ${P4_RED}${message}${P4_RESET}" >&2
@@ -190,7 +190,7 @@ p4_error() {
 # Print a debug message (only when DEBUG is enabled)
 p4_debug() {
   if [ -n "${P4_DEBUG:-}" ]; then
-    local message="$1"
+    local message="${1:-}"
 
     if p4_colors_enabled; then
       echo -e "${P4_ICON_DEBUG} ${P4_DIM}${message}${P4_RESET}" >&2
@@ -202,7 +202,7 @@ p4_debug() {
 
 # Print a step message (for progress indication)
 p4_step() {
-  local message="$1"
+  local message="${1:-}"
 
   if p4_colors_enabled; then
     echo -e "${P4_ICON_STEP} ${P4_MAGENTA}${message}${P4_RESET}"
@@ -213,7 +213,7 @@ p4_step() {
 
 # Print a tip message
 p4_tip() {
-  local message="$1"
+  local message="${1:-}"
 
   if p4_colors_enabled; then
     echo -e "${P4_ICON_TIP} ${P4_CYAN}${message}${P4_RESET}"
@@ -224,7 +224,7 @@ p4_tip() {
 
 # Highlight text
 p4_highlight() {
-  local text="$1"
+  local text="${1:-}"
 
   if p4_colors_enabled; then
     echo -e "${P4_BOLD}${P4_WHITE}${text}${P4_RESET}"
@@ -235,8 +235,8 @@ p4_highlight() {
 
 # Print colored text
 p4_print_colored() {
-  local color="$1"
-  local text="$2"
+  local color="${1:-}"
+  local text="${2:-}"
 
   if p4_colors_enabled; then
     echo -e "${color}${text}${P4_RESET}"
@@ -253,9 +253,10 @@ format_timestamp() {
 
 # Log a message with timestamp
 log_message() {
-  local level="$1"
-  local message="$2"
-  local timestamp=$(format_timestamp)
+  local level="${1:-}"
+  local message="${2:-}"
+  local timestamp
+  timestamp=$(format_timestamp)
 
   case "$level" in
   "INFO") p4_print_colored "$P4_BLUE" "[$timestamp] [INFO] $message" ;;
@@ -272,11 +273,11 @@ log_message() {
 }
 
 # Log wrapper functions
-log_info() { log_message "INFO" "$1"; }
-log_success() { log_message "SUCCESS" "$1"; }
-log_warn() { log_message "WARN" "$1"; }
-log_error() { log_message "ERROR" "$1"; }
-log_debug() { log_message "DEBUG" "$1"; }
+log_info() { log_message "INFO" "${1:-}"; }
+log_success() { log_message "SUCCESS" "${1:-}"; }
+log_warn() { log_message "WARN" "${1-}"; }
+log_error() { log_message "ERROR" "${1:-}"; }
+log_debug() { log_message "DEBUG" "${1:-}"; }
 
 # Confirmation prompt (uses colors so stays here)
 p4_confirm() {
@@ -288,6 +289,6 @@ p4_confirm() {
 
 # Error handling (uses colors so stays here)
 p4_die() {
-    p4_error "$1"
+    p4_error "${1:-Unknown error}"
     exit "${2:-1}"
 }

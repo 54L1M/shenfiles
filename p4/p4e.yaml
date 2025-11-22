@@ -1,0 +1,9 @@
+# p4e Projects Configuration
+# Maps project names to their root directory.
+# The script expects an 'ENV' folder inside this path.
+
+ats:
+  path: ~/Documents/Workstation/In2Dialog/I2D_ATS/
+# Example others
+# bot:
+#   path: ~/Documents/Workstation/In2Dialog/I2D_Companion/

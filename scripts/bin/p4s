@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-
 # p4s - A generalized git repository synchronizer
 
 # Source helper libraries

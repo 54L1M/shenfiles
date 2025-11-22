@@ -14,7 +14,7 @@ LIB_DIR="$BASE_DIR/lib"
 source "$LIB_DIR/colors/colors.sh"
 
 # Configuration
-CONFIG_FILE="$HOME/.config/p4m/sessions.yaml"
+CONFIG_FILE="$HOME/.config/p4/p4m.yaml"
 
 # Window mapping
 declare -A WINDOW_NAMES=(

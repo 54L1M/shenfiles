@@ -1,9 +1,16 @@
 #!/bin/bash
 
+# This script sets up a personalized directory structure and clones repositories.
+
 # Define the base directory
 DOCUMENTS_DIR="$HOME/Documents"
+# Assumes the 'repos' file is in the same root directory as the 'scripts' folder.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+REPOS_FILE="$REPO_ROOT_DIR/repos"
 
-# Define the directory structure
+
+# Define the base directory structure to be created
 declare -A structure=(
   ["Workstation"]="Freelance Ghaaf In2Dialog Miscellaneous"
   ["TheGreatLibrary"]=""
@@ -13,16 +20,8 @@ declare -A structure=(
   ["P4ndaF4ce"]="SharedResources"
 )
 
-# Define repositories to clone (supporting multiple repos per directory)
-declare -A repos=(
-  ["P4ndaF4ce"]="git@github.com:P4ndaF4ce/P4ndaFrame.git git@github.com:P4ndaF4ce/P4ndaBox.git"
-  ["Workstation/Freelance"]="git@github.com:54L1M/ceramsite.git git@github.com:54L1M/super-farachoob.git"
-  ["Workstation/In2Dialog"]="git@github.com:In2Dialog/I2D_ATS.git"
-  ["TheGreatLibrary"]="git@github.com:54L1M/TheGreatLibrary.git"
-  ["TheSandBox"]=""
-)
-
-# Create directories with existence checks
+# --- Create Base Directory Structure ---
+echo "--- Setting up base directory structure in $DOCUMENTS_DIR ---"
 for folder in "${!structure[@]}"; do
   main_dir="$DOCUMENTS_DIR/$folder"
   if [ ! -d "$main_dir" ]; then
@@ -32,16 +31,6 @@ for folder in "${!structure[@]}"; do
     echo "Directory already exists: $main_dir"
   fi
 
-  # Clone repositories into the main directory if specified
-  if [ -n "${repos[$folder]}" ]; then
-    echo "Cloning repositories into: $main_dir"
-    for repo in ${repos[$folder]}; do
-      git clone "$repo" "$main_dir/$(basename "$repo" .git)"
-      echo "Cloned $repo into $main_dir"
-    done
-  fi
-
-  # Create subdirectories and check for repositories to clone into them
   for subfolder in ${structure[$folder]}; do
     sub_dir="$main_dir/$subfolder"
     if [ ! -d "$sub_dir" ]; then
@@ -50,17 +39,46 @@ for folder in "${!structure[@]}"; do
     else
       echo "Subdirectory already exists: $sub_dir"
     fi
-
-    # Clone repositories into subdirectories if specified
-    sub_dir_with_repo="${folder}/${subfolder}"
-    if [ -n "${repos[$sub_dir_with_repo]}" ]; then
-      echo "Cloning repositories into: $sub_dir"
-      for repo in ${repos[$sub_dir_with_repo]}; do
-        git clone "$repo" "$sub_dir/$(basename "$repo" .git)"
-        echo "Cloned $repo into $sub_dir"
-      done
-    fi
   done
 done
+echo "--- Base directory structure setup complete ---"
+echo
 
-echo "Directory structure setup and repositories cloned!"
+# --- Clone Repositories ---
+if [ ! -f "$REPOS_FILE" ]; then
+    echo "Warning: Repository list file not found at '$REPOS_FILE'. Skipping cloning."
+    exit 0
+fi
+
+echo "--- Cloning repositories from '$REPOS_FILE' ---"
+# Read the repos file line by line, skipping comments and empty lines
+grep -v '^\s*#' "$REPOS_FILE" | grep -v '^\s*$' | while IFS= read -r line; do
+  # Use 'read' to split the line into two parts
+  read -r dest_dir repo_url <<< "$line"
+
+  # Expand tilde in destination directory
+  dest_dir_expanded="${dest_dir/#\~/$HOME}"
+  
+  # Get the repository name from the URL to create the final clone path
+  repo_name=$(basename "$repo_url" .git)
+  clone_path="$dest_dir_expanded/$repo_name"
+
+  if [ -z "$dest_dir" ] || [ -z "$repo_url" ]; then
+    echo "Warning: Skipping invalid line in repos file: '$line'"
+    continue
+  fi
+
+  if [ -d "$clone_path" ]; then
+    echo "Repository '$repo_name' already exists in '$dest_dir_expanded'. Skipping."
+  else
+    echo "Cloning '$repo_url' into '$clone_path'..."
+    # Ensure the destination directory exists before cloning
+    mkdir -p "$dest_dir_expanded"
+    git clone "$repo_url" "$clone_path"
+    echo "Cloned successfully."
+  fi
+done
+echo "--- Repository cloning complete ---"
+
+echo
+echo "Directory structure and repository setup finished!"

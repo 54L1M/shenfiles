@@ -22,7 +22,7 @@ Here is a summary of the scripts located in the `bin/` directory:
 
 ---
 
-### `mac_setup.sh`
+### `setup.sh`
 
 **Master Bootstrap Script**
 
@@ -36,7 +36,7 @@ This is the main script for setting up a new macOS machine from scratch. It auto
 
 ---
 
-### `p4m.sh` (PandaMux)
+### `p4m.sh`
 
 **Tmux Development Session Manager**
 
@@ -51,7 +51,7 @@ The configuration is located at `~/.config/p4/p4m.yaml`. The script will generat
 
 ---
 
-### `p4e.sh` (PandaEnv)
+### `p4e.sh`
 
 **Project Environment Switcher**
 
@@ -63,18 +63,7 @@ A utility for managing `.env` files for different projects and deployment enviro
 - Can automatically source the new environment file in the current `tmux` pane.
 - Provides a `link` command to symlink the project's root `.env` to the active one in `ENV/.env`, which is useful for applications that expect it in the root.
 
----
 
-### `shensync.sh`
-
-**Dotfiles Repository Synchronizer**
-
-A simple script to automate the process of committing and pushing changes to this dotfiles repository.
-
-**What it does:**
-- Checks for any modified, new, or deleted files in the git repository.
-- Creates a unique commit for each change with a standardized message (e.g., "Update file.txt", "Add new_script.sh").
-- Pushes all new commits to the `origin` remote.
 
 ---
 
@@ -102,17 +91,6 @@ A flexible script to automate the process of staging, committing, and pushing ch
 
 **Directory Structure Initializer**
 
-A personal script to create a predefined directory structure within `~/Documents` and clone frequently used git repositories into them. This is primarily called by `mac_setup.sh` during the initial bootstrap process.
+A personal script to create a predefined directory structure within `~/Documents` and clone frequently used git repositories into them. This is primarily called by `setup.sh` during the initial bootstrap process.
 
----
 
-### `black_box`
-
-**File Encryption Utility**
-
-A command-line tool for symmetrically encrypting and decrypting files using `openssl` and `argon2`.
-
-**What it does:**
-- Derives a strong encryption key from a password and salt using the Argon2 key derivation function.
-- Encrypts/decrypts files using AES-256.
-- Provides an option to securely shred the original file after encryption.

@@ -72,7 +72,7 @@ fi
 source "$SCRIPT_DIR/lib/colors/colors.sh"
 
 # Define paths
-DOTFILES_DIR="$HOME/shenfiles"
+DOTFILES_DIR=$(dirname "$SCRIPT_DIR")
 SCRIPTS_DIR="$DOTFILES_DIR/scripts"
 BIN_DIR="$SCRIPTS_DIR/bin"
 LIB_DIR="$SCRIPTS_DIR/lib"

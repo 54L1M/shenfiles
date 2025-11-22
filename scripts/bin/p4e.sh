@@ -4,7 +4,8 @@
 # Usage: p4e [options] | p4e link [project]
 
 # Source your color library
-source "$HOME/shenfiles/scripts/lib/colors/colors.sh"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../lib/colors/colors.sh"
 
 CONFIG_FILE="$HOME/.config/p4/p4e.yaml"
 ARG_PROJECT=""

@@ -16,7 +16,7 @@ function _p4e {
     '1:command:((link\:"Create symlink for project .env"))' \
     '*:arg:->args' && return
 
-  local config_file="$HOME/.config/p4e/projects.yaml"
+  local config_file="$HOME/.config/p4/p4e.yaml"
 
   case $state in
     projects)

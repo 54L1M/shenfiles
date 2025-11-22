@@ -76,6 +76,26 @@ A simple script to automate the process of committing and pushing changes to thi
 
 ---
 
+### `p4s`
+
+**Generalized Repository Synchronizer**
+
+A flexible script to automate the process of staging, committing, and pushing changes for any git repository. It works by creating a separate commit for each changed file, similar to `shensync.sh`.
+
+**What it does:**
+- Iterates through each new, modified, or deleted file.
+- Creates a unique commit for each file.
+- Pushes all the new commits to the remote repository.
+
+**Features:**
+- **Config-driven Profiles:** Can be configured with profiles in `~/.config/p4s/config.yaml`. Each profile can specify a repository path and a commit message template.
+- **Interactive Mode:** When run without arguments (`p4s`), it provides an `fzf`-powered menu to choose a profile.
+- **Manual Mode:** You can target an arbitrary repository using the `-d /path/to/repo` flag.
+- **Custom Commit Messages:** A commit message *template* can be provided with the `-m "your template with $file_name"` flag. This overrides any other settings.
+- **Templating:** If a template is provided (via `-m` or the config file), the script will substitute `$file_name` with the name of the file being committed. If no template is given, it defaults to messages like "Update README.md" or "Add new_file.js".
+
+---
+
 ### `create_dirs.sh`
 
 **Directory Structure Initializer**

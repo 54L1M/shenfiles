@@ -73,7 +73,9 @@ return {
 			if not str then
 				return ""
 			end
-			return str:lower():gsub(" ", "-"):gsub("[^%w%-_]", "")
+			-- FIX: Wrapped in parentheses to discard the second return value of gsub (the count).
+			-- This prevents table.insert from receiving the count as the 'position' argument.
+			return (str:lower():gsub(" ", "-"):gsub("[^%w%-_]", ""))
 		end
 
 		local function parse_structured_title(title)

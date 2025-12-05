@@ -189,6 +189,7 @@ export PATH="$HOME/.emacs.d/bin:$PATH"
 export ANDROID_HOME=~/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin
 
+eval "$(direnv hook zsh)"
 
 . "$HOME/.local/bin/env"
 

@@ -21,3 +21,8 @@ require("lazy").setup({ { import = "salim.plugins" }, { import = "salim.plugins.
 })
 vim.cmd("colorscheme catppuccin")
 -- vim.cmd("colorscheme kanagawa")
+
+-- Override default UI select with Snacks Picker
+vim.ui.select = function(...)
+	require("snacks").picker.select(...)
+end

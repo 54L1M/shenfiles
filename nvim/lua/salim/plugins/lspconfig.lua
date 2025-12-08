@@ -2,16 +2,12 @@ return {
 	"neovim/nvim-lspconfig",
 	event = { "BufReadPre", "BufNewFile" },
 	config = function()
-		-- Your diagnostic configuration remains the same
 		vim.diagnostic.config({
 			virtual_text = true,
 			underline = true,
 			update_in_insert = false,
 			severity_sort = true,
-			float = {
-				border = "rounded",
-				source = true,
-			},
+			float = { border = "rounded", source = true },
 			signs = {
 				text = {
 					[vim.diagnostic.severity.ERROR] = " ",
@@ -19,21 +15,39 @@ return {
 					[vim.diagnostic.severity.INFO] = " ",
 					[vim.diagnostic.severity.HINT] = " ",
 				},
-				numhl = {
-					[vim.diagnostic.severity.ERROR] = "ErrorMsg",
-					[vim.diagnostic.severity.WARN] = "WarningMsg",
-				},
 			},
 		})
 
-		-- Enable the language servers that you have manually installed
-		vim.lsp.enable("lua_ls")
-		vim.lsp.enable("pyright")
-		vim.lsp.enable("ruff")
-		vim.lsp.enable("gopls")
-		vim.lsp.enable("dockerls")
-		vim.lsp.enable("docker_compose_language_service")
-		vim.lsp.enable("bashls")
-		vim.lsp.enable("clangd")
+		vim.api.nvim_create_autocmd("LspAttach", {
+			group = vim.api.nvim_create_augroup("UserLspConfig", { clear = true }),
+			callback = function(ev)
+				local opts = { buffer = ev.buf, silent = true }
+
+				opts.desc = "Code Action"
+				vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
+
+				opts.desc = "Rename Symbol"
+				vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+
+				opts.desc = "LSP Hover"
+				vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+			end,
+		})
+
+		local servers = {
+			"lua_ls",
+			"pyright",
+			"ruff",
+			"gopls",
+			"dockerls",
+			"docker_compose_language_service",
+			"bashls",
+			"clangd",
+		}
+
+		-- Loop to enable all servers
+		for _, server in ipairs(servers) do
+			vim.lsp.enable(server)
+		end
 	end,
 }

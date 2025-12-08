@@ -23,6 +23,12 @@ return {
 				git_log_file = { layout = "default" },
 				git_status = { layout = "default" },
 				git_stash = { layout = "default" },
+				select = {
+					layout = {
+						preset = "vscode",
+						border = "rounded",
+					},
+				},
 			},
 			layout = "custom",
 			layouts = {

@@ -5,5 +5,5 @@
 ats:
   path: ~/Documents/Workstation/In2Dialog/I2D_ATS/
 # Example others
-# bot:
-#   path: ~/Documents/Workstation/In2Dialog/I2D_Companion/
+bot:
+  path: ~/Documents/Workstation/In2Dialog/I2D_Companion/

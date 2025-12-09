@@ -49,6 +49,7 @@
       "markdown"
       "shellcheck"
       "openjdk"
+      "direnv"
     ];
     casks = [
       "firefox"

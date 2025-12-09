@@ -19,8 +19,8 @@ truncation_symbol = '…/'
 truncate_to_repo = true
 
 [git_status]
-up_to_date = '✓'
-format = '[\[$all_status\]](red)'
+# up_to_date = '✓'
+format = '([\[$all_status$ahead_behind\]](red))'
 [git_branch]
 format = '[$branch](mauve)'
 [kubernetes]

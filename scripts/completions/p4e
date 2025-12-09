@@ -54,9 +54,32 @@ _p4e() {
 
       case ${line[1]} in
         switch|s)
-          local -a projects
-          projects=($(yq eval 'keys | .[]' "$config_file" 2>/dev/null))
-          _describe 'project' projects
+          local -a completions projects
+          local project project_path env_dir env_file filename env_name
+          projects=($(command yq eval 'keys | .[]' "$config_file" 2>/dev/null))
+
+          for project in "${projects[@]}"; do
+            project_path=$(command yq eval -r ".${project}.path" "$config_file" 2>/dev/null)
+
+            if [[ -z "$project_path" || "$project_path" == "null" ]]; then
+                continue
+            fi
+
+            project_path=${project_path/#\~/$HOME}
+            env_dir="$project_path/ENV"
+
+            if [[ -d "$env_dir" ]]; then
+              # Use zsh globbing to find env files (e.g., .env.dev)
+              for env_file in $env_dir/.env.*(N.); do
+                filename=${env_file##*/}
+                local env_name=${filename#.env.}
+                if [[ -n "$env_name" ]]; then
+                    completions+=("${project}.${env_name}")
+                fi
+              done
+            fi
+          done
+          _describe 'project.env' completions
           ;;
         link)
           local -a projects

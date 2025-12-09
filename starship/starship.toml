@@ -14,12 +14,16 @@ vimcmd_symbol = "[;](bold yellow)"
 # vimcmd_symbol = "[❮](yellow)"
 [directory]
 style = 'mauve'
-truncation_length = 0
+truncation_length = 3
+truncation_symbol = '…/'
+truncate_to_repo = true
 
+[git_status]
+format = '[\[$all_status\]](red)'
 [git_branch]
-format = '[$symbol$branch](mauve)'
+format = '[$branch](mauve)'
 [kubernetes]
-disabled = false
+disabled = true
 format = '[$context](dimmed green) '
 [python]
 format = '[(\($virtualenv\))]($style)'

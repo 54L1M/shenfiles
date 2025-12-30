@@ -1,7 +1,7 @@
 # Theme
 # theme = Kanagawa Wave
 theme = Gruvbox Dark Hard
-background-opacity = 0.3
+background-opacity = 0.5
 
 # Font
 font-family = "JetBrainsMono Nerd Font Mono"

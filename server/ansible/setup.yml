@@ -1,0 +1,36 @@
+---
+- name: Setup Ubuntu Server
+  hosts: all
+  become: yes
+  vars:
+    user: salim
+    home: "/home/{{ user }}"
+    dotfiles_repo: "https://github.com/54L1M/shenfiles.git"
+
+  vars_files:
+    - group_vars/all/secrets.yml
+
+  tasks:
+    - name: Setup User & SSH
+      import_tasks: tasks/user.yml
+
+    - name: Run Common Setup
+      import_tasks: tasks/common.yml
+
+    - name: Run Security Hardening
+      import_tasks: tasks/security.yml
+
+    - name: Install Docker
+      import_tasks: tasks/docker.yml
+
+    - name: Install Neovim
+      import_tasks: tasks/neovim.yml
+
+    - name: Link Dotfiles
+      import_tasks: tasks/dotfiles.yml
+
+  handlers:
+    - name: Restart SSH
+      service:
+        name: ssh
+        state: restarted

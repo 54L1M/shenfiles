@@ -1,0 +1,6 @@
+users:
+  - name: root
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMquNsw4V9n4ItqkIKTdp1MRJS+j9nTAZ7zigiTvlWya 54l1m@54L1Ms-MBP.home
+package_update: true
+package_upgrade: true

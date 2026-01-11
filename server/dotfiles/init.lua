@@ -43,7 +43,13 @@ require("lazy").setup({
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
 		config = function()
-			require("nvim-treesitter.configs").setup({
+			-- Use pcall (protected call) to prevent startup crashes
+			local status, configs = pcall(require, "nvim-treesitter.configs")
+			if not status then
+				return
+			end
+
+			configs.setup({
 				ensure_installed = { "bash", "c", "html", "lua", "markdown", "vim", "yaml" },
 				highlight = { enable = true },
 			})

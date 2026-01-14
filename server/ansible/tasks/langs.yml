@@ -1,0 +1,70 @@
+---
+# -----------------------------
+# NODE.JS & NPM (via NVM)
+# -----------------------------
+- name: Install NVM dependencies
+  apt:
+    name: build-essential
+    state: present
+  become: yes
+
+- name: Check if NVM is installed
+  stat:
+    path: "{{ home }}/.nvm/nvm.sh"
+  register: nvm_stat
+
+- name: Install NVM
+  when: not nvm_stat.stat.exists
+  become: no
+  shell: |
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+  args:
+    creates: "{{ home }}/.nvm/nvm.sh"
+
+- name: Install Node.js LTS
+  become: no
+  shell: |
+    . {{ home }}/.nvm/nvm.sh
+    nvm install --lts
+    nvm use --lts
+    nvm alias default 'lts/*'
+  args:
+    executable: /bin/bash
+  # Only run if node is not found in the path managed by NVM
+  when: not nvm_stat.stat.exists
+
+# -----------------------------
+# GOLANG
+# -----------------------------
+- name: Remove existing Go installation
+  file:
+    path: /usr/local/go
+    state: absent
+  become: yes
+  # Optional: Run this only if you want to force an upgrade
+  tags: [go-upgrade]
+
+- name: Check if Go is installed
+  stat:
+    path: /usr/local/go/bin/go
+  register: go_stat
+
+- name: Download and Install Go
+  when: not go_stat.stat.exists
+  become: yes
+  block:
+    - name: Download Go Tarball
+      get_url:
+        url: "https://go.dev/dl/go1.22.2.linux-amd64.tar.gz"
+        dest: "/tmp/go.tar.gz"
+
+    - name: Extract Go to /usr/local
+      unarchive:
+        src: "/tmp/go.tar.gz"
+        dest: "/usr/local"
+        remote_src: yes
+
+    - name: Cleanup Go Tarball
+      file:
+        path: "/tmp/go.tar.gz"
+        state: absent

@@ -19,7 +19,7 @@
       become: yes
 
     - name: Install Programming Languages
-      import_tasks: tasks/languages.yml
+      import_tasks: tasks/langs.yml
 
     - name: Run Security Hardening
       import_tasks: tasks/security.yml

@@ -1,4 +1,4 @@
--- Minimal Server Config with Snacks & Blink
+-- Minimal Server Config
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
@@ -24,7 +24,7 @@ opt.tabstop = 2
 opt.shiftwidth = 2
 opt.expandtab = true
 opt.autoindent = true
-opt.signcolumn = "yes" -- Keep sign column open for LSP/Git
+opt.signcolumn = "yes"
 
 -----------------------------
 -- KEYMAPS
@@ -83,29 +83,47 @@ vim.opt.rtp:prepend(lazypath)
 -- PLUGINS
 -----------------------------
 require("lazy").setup({
-	-- 1. Colorscheme
+	-- 1. Colorscheme (Transparent)
 	{
 		"catppuccin/nvim",
 		name = "catppuccin",
 		priority = 1000,
 		config = function()
+			require("catppuccin").setup({
+				transparent_background = true, -- ENABLED
+			})
 			vim.cmd.colorscheme("catppuccin")
 		end,
 	},
 
-	-- 2. Snacks.nvim (Picker + Dashboard + Utils)
+	-- 2. Snacks.nvim (Full Keymaps + Navigation Fix)
 	{
 		"folke/snacks.nvim",
 		priority = 1000,
 		lazy = false,
 		opts = {
-			picker = { enabled = true },
 			dashboard = { enabled = true },
 			notifier = { enabled = true },
 			quickfile = { enabled = true },
+			input = { enabled = true },
+			picker = {
+				enabled = true,
+				sources = {
+					files = { hidden = true },
+				},
+				-- FIX: Ctrl+j/k navigation in pickers
+				win = {
+					input = {
+						keys = {
+							["<C-j>"] = { "list_down", mode = { "i", "n" } },
+							["<C-k>"] = { "list_up", mode = { "i", "n" } },
+						},
+					},
+				},
+			},
 		},
 		keys = {
-			-- Top Pickers & Explorer
+			-- Top Pickers
 			{
 				"<leader><space>",
 				function()
@@ -134,14 +152,29 @@ require("lazy").setup({
 				end,
 				desc = "Command History",
 			},
-			{
-				"<leader>e",
-				function()
-					Snacks.explorer()
-				end,
-				desc = "File Explorer",
-			},
+
 			-- Find
+			{
+				"<leader>fb",
+				function()
+					Snacks.picker.buffers()
+				end,
+				desc = "Buffers",
+			},
+			{
+				"<leader>fc",
+				function()
+					Snacks.picker.files({ cwd = vim.fn.stdpath("config") })
+				end,
+				desc = "Find Config File",
+			},
+			{
+				"<leader>fi",
+				function()
+					Snacks.picker.icons()
+				end,
+				desc = "Find Icons",
+			},
 			{
 				"<leader>ff",
 				function()
@@ -157,13 +190,81 @@ require("lazy").setup({
 				desc = "Find Git Files",
 			},
 			{
+				"<leader>fp",
+				function()
+					Snacks.picker.projects()
+				end,
+				desc = "Projects",
+			},
+			{
 				"<leader>fr",
 				function()
 					Snacks.picker.recent()
 				end,
 				desc = "Recent",
 			},
+
+			-- Grep
+			{
+				"<leader>fB",
+				function()
+					Snacks.picker.grep_buffers()
+				end,
+				desc = "Grep Open Buffers",
+			},
+			{
+				"<leader>fw",
+				function()
+					Snacks.picker.grep_word({ buffers = true, title = "Grep Word Open Buffers" })
+				end,
+				desc = "Grep Word Open Buffers",
+			},
+			{
+				"<leader>fW",
+				function()
+					Snacks.picker.grep_word()
+				end,
+				desc = "Grep Word",
+			},
+
+			-- Diagnostics & Help
+			{
+				"<leader>fd",
+				function()
+					Snacks.picker.diagnostics_buffer()
+				end,
+				desc = "Buffer Diagnostics",
+			},
+			{
+				"<leader>fD",
+				function()
+					Snacks.picker.diagnostics()
+				end,
+				desc = "Diagnostics",
+			},
+			{
+				"<leader>fm",
+				function()
+					Snacks.picker.man()
+				end,
+				desc = "Man",
+			},
+			{
+				"<leader>fP",
+				function()
+					Snacks.picker.pickers()
+				end,
+				desc = "Available Pickers",
+			},
+
 			-- Git
+			{
+				"<leader>gb",
+				function()
+					Snacks.picker.git_branches()
+				end,
+				desc = "Git Branches",
+			},
 			{
 				"<leader>gl",
 				function()
@@ -172,13 +273,92 @@ require("lazy").setup({
 				desc = "Git Log",
 			},
 			{
+				"<leader>gL",
+				function()
+					Snacks.picker.git_log_line()
+				end,
+				desc = "Git Log Line",
+			},
+			{
 				"<leader>gs",
 				function()
 					Snacks.picker.git_status()
 				end,
 				desc = "Git Status",
 			},
+			{
+				"<leader>gS",
+				function()
+					Snacks.picker.git_stash()
+				end,
+				desc = "Git Stash",
+			},
+			{
+				"<leader>gd",
+				function()
+					Snacks.picker.git_diff()
+				end,
+				desc = "Git Diff (Hunks)",
+			},
+			{
+				"<leader>gf",
+				function()
+					Snacks.picker.git_log_file()
+				end,
+				desc = "Git Log File",
+			},
+			{
+				"<leader>gB",
+				function()
+					Snacks.gitbrowse()
+				end,
+				desc = "Git Browse",
+				mode = { "n", "v" },
+			},
+			{
+				"<leader>gg",
+				function()
+					Snacks.lazygit()
+				end,
+				desc = "Lazygit",
+			},
+
 			-- LSP
+			{
+				"<leader>lc",
+				function()
+					Snacks.picker.lsp_config()
+				end,
+				desc = "LSP Config",
+			},
+			{
+				"<leader>ld",
+				function()
+					Snacks.picker.lsp_definitions()
+				end,
+				desc = "LSP Definitions",
+			},
+			{
+				"<leader>li",
+				function()
+					Snacks.picker.lsp_implementations()
+				end,
+				desc = "LSP Implementations",
+			},
+			{
+				"<leader>ls",
+				function()
+					Snacks.picker.lsp_symbols()
+				end,
+				desc = "LSP Symbols",
+			},
+			{
+				"<leader>lS",
+				function()
+					Snacks.picker.lsp_workspace_symbols()
+				end,
+				desc = "LSP Workspace Symbols",
+			},
 			{
 				"gd",
 				function()
@@ -187,10 +367,18 @@ require("lazy").setup({
 				desc = "Goto Definition",
 			},
 			{
+				"gD",
+				function()
+					Snacks.picker.lsp_declarations()
+				end,
+				desc = "Goto Declaration",
+			},
+			{
 				"gr",
 				function()
 					Snacks.picker.lsp_references()
 				end,
+				nowait = true,
 				desc = "References",
 			},
 			{
@@ -207,84 +395,194 @@ require("lazy").setup({
 				end,
 				desc = "Goto T[y]pe Definition",
 			},
+			{
+				"gai",
+				function()
+					Snacks.picker.lsp_incoming_calls()
+				end,
+				desc = "C[a]lls Incoming",
+			},
+			{
+				"gao",
+				function()
+					Snacks.picker.lsp_outgoing_calls()
+				end,
+				desc = "C[a]lls Outgoing",
+			},
+
+			-- Utils
+			{
+				"<leader>bd",
+				function()
+					Snacks.bufdelete()
+				end,
+				desc = "Delete Buffer",
+			},
+			{
+				"<leader>cR",
+				function()
+					Snacks.rename.rename_file()
+				end,
+				desc = "Rename File",
+			},
+			{
+				"<leader>uC",
+				function()
+					Snacks.picker.colorschemes()
+				end,
+				desc = "Colorschemes",
+			},
 		},
 	},
 
-	-- 3. Blink.cmp (Autocompletion)
+	-- 3. Blink.cmp (Your Settings + Tab Fix)
 	{
 		"saghen/blink.cmp",
-		version = "*", -- Use latest release
+		dependencies = { "rafamadriz/friendly-snippets", "L3MON4D3/LuaSnip" },
+		version = "*",
 		opts = {
-			keymap = { preset = "default" }, -- Uses <C-space>, <Enter>, <Tab>
+			snippets = { preset = "luasnip" },
+			signature = { enabled = true },
 			appearance = {
-				use_nvim_cmp_as_default = true,
-				nerd_font_variant = "mono",
+				use_nvim_cmp_as_default = false,
+				nerd_font_variant = "normal",
 			},
 			sources = {
-				default = { "lsp", "path", "snippets", "buffer" },
+				default = { "lsp", "path", "snippets", "lazydev", "buffer" },
+				providers = {
+					lazydev = { name = "LazyDev", module = "lazydev.integrations.blink", score_offset = 100 },
+				},
 			},
-			signature = { enabled = true }, -- Show function signature while typing
+			keymap = {
+				preset = "none",
+				["<C-k>"] = { "select_prev", "fallback" },
+				["<C-j>"] = { "select_next", "fallback" },
+				["<C-b>"] = { "scroll_documentation_up", "fallback" },
+				["<C-f>"] = { "scroll_documentation_down", "fallback" },
+				["<C-e>"] = { "hide", "fallback" },
+				["<CR>"] = { "accept", "fallback" },
+				["<C-n>"] = { "show", "fallback" },
+				["<Tab>"] = { "accept", "snippet_forward", "fallback" },
+				["<S-Tab>"] = { "snippet_backward", "fallback" },
+			},
 		},
 	},
 
-	-- 4. LSP & Mason (Auto-install LSPs)
+	-- 4. LSP & Mason (Implemented exactly as requested)
 	{
 		"neovim/nvim-lspconfig",
 		dependencies = {
 			"williamboman/mason.nvim",
 			"williamboman/mason-lspconfig.nvim",
-			"saghen/blink.cmp", -- Dependency to get capabilities
+			"saghen/blink.cmp",
 		},
 		config = function()
-			-- Setup Mason (Package Manager for LSPs)
+			-- 1. Setup Mason (Installs binaries)
 			require("mason").setup()
 			require("mason-lspconfig").setup({
-				-- These will be auto-installed on the server!
-				ensure_installed = { "lua_ls", "bashls", "gopls", "pyright", "clangd" },
+				ensure_installed = { "lua_ls", "pyright", "ruff", "gopls", "bashls", "clangd", "dockerls" },
 				automatic_installation = true,
 			})
 
-			-- Link Blink with LSPConfig
-			local capabilities = require("blink.cmp").get_lsp_capabilities()
-			local lspconfig = require("lspconfig")
+			-- 2. Diagnostic Config
+			vim.diagnostic.config({
+				virtual_text = true,
+				underline = true,
+				update_in_insert = false,
+				severity_sort = true,
+				float = { border = "rounded", source = true },
+				signs = {
+					text = {
+						[vim.diagnostic.severity.ERROR] = " ",
+						[vim.diagnostic.severity.WARN] = " ",
+						[vim.diagnostic.severity.INFO] = " ",
+						[vim.diagnostic.severity.HINT] = " ",
+					},
+				},
+			})
 
-			-- Loop through servers and set them up
-			local servers = { "lua_ls", "bashls", "gopls", "pyright", "clangd", "ruff" }
+			-- 3. Autocmds (Keymaps)
+			vim.api.nvim_create_autocmd("LspAttach", {
+				group = vim.api.nvim_create_augroup("UserLspConfig", { clear = true }),
+				callback = function(ev)
+					local opts = { buffer = ev.buf, silent = true }
+					opts.desc = "Code Action"
+					vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
+					opts.desc = "Rename Symbol"
+					vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+					opts.desc = "LSP Hover"
+					vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+				end,
+			})
+
+			-- 4. Enable Servers (using vim.lsp.enable as requested)
+			local servers = {
+				"lua_ls",
+				"pyright",
+				"ruff",
+				"gopls",
+				"dockerls",
+				"bashls",
+				"clangd",
+			}
+
+			local capabilities = require("blink.cmp").get_lsp_capabilities()
+
 			for _, server in ipairs(servers) do
-				lspconfig[server].setup({
-					capabilities = capabilities,
-				})
+				vim.lsp.enable(server)
 			end
 		end,
 	},
 
-	-- 5. Lua Development (Auto-completion for Neovim Lua)
+	-- 5. Lua Development
 	{
 		"folke/lazydev.nvim",
-		ft = "lua", -- only load on lua files
+		ft = "lua",
 		opts = {
-			library = {
-				{ path = "${3rd}/luv/library", words = { "vim%.uv" } },
+			library = { { path = "${3rd}/luv/library", words = { "vim%.uv" } } },
+		},
+	},
+
+	-- 6. Formatting
+	{
+		"stevearc/conform.nvim",
+		event = { "BufWritePre" },
+		keys = {
+			{
+				"<leader>cf",
+				function()
+					require("conform").format({ async = true })
+				end,
+				mode = { "n", "v" },
+				desc = "Format",
+			},
+		},
+		opts = {
+			formatters_by_ft = {
+				go = { "goimports", "gofmt" },
+				lua = { "stylua" },
+				python = { "isort", "black" },
+				javascript = { "prettier" },
+				typescript = { "prettier" },
+				json = { "prettier" },
+				yaml = { "prettier" },
+				bash = { "shfmt" },
 			},
 		},
 	},
 
-	-- 6. Syntax Highlighting
+	-- 7. Utilities
 	{
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
 		config = function()
-			local configs = require("nvim-treesitter.configs")
-			configs.setup({
+			require("nvim-treesitter.configs").setup({
 				ensure_installed = { "bash", "c", "html", "lua", "markdown", "vim", "yaml", "python", "go" },
 				highlight = { enable = true },
-				indent = { enable = true },
 			})
 		end,
 	},
-
-	-- 7. Utilities
-	{ "folke/which-key.nvim", opts = {} },
+	{ "folke/which-key.nvim", opts = { preset = "helix" } },
 	{ "stevearc/oil.nvim", opts = {} },
 	{ "lewis6991/gitsigns.nvim", opts = {} },
 	{ "echasnovski/mini.icons", opts = {} },

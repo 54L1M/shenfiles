@@ -83,7 +83,7 @@ vim.opt.rtp:prepend(lazypath)
 -- PLUGINS
 -----------------------------
 require("lazy").setup({
-	-- 1. Colorscheme (Transparent)
+	--  Colorscheme (Transparent)
 	{
 		"catppuccin/nvim",
 		name = "catppuccin",
@@ -95,30 +95,38 @@ require("lazy").setup({
 			vim.cmd.colorscheme("catppuccin")
 		end,
 	},
-
-	-- 2. Snacks.nvim (Full Keymaps + Navigation Fix)
+	--  Tmux Navigator (CRITICAL FIX for C-j/C-k)
+	{
+		"christoomey/vim-tmux-navigator",
+		cmd = {
+			"TmuxNavigateLeft",
+			"TmuxNavigateDown",
+			"TmuxNavigateUp",
+			"TmuxNavigateRight",
+			"TmuxNavigatePrevious",
+		},
+		keys = {
+			{ "<c-h>", "<cmd><C-U>TmuxNavigateLeft<cr>" },
+			{ "<c-j>", "<cmd><C-U>TmuxNavigateDown<cr>" },
+			{ "<c-k>", "<cmd><C-U>TmuxNavigateUp<cr>" },
+			{ "<c-l>", "<cmd><C-U>TmuxNavigateRight<cr>" },
+			{ "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
+		},
+	},
+	--  Snacks.nvim (Full Keymaps + Navigation Fix)
 	{
 		"folke/snacks.nvim",
 		priority = 1000,
 		lazy = false,
 		opts = {
 			dashboard = { enabled = true },
-			notifier = { enabled = true },
+			notifier = { enabled = false },
 			quickfile = { enabled = true },
 			input = { enabled = true },
 			picker = {
 				enabled = true,
 				sources = {
 					files = { hidden = true },
-				},
-				-- FIX: Ctrl+j/k navigation in pickers
-				win = {
-					input = {
-						keys = {
-							["<C-j>"] = { "list_down", mode = { "i", "n" } },
-							["<C-k>"] = { "list_up", mode = { "i", "n" } },
-						},
-					},
 				},
 			},
 		},
@@ -435,7 +443,7 @@ require("lazy").setup({
 		},
 	},
 
-	-- 3. Blink.cmp (Your Settings + Tab Fix)
+	-- Blink.cmp (Your Settings + Tab Fix)
 	{
 		"saghen/blink.cmp",
 		dependencies = { "rafamadriz/friendly-snippets", "L3MON4D3/LuaSnip" },
@@ -468,7 +476,7 @@ require("lazy").setup({
 		},
 	},
 
-	-- 4. LSP & Mason (Implemented exactly as requested)
+	-- LSP & Mason (Implemented exactly as requested)
 	{
 		"neovim/nvim-lspconfig",
 		dependencies = {
@@ -534,7 +542,7 @@ require("lazy").setup({
 		end,
 	},
 
-	-- 5. Lua Development
+	-- Lua Development
 	{
 		"folke/lazydev.nvim",
 		ft = "lua",
@@ -543,47 +551,254 @@ require("lazy").setup({
 		},
 	},
 
-	-- 6. Formatting
+	-- Formatting
 	{
 		"stevearc/conform.nvim",
 		event = { "BufWritePre" },
+		cmd = { "ConformInfo" },
 		keys = {
 			{
 				"<leader>cf",
 				function()
-					require("conform").format({ async = true })
+					require("conform").format({ async = true }, function(err, did_edit)
+						if not err and did_edit then
+							vim.notify("Code formatted", vim.log.levels.INFO, { title = "Conform" })
+						end
+					end)
 				end,
 				mode = { "n", "v" },
-				desc = "Format",
+				desc = "Format buffer",
 			},
 		},
 		opts = {
 			formatters_by_ft = {
+				-- Go
 				go = { "goimports", "gofmt" },
+
+				-- Lua
 				lua = { "stylua" },
-				python = { "isort", "black" },
+
+				-- Web technologies
 				javascript = { "prettier" },
 				typescript = { "prettier" },
+				javascriptreact = { "prettier" },
+				typescriptreact = { "prettier" },
 				json = { "prettier" },
+				jsonc = { "prettier" },
 				yaml = { "prettier" },
+				markdown = { "prettier" },
+				html = { "prettier" },
+				css = { "prettier" },
+				scss = { "prettier" },
+
+				-- Python
+				python = { "isort", "black" },
+
+				-- Shell
+				sh = { "shfmt" },
 				bash = { "shfmt" },
 			},
+			default_format_opts = {
+				lsp_format = "fallback",
+			},
+			format_on_save = {
+				-- timeout_ms = 3000,
+				-- lsp_format = "fallback",
+			},
 		},
+		init = function()
+			vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+		end,
 	},
 
-	-- 7. Utilities
+	-- Lua Line
+	{
+		"nvim-lualine/lualine.nvim",
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+		config = function()
+			local lualine = require("lualine")
+
+			-- mocha
+			local colors = {
+				flamingo = "#ea6962",
+				red = "#ea6962",
+				maroon = "#ea6962",
+				mauve = "#d3869b",
+				peach = "#e78a4e",
+				yellow = "#d8a657",
+				green = "#a9b665",
+				sky = "#89b482",
+				blue = "#7daea3",
+				text = "#ebdbb2",
+				subtext1 = "#d5c4a1",
+				subtext0 = "#bdae93",
+				overlay2 = "#a89984",
+				overlay1 = "#928374",
+				overlay0 = "#595959",
+				surface2 = "#4d4d4d",
+				surface1 = "#404040",
+				surface0 = "#292929",
+				base = "#1d2021",
+				mantle = "#191b1c",
+				crust = "#141617",
+			}
+			local my_lualine_theme = {
+				normal = {
+					a = { bg = colors.blue, fg = colors.base, gui = "bold" },
+					b = { bg = colors.base, fg = colors.subtext0 },
+					c = { bg = colors.base, fg = colors.subtext0 },
+				},
+				insert = {
+					a = { bg = colors.green, fg = colors.base, gui = "bold" },
+					b = { bg = colors.base, fg = colors.subtext0 },
+					c = { bg = colors.base, fg = colors.subtext0 },
+				},
+
+				visual = {
+					a = { bg = colors.mauve, fg = colors.base, gui = "bold" },
+					b = { bg = colors.base, fg = colors.subtext0 },
+					c = { bg = colors.base, fg = colors.subtext0 },
+				},
+				command = {
+					a = { bg = colors.yellow, fg = colors.base, gui = "bold" },
+					b = { bg = colors.base, fg = colors.subtext0 },
+					c = { bg = colors.base, fg = colors.subtext0 },
+				},
+				replace = {
+					a = { bg = colors.red, fg = colors.base, gui = "bold" },
+					b = { bg = colors.base, fg = colors.subtext0 },
+					c = { bg = colors.base, fg = colors.subtext0 },
+				},
+				inactive = {
+					a = { bg = colors.inactive_bg, fg = colors.semilightgray, gui = "bold" },
+					b = { bg = colors.inactive_bg, fg = colors.semilightgray },
+					c = { bg = colors.inactive_bg, fg = colors.semilightgray },
+				},
+			}
+			-- configure lualine with modified theme
+			lualine.setup({
+				extensions = { "oil", "trouble", "mason", "quickfix", "ctrlspace" },
+				options = {
+					theme = my_lualine_theme,
+					section_separators = "",
+					component_separators = "",
+					globalstatus = false,
+				},
+				sections = {
+					lualine_a = {
+						{
+							"mode",
+							fmt = function(str)
+								return str:sub(1, 1)
+							end,
+						},
+					},
+					lualine_b = {
+						{ "filename", path = 4, shorting_target = 110, symbols = { modified = "●" } },
+					},
+					lualine_c = { { "diagnostics" } },
+					lualine_x = { { "diff" } },
+					lualine_y = { { "branch" } },
+					lualine_z = {
+						{
+							"location",
+							color = { bg = colors.bg, fg = colors.fg },
+						},
+					},
+				},
+				inactive_sections = {
+					lualine_a = {
+						{
+							"mode",
+							fmt = function(str)
+								return str:sub(1, 1)
+							end,
+						},
+					},
+					lualine_b = {
+						{ "filename", path = 1, shorting_target = 40, symbols = { modified = "●" } },
+					},
+					lualine_c = {},
+					lualine_x = {},
+					lualine_y = {},
+					lualine_z = { { "location" } },
+				},
+			})
+		end,
+	},
+	-- Utilities
 	{
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
+		branch = "master",
 		config = function()
 			require("nvim-treesitter.configs").setup({
 				ensure_installed = { "bash", "c", "html", "lua", "markdown", "vim", "yaml", "python", "go" },
 				highlight = { enable = true },
+				indent = { enable = true },
 			})
 		end,
 	},
 	{ "folke/which-key.nvim", opts = { preset = "helix" } },
-	{ "stevearc/oil.nvim", opts = {} },
+	{
+		"stevearc/oil.nvim",
+		config = function()
+			local oil = require("oil")
+			local util = require("oil.util")
+			local actions = require("oil.actions")
+
+			oil.setup({
+				keymaps = {
+					["gd"] = {
+						desc = "Toggle file detail view",
+						callback = function()
+							Detail = not Detail
+							if Detail then
+								require("oil").set_columns({ "icon", "permissions", "size", "mtime" })
+							else
+								require("oil").set_columns({ "icon" })
+							end
+						end,
+					},
+				},
+				float = {
+					padding = 2,
+					max_width = 120,
+					max_height = 30,
+					border = "rounded",
+					win_options = {
+						winblend = 0,
+					},
+				},
+				view_options = {
+					show_hidden = true,
+				},
+			})
+
+			vim.keymap.set("n", "-", function()
+				oil.open_float()
+				util.run_after_load(0, function()
+					oil.open_preview()
+				end)
+			end, { desc = "Open Oil" })
+
+			vim.api.nvim_create_autocmd("User", {
+				group = vim.api.nvim_create_augroup("OilFloatCustom", {}),
+				pattern = "OilEnter",
+				callback = function()
+					if util.is_floating_win() then
+						vim.keymap.set("n", "<Esc>", actions.close.callback, {
+							buffer = true,
+						})
+						vim.keymap.set("n", "q", actions.close.callback, {
+							buffer = true,
+						})
+					end
+				end,
+			})
+		end,
+	},
+
 	{ "lewis6991/gitsigns.nvim", opts = {} },
 	{ "echasnovski/mini.icons", opts = {} },
 	{ "windwp/nvim-autopairs", event = "InsertEnter", opts = {} },

@@ -2,25 +2,32 @@
 # -----------------------------
 # NODE.JS & NPM (via NVM)
 # -----------------------------
-- name: Install NVM dependencies
-  apt:
-    name: build-essential
-    state: present
-  become: yes
-
-- name: Check if NVM is installed
-  stat:
-    path: "{{ home }}/.nvm/nvm.sh"
-  register: nvm_stat
-
-- name: Install NVM
-  when: not nvm_stat.stat.exists
+# 1. Download installer safely (fails if network/URL is wrong)
+- name: Download NVM installer
   become: no
-  shell: |
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+  get_url:
+    url: https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh
+    dest: /tmp/nvm_install.sh
+    mode: "0755"
+  when: not nvm_stat.stat.exists
+
+# 2. Run the installer
+- name: Run NVM installer
+  become: no
+  shell: /tmp/nvm_install.sh
   args:
     creates: "{{ home }}/.nvm/nvm.sh"
+  when: not nvm_stat.stat.exists
 
+# 3. Clean up
+- name: Remove NVM installer
+  become: no
+  file:
+    path: /tmp/nvm_install.sh
+    state: absent
+  when: not nvm_stat.stat.exists
+
+# 4. Install Node (This is your existing task, essentially unchanged)
 - name: Install Node.js LTS
   become: no
   shell: |
@@ -30,7 +37,6 @@
     nvm alias default 'lts/*'
   args:
     executable: /bin/bash
-  # Only run if node is not found in the path managed by NVM
   when: not nvm_stat.stat.exists
 
 # -----------------------------

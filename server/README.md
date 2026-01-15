@@ -48,16 +48,16 @@ ansible-playbook -i inventory setup.yml -e "ansible_user=root" --ask-vault-pass
 > If the server was rebuilt, you might need to clear the old SSH fingerprint first:
 
 ```bash
-ssh-keygen -R 49.12.238.98
+ssh-keygen -R <ip>
 ```
 
 ### 2. Subsequent Runs (Updates & Maintenance)
 
-Once the user `salim` is created and keys are set up, run this for all future updates (installing new tools, updating dotfiles, etc.):
+Once the user is created and keys are set up, run this for all future updates (installing new tools, updating dotfiles, etc.):
 
 ```bash
 cd ansible
-ansible-playbook -i inventory setup.yml --ask-vault-pass
+ansible-playbook -i inventory setup.yml --ask-vault-pass --ask-become-pass
 ```
 
 ## ✅ Post-Installation Checks
@@ -65,7 +65,7 @@ ansible-playbook -i inventory setup.yml --ask-vault-pass
 After the playbook finishes, log in and verify the environment:
 
 ```bash
-ssh salim@49.12.238.98
+ssh <user>@<ip>
 ```
 
 - Neovim: nvim --version (Should be latest stable via Bob)

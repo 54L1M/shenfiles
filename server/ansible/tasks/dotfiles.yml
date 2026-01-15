@@ -1,5 +1,6 @@
 - name: Clone Shenfiles Repo
-  become: no
+  become: yes
+  become_user: "{{ user }}"
   git:
     repo: "{{ dotfiles_repo }}"
     dest: "{{ home }}/shenfiles"
@@ -7,24 +8,33 @@
     update: yes
 
 - name: Create Config Directory
-  become: no
+  become: yes
+  become_user: "{{ user }}"
   file:
     path: "{{ home }}/.config/nvim"
     state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
 
 # Link the Minimal Files
 - name: Link Minimal Neovim Config
-  become: no
+  become: yes
+  become_user: "{{ user }}"
   file:
     src: "{{ home }}/shenfiles/server/dotfiles/init.lua"
     dest: "{{ home }}/.config/nvim/init.lua"
     state: link
     force: yes
+    owner: "{{ user }}"
+    group: "{{ user }}"
 
 - name: Link Server Bashrc
-  become: no
+  become: yes
+  become_user: "{{ user }}"
   file:
     src: "{{ home }}/shenfiles/server/dotfiles/.bashrc"
     dest: "{{ home }}/.bashrc"
     state: link
     force: yes
+    owner: "{{ user }}"
+    group: "{{ user }}"

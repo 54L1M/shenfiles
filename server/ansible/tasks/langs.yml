@@ -36,14 +36,6 @@
 # -----------------------------
 # GOLANG
 # -----------------------------
-- name: Remove existing Go installation
-  file:
-    path: /usr/local/go
-    state: absent
-  become: yes
-  # Optional: Run this only if you want to force an upgrade
-  tags: [go-upgrade]
-
 - name: Check if Go is installed
   stat:
     path: /usr/local/go/bin/go

@@ -50,6 +50,7 @@
       "shellcheck"
       "openjdk"
       "direnv"
+      "ansible"
     ];
     casks = [
       "firefox"

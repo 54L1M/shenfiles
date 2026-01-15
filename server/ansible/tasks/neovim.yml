@@ -43,21 +43,27 @@
         path: /tmp/bob_install
         state: absent
 
+# --- USER LEVEL TASKS START HERE ---
+
 - name: Install Neovim Stable via Bob
-  become: no
+  become: yes
+  become_user: "{{ user }}"
   command: /usr/local/bin/bob install stable
   environment:
-    PATH: "/usr/local/bin:{{ ansible_facts['env']['PATH'] }}"
+    # Bob needs to know where to put files, even if explicit path isn't set, environment helps
+    HOME: "{{ home }}"
   register: bob_install
   changed_when: "'is already installed' not in bob_install.stdout"
 
 - name: Check currently used Neovim version
-  become: no
+  become: yes
+  become_user: "{{ user }}"
   command: /usr/local/bin/bob list
   register: bob_list_output
   changed_when: false
 
 - name: Set Neovim Stable as default
-  become: no
+  become: yes
+  become_user: "{{ user }}"
   command: /usr/local/bin/bob use stable
   when: "'Used' not in bob_list_output.stdout"

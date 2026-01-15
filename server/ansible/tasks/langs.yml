@@ -2,34 +2,43 @@
 # -----------------------------
 # NODE.JS & NPM (via NVM)
 # -----------------------------
-# 1. Download installer safely (fails if network/URL is wrong)
+- name: Install NVM dependencies
+  apt:
+    name: build-essential
+    state: present
+  become: yes
+
+- name: Check if NVM is installed
+  stat:
+    path: "{{ home }}/.nvm/nvm.sh"
+  register: nvm_stat
+
 - name: Download NVM installer
-  become: no
+  become: yes
+  become_user: "{{ user }}"
   get_url:
     url: https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh
     dest: /tmp/nvm_install.sh
     mode: "0755"
   when: not nvm_stat.stat.exists
 
-# 2. Run the installer
 - name: Run NVM installer
-  become: no
+  become: yes
+  become_user: "{{ user }}"
   shell: /tmp/nvm_install.sh
   args:
     creates: "{{ home }}/.nvm/nvm.sh"
   when: not nvm_stat.stat.exists
 
-# 3. Clean up
 - name: Remove NVM installer
-  become: no
   file:
     path: /tmp/nvm_install.sh
     state: absent
   when: not nvm_stat.stat.exists
 
-# 4. Install Node (This is your existing task, essentially unchanged)
 - name: Install Node.js LTS
-  become: no
+  become: yes
+  become_user: "{{ user }}"
   shell: |
     . {{ home }}/.nvm/nvm.sh
     nvm install --lts
@@ -40,8 +49,15 @@
   when: not nvm_stat.stat.exists
 
 # -----------------------------
-# GOLANG
+# GOLANG (System Wide -> Root)
 # -----------------------------
+- name: Remove existing Go installation
+  file:
+    path: /usr/local/go
+    state: absent
+  become: yes
+  tags: [go-upgrade]
+
 - name: Check if Go is installed
   stat:
     path: /usr/local/go/bin/go

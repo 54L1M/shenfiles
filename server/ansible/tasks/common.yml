@@ -17,6 +17,7 @@
       - bat
       - eza
       - zoxide
+      - python3.12-venv
     state: present
 
 - name: Fix 'bat' command

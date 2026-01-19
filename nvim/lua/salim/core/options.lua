@@ -21,6 +21,7 @@ opt.smartcase = true
 
 -- cursor line
 opt.cursorline = true
+-- opt.cursorlineopt = "number"
 
 -- clipboard
 opt.clipboard:append("unnamedplus")

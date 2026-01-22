@@ -100,6 +100,7 @@ alias in="sudo apt install"
 alias unin="sudo apt remove"
 alias are="sudo apt autoremove"
 alias lg="lazygit"
+alias gca="gcloud auth login && gcloud auth application-default login"
 ##########################
 #ALIAS
 ##########################

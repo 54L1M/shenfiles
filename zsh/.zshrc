@@ -159,6 +159,8 @@ export PATH="/opt/homebrew/bin:$PATH"
 source <(fzf --zsh)
 
 bindkey "ç" fzf-cd-widget
+export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # CTRL-Y to copy the command into clipboard using pbcopy
 export FZF_CTRL_R_OPTS="
   --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
@@ -166,12 +168,11 @@ export FZF_CTRL_R_OPTS="
   --header 'Press CTRL-Y to copy command into clipboard'"
 # Preview file content using bat (https://github.com/sharkdp/bat)
 export FZF_CTRL_T_OPTS="
-  --walker-skip .git,node_modules,target
   --preview 'bat -n --color=always {}'
   --bind 'ctrl-/:change-preview-window(down|hidden|)'"
 # Print tree structure in the preview window
+export FZF_ALT_C_COMMAND='fd --type d --strip-cwd-prefix --hidden --follow --exclude .git'
 export FZF_ALT_C_OPTS="
-  --walker-skip .git,node_modules,target
   --preview 'tree -C {}'"
 
 source /Users/54l1m/.config/zsh/fzf-git.sh

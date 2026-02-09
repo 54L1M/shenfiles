@@ -51,6 +51,7 @@
       "openjdk"
       "direnv"
       "ansible"
+      "mpv"
     ];
     casks = [
       "firefox"

@@ -7,7 +7,6 @@
     git
     tmuxifier
     rustup
-    mpv
     go
     gopls
     bat

@@ -71,10 +71,10 @@ return {
 				},
 
 				cmdline = {
-					enabled = false,
+					enabled = true,
 					completion = { menu = { auto_show = true } },
 					keymap = {
-						["<CR>"] = { "accept_and_enter", "fallback" },
+						["<CR>"] = { "accept", "fallback" }, -- can be accept_and_enter as well
 					},
 				},
 
@@ -98,7 +98,7 @@ return {
 					documentation = {
 						window = {
 							border = "single",
-							scrollbar = false,
+							scrollbar = true,
 							winhighlight = "Normal:BlinkCmpDoc,FloatBorder:BlinkCmpDocBorder,EndOfBuffer:BlinkCmpDoc",
 						},
 						auto_show = true,

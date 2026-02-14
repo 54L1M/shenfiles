@@ -16,6 +16,10 @@ return {
 		picker = {
 			enabled = true,
 			sources = {
+				buffers = {
+					sort_lastused = true,
+					current = false,
+				},
 				files = { hidden = true },
 				git_diff = { layout = "default" },
 				git_log = { layout = "default" },

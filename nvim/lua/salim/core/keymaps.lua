@@ -28,6 +28,15 @@ keymap.set("n", "<leader>tc", "<cmd>tabclose<CR>", { noremap = true, silent = tr
 keymap.set("n", "<leader>tn", "<cmd>tabnext<CR>", { noremap = true, silent = true, desc = "Next Tab" }) -- go to next tab
 keymap.set("n", "<leader>tp", "<cmd>tabprevious<CR>", { noremap = true, silent = true, desc = "Previous Tab" }) -- go to previous tab
 
+-- Add empty lines and stay in current position
+keymap.set("n", "<leader>o", function()
+	vim.fn.append(vim.fn.line("."), "")
+end, { desc = "Add Empty Line Below (Stay)" })
+
+keymap.set("n", "<leader>O", function()
+	vim.fn.append(vim.fn.line(".") - 1, "")
+end, { desc = "Add Empty Line Above (Stay)" })
+
 -- Navigate vim panes better
 vim.keymap.set("n", "<c-k>", ":wincmd k<CR>")
 vim.keymap.set("n", "<c-j>", ":wincmd j<CR>")

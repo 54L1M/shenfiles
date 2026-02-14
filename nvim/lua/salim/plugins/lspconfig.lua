@@ -34,6 +34,13 @@ return {
 			end,
 		})
 
+		-- INJECT BLINK CAPABILITIES GLOBALLY (The 0.11+ way)
+		-- This merges with every server config you enable below.
+		local blink = require("blink.cmp")
+		vim.lsp.config("*", {
+			capabilities = blink.get_lsp_capabilities(),
+		})
+
 		local servers = {
 			"lua_ls",
 			"pyright",

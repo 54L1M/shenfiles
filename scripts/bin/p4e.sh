@@ -223,6 +223,10 @@ function switch_environment() {
         
         # C-u clears the shell prompt line before we paste our command
         tmux send-keys -t "$TMUX_PANE" "$CMD" Enter
+
+        # Update pane-specific option for the status bar plugin
+        # We use -p (pane) to support different environments in different panes/windows
+        tmux set-option -p -t "$TMUX_PANE" @p4e_env "$PROJECT_NAME:$ENV_SHORT_NAME"
     else
         p4_warn "Not in Tmux. Run 'source $TARGET_ENV' manually to apply changes."
     fi

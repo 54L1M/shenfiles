@@ -2,6 +2,7 @@
 # theme = Kanagawa Wave
 theme = Gruvbox Dark Hard
 background-opacity = 0.5
+macos-window-shadow=false
 
 # Font
 font-family = "JetBrainsMono Nerd Font Mono"
@@ -9,11 +10,11 @@ font-size = 16
 
 
 # Fullscreen
-macos-titlebar-style = "transparent"
+macos-titlebar-style = "hidden"
 # window-decoration = false
-macos-non-native-fullscreen = "visible-menu"
+macos-non-native-fullscreen = "padded-notch"
 macos-window-buttons = "hidden"
-fullscreen = true
+fullscreen = false
 
 # Cursor
 cursor-style = block

@@ -1,0 +1,35 @@
+---
+- name: Bootstrap Ubuntu Server
+  hosts: all
+  vars:
+    user: salim
+
+  vars_files:
+    - group_vars/all/secrets.yml
+
+  tasks:
+    - name: Setup User & SSH
+      import_tasks: tasks/user.yml
+      become: yes
+      tags: [user, ssh]
+
+    - name: Run Common Setup
+      import_tasks: tasks/common.yml
+      become: yes
+      tags: [common, packages]
+
+    - name: Install Docker
+      import_tasks: tasks/docker.yml
+      become: yes
+      tags: [docker]
+
+    - name: Run Security Hardening
+      import_tasks: tasks/security.yml
+      become: yes
+      tags: [security]
+
+  handlers:
+    - name: Restart SSH
+      service:
+        name: ssh
+        state: restarted

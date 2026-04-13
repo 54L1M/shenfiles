@@ -10,7 +10,6 @@
     go
     gopls
     bat
-    vscode
     ripgrep
     htop
     ffmpeg

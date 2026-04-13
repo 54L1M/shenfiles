@@ -60,11 +60,12 @@
       "obsidian"
       "ghostty"
       "google-chrome"
-      "alacritty"
+      # "alacritty"
       "lens"
       "slack"
       "postman"
       "aerospace"
+      "visual-studio-code"
     ];
     masApps = {};
     onActivation.cleanup = "zap";

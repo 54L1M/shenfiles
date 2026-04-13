@@ -1,10 +1,64 @@
+# ---
+# - name: Setup Ubuntu Server
+#   hosts: all
+#   vars:
+#     user: salim
+#     home: "/home/{{ user }}"
+#     dotfiles_repo: "https://github.com/54L1M/shenfiles.git"
+#
+#   vars_files:
+#     - group_vars/all/secrets.yml
+#
+#   tasks:
+#     - name: Setup User & SSH
+#       import_tasks: tasks/user.yml
+#       become: yes
+#       tags: [user, ssh]
+#
+#     - name: Run Common Setup
+#       import_tasks: tasks/common.yml
+#       become: yes
+#       tags: [common, packages]
+#
+#     - name: Install Programming Languages
+#       import_tasks: tasks/langs.yml
+#       tags: [langs]
+#
+#     - name: Run Security Hardening
+#       import_tasks: tasks/security.yml
+#       become: yes
+#       tags: [security]
+#
+#     - name: Install Docker
+#       import_tasks: tasks/docker.yml
+#       become: yes
+#       tags: [docker]
+#
+#     - name: Install Neovim
+#       import_tasks: tasks/neovim.yml
+#       become: yes
+#       tags: [neovim]
+#
+#     - name: Link Dotfiles
+#       import_tasks: tasks/dotfiles.yml
+#       tags: [dotfiles]
+#
+#     - name: Setup Playground Repo
+#       import_tasks: tasks/playground.yml
+#       tags: [playground]
+#
+#   handlers:
+#     - name: Restart SSH
+#       service:
+#         name: ssh
+#         state: restarted
+
 ---
-- name: Setup Ubuntu Server
+- name: Bootstrap Ubuntu Server
   hosts: all
   vars:
     user: salim
-    home: "/home/{{ user }}"
-    dotfiles_repo: "https://github.com/54L1M/shenfiles.git"
+    # Removed dotfiles_repo as we are skipping the dotfiles task
 
   vars_files:
     - group_vars/all/secrets.yml
@@ -20,32 +74,15 @@
       become: yes
       tags: [common, packages]
 
-    - name: Install Programming Languages
-      import_tasks: tasks/langs.yml
-      tags: [langs]
-
-    - name: Run Security Hardening
-      import_tasks: tasks/security.yml
-      become: yes
-      tags: [security]
-
     - name: Install Docker
       import_tasks: tasks/docker.yml
       become: yes
       tags: [docker]
 
-    - name: Install Neovim
-      import_tasks: tasks/neovim.yml
+    - name: Run Security Hardening
+      import_tasks: tasks/security.yml
       become: yes
-      tags: [neovim]
-
-    - name: Link Dotfiles
-      import_tasks: tasks/dotfiles.yml
-      tags: [dotfiles]
-
-    - name: Setup Playground Repo
-      import_tasks: tasks/playground.yml
-      tags: [playground]
+      tags: [security]
 
   handlers:
     - name: Restart SSH

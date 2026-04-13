@@ -21,6 +21,7 @@
     unrar
     tree
     libffi
+    tree-sitter
 
     #language server protocols
     ruff

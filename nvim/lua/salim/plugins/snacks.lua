@@ -17,16 +17,17 @@ return {
 			enabled = true,
 			sources = {
 				buffers = {
+					focus = "list",
 					sort_lastused = true,
 					current = false,
 				},
 				files = { hidden = true },
-				git_diff = { layout = "default" },
-				git_log = { layout = "default" },
-				git_log_line = { layout = "default" },
-				git_log_file = { layout = "default" },
-				git_status = { layout = "default" },
-				git_stash = { layout = "default" },
+				git_diff = { focus = "list", layout = "default" },
+				git_log = { focus = "list", layout = "default" },
+				git_log_line = { focus = "list", layout = "default" },
+				git_log_file = { focus = "list", layout = "default" },
+				git_status = { focus = "list", layout = "default" },
+				git_stash = { focus = "list", layout = "default" },
 				select = {
 					layout = {
 						preset = "vscode",

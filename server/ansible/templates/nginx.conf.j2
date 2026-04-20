@@ -1,0 +1,83 @@
+# ==========================================
+# PF4.IO SERVICES (RSS & Library)
+# ==========================================
+
+server {
+    listen 80;
+    server_name rss.pf4.io feeds.pf4.io books.pf4.io;
+    return 301 https://$host$request_uri;
+}
+
+# RSSHub
+server {
+    listen 443 ssl;
+    server_name rss.pf4.io;
+    ssl_certificate /etc/letsencrypt/live/rss.pf4.io/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/rss.pf4.io/privkey.pem;
+
+    location / {
+        proxy_pass http://rsshub_server:1200;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# FreshRSS
+server {
+    listen 443 ssl;
+    server_name feeds.pf4.io;
+    ssl_certificate /etc/letsencrypt/live/feeds.pf4.io/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/feeds.pf4.io/privkey.pem;
+
+    location / {
+        proxy_pass http://freshrss_server:80;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# Kavita Library
+server {
+    listen 443 ssl;
+    server_name books.pf4.io;
+    ssl_certificate /etc/letsencrypt/live/books.pf4.io/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/books.pf4.io/privkey.pem;
+
+    location / {
+        proxy_pass http://kavita_server:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+# ==========================================
+# 54L1M.IO SERVICES (Hugo Blog)
+# ==========================================
+
+server {
+    listen 80;
+    server_name 54l1m.io www.54l1m.io;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name 54l1m.io www.54l1m.io;
+    
+    ssl_certificate /etc/letsencrypt/live/54l1m.io/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/54l1m.io/privkey.pem;
+
+    location / {
+        proxy_pass http://hugo_blog_server:80;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}

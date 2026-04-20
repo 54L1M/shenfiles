@@ -1,0 +1,15 @@
+services:
+  kavita:
+    image: kizaing/kavita:latest
+    container_name: kavita_server
+    restart: always
+    volumes:
+      - ./config:/kavita/config
+    environment:
+      - TZ=UTC
+    networks:
+      - pf4_network
+
+networks:
+  pf4_network:
+    external: true

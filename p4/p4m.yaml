@@ -29,3 +29,6 @@ i2c:
 
 shen:
   path: ~/shenfiles/
+
+manifest:
+  path: ~/Documents/Workstation/In2Dialog/KubernetesManifests/

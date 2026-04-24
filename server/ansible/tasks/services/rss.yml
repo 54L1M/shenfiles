@@ -1,0 +1,12 @@
+---
+- name: Copy RSS docker-compose.yml
+  copy:
+    src: files/docker/rss/docker-compose.yml
+    dest: "/home/{{ user }}/pf4_services/rss/docker-compose.yml"
+    mode: "0644"
+
+- name: Start RSS stack
+  community.docker.docker_compose_v2:
+    project_src: "/home/{{ user }}/pf4_services/rss"
+    state: present
+    pull: always

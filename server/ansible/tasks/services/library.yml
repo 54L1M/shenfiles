@@ -1,0 +1,20 @@
+---
+- name: Create Library directories
+  file:
+    path: "/home/{{ user }}/pf4_services/library/{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - config
+
+- name: Copy Library docker-compose.yml
+  copy:
+    src: files/docker/library/docker-compose.yml
+    dest: "/home/{{ user }}/pf4_services/library/docker-compose.yml"
+    mode: "0644"
+
+- name: Start Library stack
+  community.docker.docker_compose_v2:
+    project_src: "/home/{{ user }}/pf4_services/library"
+    state: present
+    pull: always

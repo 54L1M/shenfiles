@@ -1,0 +1,28 @@
+---
+- name: Create proxy directories
+  file:
+    path: "/home/{{ user }}/pf4_services/proxy/{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - nginx
+    - certbot/www
+    - certbot/conf
+
+- name: Deploy Proxy Nginx Config
+  template:
+    src: templates/nginx.conf.j2
+    dest: "/home/{{ user }}/pf4_services/proxy/nginx/default.conf"
+    mode: "0644"
+
+- name: Copy Proxy docker-compose.yml
+  copy:
+    src: files/docker/proxy/docker-compose.yml
+    dest: "/home/{{ user }}/pf4_services/proxy/docker-compose.yml"
+    mode: "0644"
+
+- name: Start Proxy stack
+  community.docker.docker_compose_v2:
+    project_src: "/home/{{ user }}/pf4_services/proxy"
+    state: present
+    pull: always

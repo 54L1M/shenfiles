@@ -1,0 +1,18 @@
+---
+- name: Create Blog directory
+  file:
+    path: "/home/{{ user }}/pf4_services/blog/public"
+    state: directory
+    mode: "0755"
+
+- name: Copy Blog docker-compose.yml
+  copy:
+    src: files/docker/blog/docker-compose.yml
+    dest: "/home/{{ user }}/pf4_services/blog/docker-compose.yml"
+    mode: "0644"
+
+- name: Start Blog stack
+  community.docker.docker_compose_v2:
+    project_src: "/home/{{ user }}/pf4_services/blog"
+    state: present
+    pull: always

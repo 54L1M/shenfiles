@@ -1,0 +1,5 @@
+---
+- name: Create external proxy network
+  community.docker.docker_network:
+    name: pf4_network
+    state: present

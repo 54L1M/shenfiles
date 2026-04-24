@@ -1,0 +1,13 @@
+services:
+  hugo_blog:
+    image: nginx:alpine
+    container_name: hugo_blog_server
+    restart: always
+    volumes:
+      - ./public:/usr/share/nginx/html:ro
+    networks:
+      - pf4_network
+
+networks:
+  pf4_network:
+    external: true

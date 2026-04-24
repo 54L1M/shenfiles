@@ -1,0 +1,68 @@
+services:
+  rsshub:
+    image: diygod/rsshub:chromium-bundled
+    container_name: rsshub_server
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - CACHE_TYPE=redis
+      - REDIS_URL=redis://redis:6379/
+      - PUPPETEER_WS_ENDPOINT=ws://browserless:3000
+    depends_on:
+      - redis
+      - browserless
+    networks:
+      - pf4_network
+      - rss_internal
+
+  freshrss:
+    image: freshrss/freshrss:latest
+    container_name: freshrss_server
+    restart: always
+    environment:
+      - TZ=UTC
+      - CRON_MIN=17
+      - "TRUSTED_PROXIES=172.16.0.0/12"
+    volumes:
+      - ./data:/var/www/FreshRSS/data
+      - ./extensions:/var/www/FreshRSS/extensions
+    depends_on:
+      - freshrss-db
+    networks:
+      - pf4_network
+      - rss_internal
+
+  redis:
+    image: redis:alpine
+    restart: always
+    volumes:
+      - redis-data:/data
+    networks:
+      - rss_internal
+
+  browserless:
+    image: browserless/chrome:latest
+    restart: always
+    networks:
+      - rss_internal
+
+  freshrss-db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_DB=freshrss
+      - POSTGRES_USER=freshrss
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-freshrss_password}
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    networks:
+      - rss_internal
+
+volumes:
+  redis-data:
+
+networks:
+  pf4_network:
+    external: true
+  rss_internal:
+    internal: true

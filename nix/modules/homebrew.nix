@@ -8,7 +8,6 @@
        "FelixKratz/formulae"
        "FelixKratz/formulae"
        "railwaycat/emacsmacport"
-       "tinygo-org/tools"
     ];
 
     brews = [
@@ -53,7 +52,6 @@
       "direnv"
       "ansible"
       "mpv"
-      "tinygo"
     ];
     casks = [
       "firefox"

@@ -7,7 +7,7 @@
     git
     tmuxifier
     rustup
-    go
+    go_1_25
     gopls
     bat
     ripgrep
@@ -22,6 +22,7 @@
     tree
     libffi
     tree-sitter
+    esptool
 
     #language server protocols
     ruff

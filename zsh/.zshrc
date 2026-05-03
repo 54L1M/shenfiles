@@ -75,7 +75,7 @@ alias ats="cd ${HOME}/Documents/WorkStation/In2Dialog/I2D_ATS"
 alias comp="cd ${HOME}/Documents/WorkStation/In2Dialog/I2D_Companion"
 alias p4="cd ${HOME}/Documents/P4ndaF4ce"
 # git
-alias gist="git status"
+alias gist="git status -s -b"
 alias gish="git push"
 alias giad="git add"
 alias gico="git commit -m"

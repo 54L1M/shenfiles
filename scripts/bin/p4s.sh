@@ -213,10 +213,42 @@ main() {
     # No -m flag, check config if a profile was used
     message_template=$(yq eval ".${profile_name}.template // \"\"" "$CONFIG_FILE")
   fi
-  
-  # Run the main logic
-  run_sync "$repo_path" "$message_template"
+
+  # --- Determine submodules ---
+  local submodules=()
+  if [ -n "$profile_name" ] && [ -f "$CONFIG_FILE" ]; then
+    # Read the submodules array line-by-line, ignoring null outputs or missing keys
+    while IFS= read -r sub; do
+        if [ -n "$sub" ] && [ "$sub" != "null" ]; then
+            submodules+=("$sub")
+        fi
+    done < <(yq eval ".${profile_name}.submodules[]" "$CONFIG_FILE" 2>/dev/null || true)
+  fi
+
+  # --- Execute Sync for Submodules First ---
+  for sub in "${submodules[@]}"; do
+    echo ""
+    p4_info "--- Syncing Submodule: $sub ---"
+    
+    local expanded_base="${repo_path/#\~/$HOME}"
+    local sub_path="$expanded_base/$sub"
+    
+    # Run in a subshell `(...)` so the directory changes and `exit 0`
+    # inside run_sync don't prematurely terminate the whole script.
+    if ! ( run_sync "$sub_path" "$message_template" ); then
+        p4_error "Failed to sync submodule: $sub"
+        exit 1
+    fi
+  done
+
+  # --- Execute Sync for Main Repository ---
+  if [ ${#submodules[@]} -gt 0 ]; then
+    echo ""
+    p4_info "--- Syncing Main Repository ---"
+  fi
+
+  # Run main repo logic in a subshell as well to maintain consistency
+  ( run_sync "$repo_path" "$message_template" )
 }
 
 main "$@"
-

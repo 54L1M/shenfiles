@@ -52,6 +52,7 @@
       "direnv"
       "ansible"
       "mpv"
+      "git-filter-repo"
     ];
     casks = [
       "firefox"

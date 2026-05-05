@@ -1,12 +1,41 @@
-# Theme
+# Theme — p4nda
 # theme = Kanagawa Wave
-theme = Gruvbox Dark Hard
+# theme = Gruvbox Dark Hard
 background-opacity = 0.65
 macos-window-shadow=false
 # background-blur = 2
 
+background = #0e1117
+foreground = #f1faee
+
+# Cursor
+cursor-color = #ffb703
+cursor-text = #0e1117
+
+# Selection
+selection-background = #1d3567
+selection-foreground = #f1faee
+
+# ANSI colors
+palette = 0=#090c12
+palette = 1=#e05c6e
+palette = 2=#a8c97f
+palette = 3=#ffb703
+palette = 4=#457b9d
+palette = 5=#c3a0d8
+palette = 6=#abdadc
+palette = 7=#f1faee
+palette = 8=#344f6a
+palette = 9=#ed7a8a
+palette = 10=#b8d98f
+palette = 11=#ffc933
+palette = 12=#5a9bbf
+palette = 13=#d4b0e8
+palette = 14=#bde8ea
+palette = 15=#ffffff
+
 # Font
-font-family = "JetBrainsMono Nerd Font Mono"
+font-family = "Hack Nerd Font Mono"
 font-size = 16
 
 

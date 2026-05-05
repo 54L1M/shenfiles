@@ -35,7 +35,7 @@ palette = 14=#bde8ea
 palette = 15=#ffffff
 
 # Font
-font-family = "Hack Nerd Font Mono"
+font-family = "JetBrainsMono Nerd Font Mono"
 font-size = 16
 
 

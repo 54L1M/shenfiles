@@ -89,9 +89,13 @@ return {
 		lualine.setup({
 			extensions = { "oil", "trouble", "mason", "quickfix", "ctrlspace" },
 			options = {
-				theme = my_lualine_theme,
+				-- theme = my_lualine_theme,
+				-- section_separators = "",
+				-- component_separators = "",
+				theme = require("oshen.integrations.lualine").get(),
 				section_separators = "",
 				component_separators = "",
+
 				globalstatus = false,
 			},
 			sections = {

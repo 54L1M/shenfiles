@@ -19,7 +19,7 @@ require("lazy").setup({ { import = "salim.plugins" }, { import = "salim.plugins.
 		notify = false,
 	},
 })
-vim.cmd("colorscheme catppuccin")
+vim.cmd("colorscheme oshen")
 -- vim.cmd("colorscheme kanagawa")
 
 -- Override default UI select with Snacks Picker

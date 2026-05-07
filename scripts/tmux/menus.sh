@@ -11,12 +11,12 @@ DOTFILES_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
 CMD="$1"
 
-# Common styling colors (Gruvbox Material)
-THM_BG="#1d2021"
-THM_FG="#ebdbb2"
-THM_PEACH="#e78a4e"
-THM_SURFACE="#292929"
-THM_OVERLAY="#595959"
+# Common styling colors (Oshen.nvim)
+THM_BG="#0e1117"
+THM_FG="#f1faee"
+THM_PEACH="#e8944a"
+THM_SURFACE="#090c12"
+THM_OVERLAY="#3d5570"
 
 case "$CMD" in
   switch_session)
@@ -30,7 +30,7 @@ case "$CMD" in
       --delimiter ':' \
       --bind "ctrl-x:execute(tmux kill-session -t {1})+reload(tmux list-sessions -F \"#{session_name}: #{session_windows} windows\" | grep -v \"^${CURRENT_SESSION}:\")" \
       --preview "tmux list-windows -t {1} -F '#{window_index}: #{window_name}#{?window_active, (active),}#{?#{>:#{window_panes},1}, [#{window_panes} panes],} ;;;    └─ #{b:pane_current_path}#{?@p4e_env,  •  #{@p4e_env},}' | awk -F ';;;' '{gsub(/•.*/, \"\\x1b[38;5;215m&\\x1b[0m\", \$2); print \$1 \"\\n\" \$2}'" \
-      --color="bg+:$THM_SURFACE,bg:$THM_BG,spinner:#7daea3,hl:#ea6962,fg:$THM_FG,header:#7daea3,info:#d8a657,pointer:$THM_PEACH,marker:$THM_PEACH,fg+:$THM_FG,prompt:#d8a657,hl+:#ea6962" \
+      --color="bg+:$THM_SURFACE,bg:$THM_BG,spinner:#abdadc,hl:#e05c6e,fg:$THM_FG,header:#abdadc,info:#ffb703,pointer:$THM_PEACH,marker:$THM_PEACH,fg+:$THM_FG,prompt:#ffb703,hl+:#e05c6e" \
     | awk -F':' '{print $1}' | xargs tmux switch-client -t
     ;;
 
@@ -42,7 +42,7 @@ case "$CMD" in
     # Select and launch a p4m session
     yq eval 'keys | .[]' "$HOME/.config/p4/p4m.yaml" | \
     fzf --reverse --header='Select a session to load' \
-      --color="bg+:$THM_SURFACE,bg:$THM_BG,spinner:#7daea3,hl:#ea6962,fg:$THM_FG,header:#7daea3,info:#d8a657,pointer:$THM_PEACH,marker:$THM_PEACH,fg+:$THM_FG,prompt:#d8a657,hl+:#ea6962" \
+      --color="bg+:$THM_SURFACE,bg:$THM_BG,spinner:#abdadc,hl:#e05c6e,fg:$THM_FG,header:#abdadc,info:#ffb703,pointer:$THM_PEACH,marker:$THM_PEACH,fg+:$THM_FG,prompt:#ffb703,hl+:#e05c6e" \
     | xargs -I {} p4m {}
     ;;
 

@@ -115,8 +115,8 @@ return {
 							PmenuExtra = { bg = colors.mantle, fg = colors.subtext1 },
 
 							-- Floating windows
-							NormalFloat = { bg = colors.mantle },
-							FloatBorder = { bg = colors.mantle, fg = colors.surface2 },
+							NormalFloat = { bg = colors.surface1 },
+							FloatBorder = { bg = colors.surface1, fg = colors.surface2 },
 							FloatTitle = { bg = colors.blue, fg = colors.base },
 
 							-- Blink.cmp specific highlighting

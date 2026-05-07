@@ -4,16 +4,16 @@
 # Ported from: ~/.config/sketchybar/plugins/kube.sh
 
 # -----------------------------------------------------------------------------
-# CONFIGURATION & COLORS (Gruvbox Material match)
+# CONFIGURATION & COLORS (Oshen.nvim)
 # -----------------------------------------------------------------------------
 # Hardcoding these to match your tmux.conf @thm_* variables
-COLOR_RED="#ea6962"     # Prod
-COLOR_YELLOW="#d8a657"  # Staging/Auth missing
-COLOR_GREEN="#a9b665"   # Dev/Local
-COLOR_BLUE="#7daea3"    # Default
-COLOR_BG="#1d2021"      # Base Background
-COLOR_GRAY="#595959"    # Overlay0 (Separators)
-COLOR_FG="#ebdbb2"      # Text
+COLOR_RED="#e05c6e"     # Prod
+COLOR_YELLOW="#ffb703"  # Staging/Auth missing
+COLOR_GREEN="#a8c97f"   # Dev/Local
+COLOR_BLUE="#abdadc"    # Default (teal)
+COLOR_BG="#0e1117"      # Base Background
+COLOR_GRAY="#3d5570"    # Overlay0 (Separators)
+COLOR_FG="#f1faee"      # Text
 
 # Icons
 ICON_KUBE="󱃾" 

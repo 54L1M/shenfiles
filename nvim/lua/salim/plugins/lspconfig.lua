@@ -18,6 +18,12 @@ return {
 			},
 		})
 
+		vim.lsp.buf.hover = vim.lsp.with(vim.lsp.buf.hover, {
+			border = "rounded",
+			max_width = 80,
+			max_height = 20,
+		})
+
 		vim.api.nvim_create_autocmd("LspAttach", {
 			group = vim.api.nvim_create_augroup("UserLspConfig", { clear = true }),
 			callback = function(ev)

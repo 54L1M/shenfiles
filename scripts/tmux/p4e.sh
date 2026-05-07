@@ -4,15 +4,15 @@
 # Displays the current active p4e environment for the active pane
 
 # -----------------------------------------------------------------------------
-# CONFIGURATION & COLORS (Gruvbox Material match)
+# CONFIGURATION & COLORS (Oshen.nvim)
 # -----------------------------------------------------------------------------
-COLOR_RED="#ea6962"     # Prod
-COLOR_YELLOW="#d8a657"  # Staging
-COLOR_GREEN="#a9b665"   # Dev/Local
-COLOR_BLUE="#7daea3"    # Default
-COLOR_MAUVE="#d3869b"   # p4e default
-COLOR_BG="#1d2021"      # Base Background
-COLOR_GRAY="#595959"    # Overlay0 (Separators)
+COLOR_RED="#e05c6e"     # Prod
+COLOR_YELLOW="#ffb703"  # Staging
+COLOR_GREEN="#a8c97f"   # Dev/Local
+COLOR_BLUE="#abdadc"    # Default (teal)
+COLOR_MAUVE="#c3a0d8"   # p4e default (lavender)
+COLOR_BG="#0e1117"      # Base Background
+COLOR_GRAY="#3d5570"    # Overlay0 (Separators)
 
 # Icons
 ICON_ENV="󱇵" 

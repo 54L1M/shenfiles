@@ -30,5 +30,8 @@ i2c:
 shen:
   path: ~/shenfiles/
 
+oshen:
+  path: ~/Documents/Oshen.nvim/
+
 manifest:
   path: ~/Documents/Workstation/In2Dialog/KubernetesManifests/

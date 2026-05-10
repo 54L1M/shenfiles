@@ -31,7 +31,7 @@ shen:
   path: ~/shenfiles/
 
 oshen:
-  path: ~/Documents/Oshen.nvim/
+  path: ~/Documents/pf4/Oshen.nvim/
 
 manifest:
   path: ~/Documents/Workstation/In2Dialog/KubernetesManifests/

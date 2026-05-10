@@ -1,6 +1,6 @@
 return {
 	-- "54L1M/Oshen.nvim",
-	dir = vim.fn.expand("~/Documents/Oshen.nvim"),
+	dir = vim.fn.expand("~/Documents/pf4/Oshen.nvim"),
 	lazy = false,
 	priority = 1000,
 	config = function()

@@ -7,7 +7,7 @@
        "nikitabobko/tap"
        "FelixKratz/formulae"
        "FelixKratz/formulae"
-       "railwaycat/emacsmacport"
+       #"railwaycat/emacsmacport"
     ];
 
     brews = [
@@ -15,7 +15,7 @@
       "hugo"
       "yq"
       "lazygit"
-      "zellij"
+      #"zellij"
       "fzf"
       "node"
       "postgresql@14"
@@ -37,15 +37,15 @@
       "fd"
       "coreutils"
       "findutils"
-      "sketchybar"
-      "borders"
+      #"sketchybar"
+      #"borders"
       "figlet"
       "gh"
       "cocoapods"
       "upx"
       "nsis"
       "cmatrix"
-      "emacs-mac"
+      #"emacs-mac"
       "markdown"
       "shellcheck"
       "openjdk"
@@ -53,10 +53,11 @@
       "ansible"
       "mpv"
       "git-filter-repo"
+      "rtk"
     ];
     casks = [
       "firefox"
-      "chatgpt"
+      #"chatgpt"
       "discord"
       "obsidian"
       "ghostty"
@@ -65,7 +66,7 @@
       "lens"
       "slack"
       "postman"
-      "aerospace"
+      #"aerospace"
       "visual-studio-code"
     ];
     masApps = {};

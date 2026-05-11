@@ -21,9 +21,6 @@ bot:
   path: ~/Documents/Workstation/In2Dialog/I2D_Companion/
   env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
 
-i2desktop:
-  path: ~/Documents/Workstation/In2Dialog/i2desktop/
-
 i2c:
   path: ~/Documents/Workstation/In2Dialog/i2c/
 
@@ -32,6 +29,9 @@ shen:
 
 oshen:
   path: ~/Documents/pf4/Oshen.nvim/
+
+djq:
+  path: ~/Documents/pf4/djq/
 
 manifest:
   path: ~/Documents/Workstation/In2Dialog/KubernetesManifests/

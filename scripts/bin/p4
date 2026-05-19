@@ -1,0 +1,125 @@
+#!/usr/bin/env bash
+# P4_DESC: Root command — list, dispatch, and get help for all p4* tools
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../lib/colors/colors.sh"
+
+INSTALL_DIR="$HOME/.local/bin"
+
+function show_help() {
+    p4_header "p4 — P4ndaFace Script Suite"
+    p4_info "Usage: p4 [script] [args...]"
+    echo
+    p4_title "Available Scripts:"
+
+    local found=0
+    for script_path in "$SCRIPT_DIR"/p4*.sh "$INSTALL_DIR"/p4*; do
+        # Prefer bin dir; skip duplicates and self
+        [[ -x "$script_path" ]] || continue
+        local name
+        name=$(basename "$script_path")
+        [[ "$name" == "p4" || "$name" == "p4.sh" ]] && continue
+
+        # Strip .sh for display
+        local display_name="${name%.sh}"
+
+        # Grab P4_DESC comment from script
+        local desc
+        desc=$(grep "^# P4_DESC:" "$script_path" 2>/dev/null | head -1 | sed 's/^# P4_DESC: //')
+        [[ -z "$desc" ]] && desc="(no description)"
+
+        p4_cmd "$display_name" "" "$desc"
+        found=1
+    done
+
+    if [[ "$found" -eq 0 ]]; then
+        p4_warn "No p4* scripts found in $SCRIPT_DIR or $INSTALL_DIR"
+    fi
+
+    echo
+    p4_title "Meta Commands:"
+    p4_cmd "p4 fzf" "" "Interactive script picker"
+    p4_cmd "p4 edit" "" "Open ~/.config/p4/ in \$EDITOR"
+    p4_cmd "p4 update" "" "Sync dotfiles (runs p4s shen)"
+    echo
+    p4_tip "Run 'p4 <script> --help' for script-specific help"
+}
+
+function dispatch() {
+    local subcmd="$1"; shift
+
+    # Try install dir first, then script dir
+    local target=""
+    for candidate in "$INSTALL_DIR/p4${subcmd}" "$SCRIPT_DIR/p4${subcmd}.sh"; do
+        [[ -x "$candidate" ]] && target="$candidate" && break
+    done
+
+    if [[ -z "$target" ]]; then
+        p4_error "Unknown script: p4${subcmd}"
+        p4_tip "Run 'p4' to see all available scripts"
+        exit 1
+    fi
+
+    exec "$target" "$@"
+}
+
+function fzf_select() {
+    local scripts=()
+    local seen=()
+    # Search both INSTALL_DIR (symlinks without .sh) and SCRIPT_DIR (.sh files)
+    for script_path in "$INSTALL_DIR"/p4* "$SCRIPT_DIR"/p4*.sh; do
+        [[ -x "$script_path" ]] || continue
+        local name
+        name=$(basename "${script_path%.sh}")
+        [[ "$name" == "p4" || "$name" == "p4.sh" ]] && continue
+        [[ " ${seen[*]} " =~ " ${name} " ]] && continue
+        seen+=("$name")
+        scripts+=("$name")
+    done
+
+    if [[ ${#scripts[@]} -eq 0 ]]; then
+        p4_warn "No p4* scripts found"
+        exit 0
+    fi
+
+    local selected
+    selected=$(printf '%s\n' "${scripts[@]}" | sort | fzf \
+        --header="Select p4 script" \
+        --preview='
+            for _p in "'"$INSTALL_DIR"'/{}" "'"$SCRIPT_DIR"'/{}.sh"; do
+                [[ -x "$_p" ]] || continue
+                real=$(readlink "$_p" 2>/dev/null)
+                if [[ -n "$real" ]]; then
+                    [[ "$real" != /* ]] && real="$(dirname "$_p")/$real"
+                else
+                    real="$_p"
+                fi
+                bash "$real" --help 2>&1 | head -30
+                break
+            done
+        ' \
+        --preview-window=right:60%:wrap \
+        --height=60% --reverse \
+        --color="header:blue,prompt:yellow,pointer:red")
+
+    [[ -z "$selected" ]] && exit 0
+    for _p in "$INSTALL_DIR/$selected" "$SCRIPT_DIR/${selected}.sh"; do
+        [[ -x "$_p" ]] && exec "$_p" && break
+    done
+}
+
+case "${1:-}" in
+    ""|list) show_help ;;
+    fzf)     fzf_select ;;
+    edit)    "${EDITOR:-nvim}" "$HOME/.config/p4/" ;;
+    update)  exec "$SCRIPT_DIR/p4s.sh" shen ;;
+    -h|--help) show_help ;;
+    -*)
+        p4_error "Unknown flag: $1"
+        show_help
+        exit 1
+        ;;
+    *)
+        dispatch "$@"
+        ;;
+esac

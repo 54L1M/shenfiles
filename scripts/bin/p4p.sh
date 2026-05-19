@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Cloud SQL Proxy Manager
+# P4_DESC: Cloud SQL Proxy — start/stop GCP database tunnels in background tmux sessions
 # Usage: cloud_sql_proxy.sh {start|stop} [db_profile]
 
 ENV_FILE="$HOME/.config/p4/p4p"

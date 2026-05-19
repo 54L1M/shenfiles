@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# p4m - Development Environment Setup Script  
+# p4m - Development Environment Setup Script
+# P4_DESC: Session manager — create 4-window tmux dev layouts from YAML config
 # Author: P4ndaF4ce
 # Usage: p4m <session_name> [options]
 
@@ -365,10 +366,11 @@ function create_session() {
   fi
 
   # Get session configuration
-  local venv_name project_path env_file
+  local venv_name project_path env_file proxy_profile
   venv_name=$(get_session_config "$session_name" "virtualenv")
   project_path=$(get_session_config "$session_name" "path")
   env_file=$(get_session_config "$session_name" "env_file")
+  proxy_profile=$(get_session_config "$session_name" "proxy")
 
   # Validate required fields (only path is required now)
   if [ -z "$project_path" ]; then
@@ -419,8 +421,17 @@ function create_session() {
   # Switch back to code window
   tmux select-window -t "$session_name:code"
 
+  # Auto-start Cloud SQL proxy if configured
+  if [[ -n "$proxy_profile" ]]; then
+    local p4p_script="$SCRIPT_DIR/p4p.sh"
+    if [[ -x "$p4p_script" ]]; then
+      p4_step "Starting Cloud SQL proxy: $proxy_profile"
+      "$p4p_script" start "$proxy_profile" >/dev/null 2>&1 || p4_warn "Could not start proxy: $proxy_profile"
+    fi
+  fi
+
   p4_success "Session created successfully!"
-  
+
   # Attach to session
   attach_to_session "$session_name"
 }

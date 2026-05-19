@@ -25,7 +25,7 @@ format = '([\[$all_status$ahead_behind\]](red))'
 [git_branch]
 format = '[$branch](mauve)'
 [kubernetes]
-disabled = true
+disabled = false
 format = '[$context](dimmed green) '
 [python]
 format = '[(\($virtualenv\))]($style)'

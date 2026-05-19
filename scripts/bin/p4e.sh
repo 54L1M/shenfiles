@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # p4e - Project Environment Switcher
+# P4_DESC: Environment switcher — swap .env profiles per project with tmux integration
 # Usage: p4e <command> [args]
 
 # Source your color library

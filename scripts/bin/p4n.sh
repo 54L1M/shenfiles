@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# P4_DESC: Nix initializer — scaffold new projects with flake.nix and direnv
 
 source "$(dirname "$0")/../lib/colors/colors.sh"
 

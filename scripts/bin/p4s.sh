@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# P4_DESC: Git synchronizer — per-file commits with message templates
 set -euo pipefail
 
 # p4s - A generalized git repository synchronizer

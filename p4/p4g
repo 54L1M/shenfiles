@@ -1,0 +1,9 @@
+# p4g - GCloud Project Config
+# Add one line per project alias: P4G_PROJECT_<ALIAS>=<gcp-project-id>
+# Optional account override:      P4G_ACCOUNT_<ALIAS>=<email>
+
+P4G_PROJECT_I2D="i2d-cloud"
+P4G_ACCOUNT_I2D="salim.siboni@in2dialog.com"
+
+# Default account used when no per-project account is set
+P4G_DEFAULT_ACCOUNT="salim.siboni@in2dialog.com"

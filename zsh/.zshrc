@@ -74,7 +74,6 @@ alias i2d="cd ${HOME}/Documents/WorkStation/In2Dialog"
 alias ats="cd ${HOME}/Documents/WorkStation/In2Dialog/I2D_ATS"
 alias comp="cd ${HOME}/Documents/WorkStation/In2Dialog/I2D_Companion"
 alias pf4="cd ${HOME}/Documents/pf4/"
-alias p4="cd ${HOME}/Documents/pf4/"
 alias 4="cd ${HOME}/Documents/pf4/"
 # git
 alias gist="git status -s -b"
@@ -102,7 +101,7 @@ alias in="sudo apt install"
 alias unin="sudo apt remove"
 alias are="sudo apt autoremove"
 alias lg="lazygit"
-alias gca="gcloud auth login && gcloud auth application-default login"
+alias gca="p4g login"
 ##########################
 #ALIAS
 ##########################

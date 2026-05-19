@@ -5,16 +5,19 @@ ats:
   virtualenv: ats3.9
   path: ~/Documents/Workstation/In2Dialog/I2D_ATS/
   env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
+  proxy: PROD
 
 prod:
   virtualenv: ats3.9
   path: ~/Documents/Workstation/In2Dialog/prod/
   env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
+  proxy: PROD
 
 staging:
   virtualenv: ats3.9
   path: ~/Documents/Workstation/In2Dialog/staging/
   env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
+  proxy: STAGING
 
 bot:
   virtualenv: bot3.9

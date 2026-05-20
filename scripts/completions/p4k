@@ -1,0 +1,47 @@
+#compdef p4k
+
+_p4k_kubectl() {
+  for _p in /opt/homebrew/bin/kubectl /usr/local/bin/kubectl "$(command -v kubectl 2>/dev/null)"; do
+    [[ -x "$_p" ]] && echo "$_p" && return
+  done
+}
+
+_p4k() {
+  local state
+
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[Show help]' \
+    '1:command:->commands' \
+    '2:arg:->args' && return 0
+
+  case $state in
+    commands)
+      local -a completions=(
+        'ctx:fzf-select and switch kubeconfig context'
+        'context:fzf-select and switch kubeconfig context'
+        'ns:fzf-select namespace in current context'
+        'namespace:fzf-select namespace in current context'
+        'pods:fzf over pod list with describe preview'
+        'p:fzf over pod list with describe preview'
+        'status:Print current context and namespace'
+        's:Print current context and namespace'
+      )
+      _describe 'p4k commands' completions
+      ;;
+    args)
+      case ${line[1]} in
+        pods|p)
+          local kubectl_cmd
+          kubectl_cmd=$(_p4k_kubectl)
+          if [[ -n "$kubectl_cmd" ]]; then
+            local -a namespaces
+            namespaces=("${(@f)$("$kubectl_cmd" get namespaces -o name 2>/dev/null | sed 's|namespace/||')}")
+            _describe 'namespace' namespaces
+          fi
+          ;;
+      esac
+      ;;
+  esac
+}
+
+_p4k "$@"

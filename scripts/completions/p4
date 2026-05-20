@@ -1,0 +1,39 @@
+#compdef p4
+
+_p4() {
+  local state
+
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[Show help]' \
+    '1:command:->commands' \
+    '*:args:->args' && return 0
+
+  case $state in
+    commands)
+      local -a completions=(
+        'list:List all p4* scripts'
+        'fzf:Interactive script picker'
+        'edit:Open ~/.config/p4/ in $EDITOR'
+        'update:Sync dotfiles (runs p4s shen)'
+      )
+
+      local install_dir="$HOME/.local/bin"
+      local script_dir="${${(%):-%x}:h}"
+
+      for script_path in "$install_dir"/p4*(N) "$script_dir"/p4*.sh(N); do
+        [[ -x "$script_path" ]] || continue
+        local name="${${script_path:t}%.sh}"
+        [[ "$name" == "p4" ]] && continue
+        local sub="${name#p4}"
+        local desc
+        desc=$(grep "^# P4_DESC:" "$script_path" 2>/dev/null | head -1 | sed 's/^# P4_DESC: //')
+        [[ -z "$desc" ]] && desc="p4${sub} subcommand"
+        completions+=("${sub}:${desc}")
+      done
+
+      _describe 'p4 commands' completions
+      ;;
+  esac
+}
+
+_p4 "$@"

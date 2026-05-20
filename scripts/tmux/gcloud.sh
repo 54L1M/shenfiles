@@ -3,10 +3,8 @@
 # Tmux GCloud Auth Status Plugin
 # Shows online (authenticated) or offline (needs p4g login)
 
-COLOR_RED="#e05c6e"
-COLOR_GREEN="#a8c97f"
-COLOR_GRAY="#3d5570"
-COLOR_BG="#0e1117"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../lib/colors/colors.sh"
 
 ICON_CLOUD="󰅟"
 
@@ -27,7 +25,7 @@ fi
 TOKEN=$(timeout 3 "$GCLOUD_CMD" auth print-access-token 2>/dev/null)
 
 if [[ -z "$TOKEN" ]]; then
-    echo "#[fg=${COLOR_GRAY},bg=${COLOR_BG},none]│#[fg=${COLOR_RED},bg=${COLOR_BG}] $ICON_CLOUD offline "
+    echo "#[fg=${P4_OSHEN_OVERLAY0},bg=${P4_OSHEN_BASE},none]│#[fg=${P4_OSHEN_RED},bg=${P4_OSHEN_BASE}] $ICON_CLOUD GCS·off "
 else
-    echo "#[fg=${COLOR_GRAY},bg=${COLOR_BG},none]│#[fg=${COLOR_GREEN},bg=${COLOR_BG}] $ICON_CLOUD gcloud "
+    echo "#[fg=${P4_OSHEN_OVERLAY0},bg=${P4_OSHEN_BASE},none]│#[fg=${P4_OSHEN_GREEN},bg=${P4_OSHEN_BASE}] $ICON_CLOUD GCS·on "
 fi

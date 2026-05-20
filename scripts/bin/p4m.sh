@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # p4m - Development Environment Setup Script
 # P4_DESC: Session manager — create 4-window tmux dev layouts from YAML config
-# Author: P4ndaF4ce
+# Author: PF4
 # Usage: p4m <session_name> [options]
 
 set -e

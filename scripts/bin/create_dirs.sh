@@ -17,7 +17,7 @@ declare -A structure=(
   ["TheSandBox"]=""
   ["Books"]="Fiction Non-Fiction Technical"
   ["GeneralFiles"]="HTMLTemplates Scripts Miscellaneous"
-  ["P4ndaF4ce"]="SharedResources"
+  ["PF4"]="SharedResources"
 )
 
 # --- Create Base Directory Structure ---

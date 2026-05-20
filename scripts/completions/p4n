@@ -1,0 +1,8 @@
+#compdef p4n
+
+_p4n() {
+  _arguments \
+    '1:project-name:_directories'
+}
+
+_p4n "$@"

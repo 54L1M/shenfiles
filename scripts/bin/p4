@@ -94,12 +94,12 @@ function fzf_select() {
                 else
                     real="$_p"
                 fi
-                bash "$real" --help 2>&1 | head -30
+                bat --color=always --paging=never --style=numbers,header "$real" 2>/dev/null || cat "$real"
                 break
             done
         ' \
-        --preview-window=right:60%:wrap \
-        --height=60% --reverse \
+        --preview-window=down:50%:wrap \
+        --height=80% --reverse \
         --color="header:blue,prompt:yellow,pointer:red")
 
     [[ -z "$selected" ]] && exit 0
@@ -112,7 +112,11 @@ case "${1:-}" in
     ""|list) show_help ;;
     fzf)     fzf_select ;;
     edit)    "${EDITOR:-nvim}" "$HOME/.config/p4/" ;;
-    update)  exec "$SCRIPT_DIR/p4s.sh" shen ;;
+    update)
+        for _p in "$INSTALL_DIR/p4s" "$SCRIPT_DIR/p4s.sh"; do
+            [[ -x "$_p" ]] && exec "$_p" shen
+        done
+        p4_error "p4s not found"; exit 1 ;;
     -h|--help) show_help ;;
     -*)
         p4_error "Unknown flag: $1"

@@ -1,0 +1,51 @@
+#compdef p4l
+
+_p4l_proxy_profiles() {
+  local -a profiles
+  for logfile in /tmp/cloud-sql-proxy-*.log(N); do
+    local profile="${logfile#/tmp/cloud-sql-proxy-}"
+    profiles+=("${profile%.log}")
+  done
+  _describe 'proxy profile' profiles
+}
+
+_p4l_pod_names() {
+  local kubectl_cmd
+  for _p in /opt/homebrew/bin/kubectl /usr/local/bin/kubectl "$(command -v kubectl 2>/dev/null)"; do
+    [[ -x "$_p" ]] && kubectl_cmd="$_p" && break
+  done
+  [[ -z "$kubectl_cmd" ]] && return
+  local -a pods
+  pods=("${(@f)$("$kubectl_cmd" get pods --no-headers 2>/dev/null | awk '{print $1}')}")
+  _describe 'pod' pods
+}
+
+_p4l() {
+  local state
+
+  _arguments -C \
+    '(-h --help)'{-h,--help}'[Show help]' \
+    '(-n --lines)'{-n,--lines}'[History lines to show (default: 50)]:N:' \
+    '--since[K8s logs since duration (e.g. 5m, 1h)]:duration:' \
+    '--ns[K8s namespace override]:namespace:' \
+    '1:command:->commands' \
+    '2:arg:->args' && return 0
+
+  case $state in
+    commands)
+      local -a completions=(
+        'proxy:Tail a cloud-sql proxy log'
+        'pod:Stream k8s pod logs'
+      )
+      _describe 'p4l commands' completions
+      ;;
+    args)
+      case ${line[1]} in
+        proxy) _p4l_proxy_profiles ;;
+        pod)   _p4l_pod_names ;;
+      esac
+      ;;
+  esac
+}
+
+_p4l "$@"

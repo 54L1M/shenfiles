@@ -2,9 +2,8 @@
 
 # Tmux pod count plugin — shows namespace·count
 
-COLOR_BLUE="#abdadc"
-COLOR_GRAY="#3d5570"
-COLOR_BG="#0e1117"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../lib/colors/colors.sh"
 
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
 export KUBECONFIG="${KUBECONFIG:-$HOME/.kube/config}"
@@ -19,16 +18,10 @@ done
 [[ -z "$KUBECTL_CMD" ]] && echo "" && exit 0
 
 NS=$("$KUBECTL_CMD" config view --minify -o jsonpath='{..namespace}' 2>/dev/null)
+CTX=$("$KUBECTL_CMD" config current-context 2>/dev/null)
 NS="${NS:-default}"
 
 COUNT=$("$KUBECTL_CMD" get pods -n "$NS" --no-headers --request-timeout=2s 2>/dev/null | wc -l | tr -d ' ')
 COUNT="${COUNT:-0}"
 
-# Truncate namespace to 6 chars
-if [[ ${#NS} -gt 6 ]]; then
-    NS_DISPLAY="${NS:0:5}…"
-else
-    NS_DISPLAY="$NS"
-fi
-
-echo "#[fg=${COLOR_GRAY},bg=${COLOR_BG},none]│#[fg=${COLOR_BLUE},bg=${COLOR_BG}] 󱃾 ${NS_DISPLAY}·${COUNT} "
+echo "#[fg=${P4_OSHEN_OVERLAY0},bg=${P4_OSHEN_BASE},none]│#[fg=${P4_OSHEN_TEAL},bg=${P4_OSHEN_BASE}] 󱃾 ${CTX}·${COUNT} "

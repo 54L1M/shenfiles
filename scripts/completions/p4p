@@ -1,0 +1,51 @@
+#compdef p4p
+
+_p4p_profiles() {
+  local config_file="$HOME/.config/p4/p4p"
+  local -a profiles
+
+  if [[ -f "$config_file" ]]; then
+    local default_instance
+    default_instance=$(grep "^DB_INSTANCE=" "$config_file" 2>/dev/null | cut -d= -f2)
+    [[ -n "$default_instance" ]] && profiles+=('default')
+
+    while IFS= read -r line; do
+      local alias="${line%%=*}"
+      [[ -n "$alias" ]] && profiles+=("${alias:l}")
+    done < <(grep "^DB_INSTANCE_" "$config_file" 2>/dev/null | sed 's/^DB_INSTANCE_//' | cut -d= -f1)
+  fi
+
+  _describe 'db profile' profiles
+}
+
+_p4p_running_profiles() {
+  local -a profiles
+  profiles=("${(@f)$(tmux list-sessions -F '#S' 2>/dev/null | grep '^sql-proxy-' | sed 's/^sql-proxy-//')}")
+  _describe 'running proxy' profiles
+}
+
+_p4p() {
+  local state
+
+  _arguments -C \
+    '1:command:->commands' \
+    '2:profile:->profiles' && return 0
+
+  case $state in
+    commands)
+      local -a completions=(
+        'start:Start a Cloud SQL proxy tunnel'
+        'stop:Stop a running Cloud SQL proxy tunnel'
+      )
+      _describe 'p4p commands' completions
+      ;;
+    profiles)
+      case ${line[1]} in
+        start) _p4p_profiles ;;
+        stop)  _p4p_running_profiles ;;
+      esac
+      ;;
+  esac
+}
+
+_p4p "$@"

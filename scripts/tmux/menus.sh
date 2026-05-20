@@ -3,34 +3,26 @@
 # tmux-menus.sh - Centralized handler for Tmux popups and menus
 # Usage: ./menus.sh [command]
 
-# --- Dynamic Path Resolution ---
-# 1. Get the directory where this script is located (scripts/tmux)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# 2. Go up two levels to find the repository root (shenfiles)
 DOTFILES_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+source "$SCRIPT_DIR/../lib/colors/colors.sh"
 
 CMD="$1"
 
-# Common styling colors (Oshen.nvim)
-THM_BG="#0e1117"
-THM_FG="#f1faee"
-THM_PEACH="#e8944a"
-THM_SURFACE="#090c12"
-THM_OVERLAY="#3d5570"
+# fzf --color string using oshen palette
+FZF_COLORS="bg+:${P4_OSHEN_MANTLE},bg:${P4_OSHEN_BASE},spinner:${P4_OSHEN_TEAL},hl:${P4_OSHEN_RED},fg:${P4_OSHEN_TEXT},header:${P4_OSHEN_TEAL},info:${P4_OSHEN_AMBER},pointer:${P4_OSHEN_PEACH},marker:${P4_OSHEN_PEACH},fg+:${P4_OSHEN_TEXT},prompt:${P4_OSHEN_AMBER},hl+:${P4_OSHEN_RED}"
 
 case "$CMD" in
   switch_session)
-    # Filter out current session and use fzf to switch
     CURRENT_SESSION=$(tmux display-message -p '#S')
-    
-    # Just list the session name and window count here
+
     tmux list-sessions -F "#{session_name}: #{session_windows} windows" | \
     grep -v "^${CURRENT_SESSION}:" | \
     fzf --reverse --ansi --header 'C-x: Kill Session' \
       --delimiter ':' \
       --bind "ctrl-x:execute(tmux kill-session -t {1})+reload(tmux list-sessions -F \"#{session_name}: #{session_windows} windows\" | grep -v \"^${CURRENT_SESSION}:\")" \
       --preview "tmux list-windows -t {1} -F '#{window_index}: #{window_name}#{?window_active, (active),}#{?#{>:#{window_panes},1}, [#{window_panes} panes],} ;;;    └─ #{b:pane_current_path}#{?@p4e_env,  •  #{@p4e_env},}' | awk -F ';;;' '{gsub(/•.*/, \"\\x1b[38;5;215m&\\x1b[0m\", \$2); print \$1 \"\\n\" \$2}'" \
-      --color="bg+:$THM_SURFACE,bg:$THM_BG,spinner:#abdadc,hl:#e05c6e,fg:$THM_FG,header:#abdadc,info:#ffb703,pointer:$THM_PEACH,marker:$THM_PEACH,fg+:$THM_FG,prompt:#ffb703,hl+:#e05c6e" \
+      --color="$FZF_COLORS" \
     | awk -F':' '{print $1}' | xargs tmux switch-client -t
     ;;
 
@@ -39,16 +31,14 @@ case "$CMD" in
     ;;
 
   p4m_session)
-    # Select and launch a p4m session
     yq eval 'keys | .[]' "$HOME/.config/p4/p4m.yaml" | \
     fzf --reverse --header='Select a session to load' \
-      --color="bg+:$THM_SURFACE,bg:$THM_BG,spinner:#abdadc,hl:#e05c6e,fg:$THM_FG,header:#abdadc,info:#ffb703,pointer:$THM_PEACH,marker:$THM_PEACH,fg+:$THM_FG,prompt:#ffb703,hl+:#e05c6e" \
+      --color="$FZF_COLORS" \
     | xargs -I {} p4m {}
     ;;
 
   dotfiles_menu)
-    # Uses the dynamic DOTFILES_DIR
-    tmux display-menu -T "#[align=centre,fg=$THM_PEACH]    Dotfiles    " -x C -y C \
+    tmux display-menu -T "#[align=centre,fg=${P4_OSHEN_PEACH}]    Dotfiles    " -x C -y C \
       ".zshrc"      z  "display-popup -d \"$HOME/.config/zsh/\" -E 'nvim $HOME/.config/zsh/.zshrc'" \
       "nix"         n  "display-popup -d \"$DOTFILES_DIR/nix/\" -E 'nvim $DOTFILES_DIR/nix/'" \
       "scripts"     s  "display-popup -d \"$DOTFILES_DIR/scripts/\" -E 'nvim $DOTFILES_DIR/scripts/'" \

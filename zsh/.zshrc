@@ -1,6 +1,8 @@
 ##########################
 #ZSH STUFF
 ##########################
+fpath=(/Users/54l1m/shenfiles/scripts/completions $fpath)
+
 export ZSH="$HOME/.oh-my-zsh"
 export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
 # zsh theme
@@ -150,7 +152,7 @@ export PATH=$PATH:$HOME/bin
 # neofetch
 fm6000 -r -c "random"
 export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
-fpath+=($HOME/.zsh/completions $fpath)
+fpath+=($HOME/.zsh/completions)
 fpath+=~/.zfunc
 autoload -Uz compinit
 compinit -D
@@ -196,3 +198,6 @@ eval "$(direnv hook zsh)"
 
 . "$HOME/.local/bin/env"
 
+
+# Custom script completions
+fpath+=($HOME/.zsh/completions $fpath)

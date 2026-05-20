@@ -6,7 +6,7 @@ source "$(dirname "$0")/../lib/colors/colors.sh"
 PROJECT_NAME=$1
 
 if [ -z "$PROJECT_NAME" ]; then
-    echo -e "${RED}Error: Please provide a project name.${NC}"
+    p4_error "Please provide a project name."
     echo "Usage: p4n <project-name>"
     exit 1
 fi
@@ -58,4 +58,4 @@ EOF
 git add .
 git commit -m "initial commit"
 
-echo -e "${GREEN}Project '$PROJECT_NAME' initialized with Nix and direnv.${NC}"
+p4_success "Project '$PROJECT_NAME' initialized with Nix and direnv."

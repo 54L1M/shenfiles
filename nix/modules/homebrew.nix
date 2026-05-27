@@ -17,7 +17,6 @@
       "lazygit"
       #"zellij"
       "fzf"
-      "node"
       "postgresql@14"
       "yarn"
       "python@3.9"

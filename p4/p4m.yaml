@@ -38,3 +38,6 @@ djq:
 
 manifest:
   path: ~/Documents/Workstation/In2Dialog/KubernetesManifests/
+
+interview:
+  path: ~/Documents/pf4/interview/

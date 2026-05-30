@@ -56,6 +56,7 @@ return {
 			"docker_compose_language_service",
 			"bashls",
 			"clangd",
+			"ts_ls",
 		}
 
 		-- Loop to enable all servers

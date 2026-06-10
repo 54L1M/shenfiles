@@ -41,3 +41,6 @@ manifest:
 
 interview:
   path: ~/Documents/pf4/interview/
+
+p4md:
+  path: ~/Documents/pf4/p4md/

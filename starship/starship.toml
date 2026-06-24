@@ -29,7 +29,11 @@ disabled = true
 format = '[$context](dimmed green) '
 [python]
 format = '[(\($virtualenv\))]($style)'
+[package]
+disabled = true
 # disabled=true
+[nix_shell]
+format = '[(\($name\))]($style)'
 [lua]
 disabled = true
 [nodejs]

@@ -418,8 +418,11 @@ function create_session() {
   tmux new-window -t "$session_name" -n "db" -c "$project_path"
   setup_complete_window "$session_name" "db" "3" "$venv_name" "$env_file"
 
-  # Switch back to code window
-  tmux select-window -t "$session_name:code"
+  # Switch back to code window.
+  # Note: a plugin hook (after-select-window -> refresh-client -S) fails with
+  # "no current client" when the session is still detached, which under `set -e`
+  # would abort before we ever attach. Swallow it — selecting is best-effort here.
+  tmux select-window -t "$session_name:code" 2>/dev/null || true
 
   # Auto-start Cloud SQL proxy if configured
   if [[ -n "$proxy_profile" ]]; then

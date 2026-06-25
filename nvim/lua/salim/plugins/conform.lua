@@ -38,7 +38,7 @@ return {
 			scss = { "prettier" },
 
 			-- Python
-			python = { "isort", "black" },
+			python = { "ruff_organize_imports", "ruff_format" },
 			["htmldjango"] = { "djlint" },
 
 			-- Shell

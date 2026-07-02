@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # p4m - Development Environment Setup Script
-# P4_DESC: Session manager — create 4-window tmux dev layouts from YAML config
+# P4_DESC: Session manager — create custom tmux dev layouts from YAML config
 # Author: PF4
 # Usage: p4m <session_name> [options]
 
@@ -16,14 +16,6 @@ source "$LIB_DIR/colors/colors.sh"
 
 # Configuration
 CONFIG_FILE="$HOME/.config/p4/p4m.yaml"
-
-# Window mapping
-declare -A WINDOW_NAMES=(
-  [0]="code"
-  [1]="shell"
-  [2]="server"
-  [3]="db"
-)
 
 # Display help message
 function show_help() {
@@ -88,61 +80,65 @@ function check_config() {
     # Create example config
     cat > "$CONFIG_FILE" << 'EOF'
 # p4m Sessions Configuration
-# Each session defines a development environment
-# Windows: 0=code, 1=shell, 2=server, 3=db
+# Each session defines a development environment.
+#
+# Per-session keys:
+#   path            (required) Working directory
+#   env_file        (optional) Environment file to source in every window
+#   virtualenv      (optional) Python virtualenv to `workon`
+#   proxy           (optional) Cloud SQL proxy profile to auto-start (p4p)
+#   global_commands (optional) Commands run in EVERY window
+#   windows         (required) Ordered list of windows to create
+#
+# Each window entry:
+#   name            (required) tmux window name
+#   editor          (optional) If true, opens `nvim .` after commands
+#   commands        (optional) Commands run only in this window
+#
+# Tip: reuse a layout with a YAML anchor (keys starting with `x-` are ignored).
+
+x-layouts:
+  full: &full
+    - { name: code, editor: true }
+    - { name: shell }
+    - { name: server }
+    - { name: db }
 
 mapper:
-  virtualenv: mapper_env      # Optional: Python virtual environment
-  path: ~/projects/mapper     # Required: Working directory
-  env_file: ~/projects/mapper/.env  # Optional: Environment file to source
-  commands:
-    global_commands:          # Commands that run on ALL windows
-      - "echo 'Setting up mapper project...'"
-      - "export PROJECT_NAME=mapper"
-    0:                        # Code window (window 0)
-      - "echo 'Code window ready'"
-      - "git status"
-    1:                        # Shell window (window 1)  
-      - "npm install"
-      - "echo 'Mapper setup complete!'"
-    2:                        # Server window (window 2)
-      - "echo 'Server window ready'"
-      - "npm run dev"
-    3:                        # DB window (window 3)
-      - "echo 'Database window ready'"
-      - "docker-compose up -d postgres"
+  virtualenv: mapper_env             # Optional: Python virtual environment
+  path: ~/projects/mapper            # Required: Working directory
+  env_file: ~/projects/mapper/.env   # Optional: Environment file to source
+  global_commands:                   # Commands that run on ALL windows
+    - "echo 'Setting up mapper project...'"
+    - "export PROJECT_NAME=mapper"
+  windows:
+    - name: code
+      editor: true
+      commands:
+        - "git status"
+    - name: shell
+      commands:
+        - "npm install"
+    - name: server
+      commands:
+        - "npm run dev"
+    - name: db
+      commands:
+        - "docker-compose up -d postgres"
 
+# Reuse a shared layout via anchor
 dayjob:
   virtualenv: work_env
   path: ~/work/current-project
   env_file: ~/work/current-project/.env.local
-  commands:
-    global_commands:
-      - "echo 'Initializing work environment...'"
-      - "export WORK_MODE=development"
-    0:                        # Code window
-      - "git fetch origin"
-      - "git status"
-    1:                        # Shell window
-      - "composer install"
-      - "php artisan migrate:status"
-    2:                        # Server window
-      - "php artisan serve"
+  windows: *full
 
-learning:
-  path: ~/learning/current-topic
-  commands:
-    global_commands:
-      - "echo 'Learning environment ready!'"
-    0:                        # Code window
-      - "git log --oneline -5"
-
-# Minimal example - just path required
+# Minimal example - path + a single window
 quickstart:
   path: ~/scratch
-  commands:
-    global_commands:
-      - "echo 'Quick start environment loaded'"
+  windows:
+    - name: code
+      editor: true
 EOF
 
     p4_success "Created example config at: $CONFIG_FILE"
@@ -165,18 +161,53 @@ function get_session_config() {
 # Get global commands as array
 function get_global_commands() {
   local session_name="$1"
-  
+
   # Get global_commands as JSON array, then convert to bash array
-  yq eval ".${session_name}.commands.global_commands // []" "$CONFIG_FILE" 2>/dev/null | yq eval '.[]' 2>/dev/null
+  yq eval "explode(.) | .${session_name}.global_commands // []" "$CONFIG_FILE" 2>/dev/null | yq eval '.[]' 2>/dev/null
 }
 
-# Get window-specific commands by index
+# Get the number of windows configured for a session
+function get_window_count() {
+  local session_name="$1"
+  local count
+  # explode(.) resolves YAML anchors/aliases so `length` sees the real list
+  count=$(yq eval "explode(.) | (.${session_name}.windows // []) | length" "$CONFIG_FILE" 2>/dev/null)
+  # Guard against null/empty output under `set -e`
+  if [[ ! "$count" =~ ^[0-9]+$ ]]; then
+    count=0
+  fi
+  echo "$count"
+}
+
+# Get a window's name by list index
+function get_window_name() {
+  local session_name="$1"
+  local window_index="$2"
+
+  yq eval ".${session_name}.windows[${window_index}].name // \"\"" "$CONFIG_FILE" 2>/dev/null
+}
+
+# Get a window's editor flag by list index (true/false)
+function get_window_editor() {
+  local session_name="$1"
+  local window_index="$2"
+
+  yq eval ".${session_name}.windows[${window_index}].editor // false" "$CONFIG_FILE" 2>/dev/null
+}
+
+# Get window-specific commands by list index
 function get_window_commands() {
   local session_name="$1"
   local window_index="$2"
-  
-  # Get window-specific commands by index
-  yq eval ".${session_name}.commands.${window_index} // []" "$CONFIG_FILE" 2>/dev/null | yq eval '.[]' 2>/dev/null
+
+  # Get window-specific commands by index into the windows list
+  # explode(.) resolves anchors so commands defined in a shared layout still emit
+  yq eval "explode(.) | .${session_name}.windows[${window_index}].commands // []" "$CONFIG_FILE" 2>/dev/null | yq eval '.[]' 2>/dev/null
+}
+
+# List configured session names (excludes helper keys prefixed with `x-`)
+function list_session_names() {
+  yq eval 'keys | .[]' "$CONFIG_FILE" 2>/dev/null | grep -v '^x-'
 }
 
 # Check if session exists in config
@@ -197,23 +228,24 @@ function list_available_sessions() {
   fi
 
   local sessions
-  sessions=$(yq eval 'keys | .[]' "$CONFIG_FILE" 2>/dev/null)
-  
+  sessions=$(list_session_names)
+
   if [ -z "$sessions" ]; then
     p4_warn "No sessions configured"
     return 1
   fi
 
   while IFS= read -r session; do
-    local venv path env_file global_commands_count
+    local venv path env_file global_commands_count window_count
     venv=$(get_session_config "$session" "virtualenv")
     path=$(get_session_config "$session" "path")
     env_file=$(get_session_config "$session" "env_file")
-    global_commands_count=$(yq eval ".${session}.commands.global_commands | length" "$CONFIG_FILE" 2>/dev/null || echo "0")
-    
+    global_commands_count=$(yq eval "explode(.) | (.${session}.global_commands // []) | length" "$CONFIG_FILE" 2>/dev/null || echo "0")
+    window_count=$(get_window_count "$session")
+
     # Expand tilde in path for display
     path="${path/#\~/$HOME}"
-    
+
     p4_item "$session" "path: $path"
     if [ -n "$venv" ]; then
       p4_info "  ├─ venv: $venv"
@@ -224,17 +256,21 @@ function list_available_sessions() {
     if [ "$global_commands_count" != "0" ] && [ "$global_commands_count" != "null" ]; then
       p4_info "  ├─ global commands: $global_commands_count commands"
     fi
-    
-    # Show window-specific commands
-    for window_index in "${!WINDOW_NAMES[@]}"; do
-      local window_name="${WINDOW_NAMES[$window_index]}"
-      local window_commands_count
-      window_commands_count=$(yq eval ".${session}.commands.${window_index} | length" "$CONFIG_FILE" 2>/dev/null || echo "0")
+
+    # Show configured windows
+    local window_index
+    for ((window_index = 0; window_index < window_count; window_index++)); do
+      local window_name window_commands_count
+      window_name=$(get_window_name "$session" "$window_index")
+      [ -z "$window_name" ] && window_name="window$window_index"
+      window_commands_count=$(yq eval "explode(.) | (.${session}.windows[${window_index}].commands // []) | length" "$CONFIG_FILE" 2>/dev/null || echo "0")
       if [ "$window_commands_count" != "0" ] && [ "$window_commands_count" != "null" ]; then
         p4_info "  ├─ $window_name ($window_index): $window_commands_count commands"
+      else
+        p4_info "  ├─ $window_name ($window_index)"
       fi
     done
-    
+
     echo "  └─"
   done <<< "$sessions"
 }
@@ -361,7 +397,7 @@ function create_session() {
   if ! session_exists_in_config "$session_name"; then
     p4_error "Session '$session_name' not found in configuration"
     p4_tip "Available sessions:"
-    yq eval 'keys | .[]' "$CONFIG_FILE" 2>/dev/null | sed 's/^/  - /'
+    list_session_names | sed 's/^/  - /'
     return 1
   fi
 
@@ -390,6 +426,15 @@ function create_session() {
     return 1
   fi
 
+  # Resolve the window layout from config
+  local window_count
+  window_count=$(get_window_count "$session_name")
+  if [ "$window_count" -eq 0 ]; then
+    p4_error "Session '$session_name' defines no windows"
+    p4_tip "Add a 'windows:' list to the session config"
+    return 1
+  fi
+
   # Create session
   p4_step "Creating session '$(p4_highlight "$session_name")'"
   if [ -n "$venv_name" ]; then
@@ -401,28 +446,33 @@ function create_session() {
   if [ -n "$env_file" ]; then
     p4_info "Env file: $env_file"
   fi
+  p4_info "Windows: $window_count"
 
-  # Create session and first window (code - index 0)
-  tmux new-session -d -s "$session_name" -n "code" -c "$project_path"
+  # Create windows from config (first via new-session, rest via new-window)
+  local window_index first_window=""
+  for ((window_index = 0; window_index < window_count; window_index++)); do
+    local window_name open_editor
+    window_name=$(get_window_name "$session_name" "$window_index")
+    if [ -z "$window_name" ] || [ "$window_name" = "null" ]; then
+      window_name="window$window_index"
+    fi
+    open_editor=$(get_window_editor "$session_name" "$window_index")
 
-  # Setup code window (with editor opening after commands)
-  setup_complete_window "$session_name" "code" "0" "$venv_name" "$env_file" "true"
+    if [ "$window_index" -eq 0 ]; then
+      tmux new-session -d -s "$session_name" -n "$window_name" -c "$project_path"
+      first_window="$window_name"
+    else
+      tmux new-window -t "$session_name" -n "$window_name" -c "$project_path"
+    fi
 
-  # Create and setup other windows
-  tmux new-window -t "$session_name" -n "shell" -c "$project_path"
-  setup_complete_window "$session_name" "shell" "1" "$venv_name" "$env_file"
+    setup_complete_window "$session_name" "$window_name" "$window_index" "$venv_name" "$env_file" "$open_editor"
+  done
 
-  tmux new-window -t "$session_name" -n "server" -c "$project_path"
-  setup_complete_window "$session_name" "server" "2" "$venv_name" "$env_file"
-
-  tmux new-window -t "$session_name" -n "db" -c "$project_path"
-  setup_complete_window "$session_name" "db" "3" "$venv_name" "$env_file"
-
-  # Switch back to code window.
+  # Switch back to the first window.
   # Note: a plugin hook (after-select-window -> refresh-client -S) fails with
   # "no current client" when the session is still detached, which under `set -e`
   # would abort before we ever attach. Swallow it — selecting is best-effort here.
-  tmux select-window -t "$session_name:code" 2>/dev/null || true
+  tmux select-window -t "$session_name:$first_window" 2>/dev/null || true
 
   # Auto-start Cloud SQL proxy if configured
   if [[ -n "$proxy_profile" ]]; then

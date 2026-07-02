@@ -1,46 +1,92 @@
 # p4m Sessions Configuration
-# Each session defines a development environment
+# Each session defines a development environment.
+#
+# Per-session keys:
+#   path            (required) Working directory
+#   env_file        (optional) Environment file to source in every window
+#   virtualenv      (optional) Python virtualenv to `workon`
+#   proxy           (optional) Cloud SQL proxy profile to auto-start (p4p)
+#   global_commands (optional) Commands run in EVERY window
+#   windows         (required) Ordered list of windows to create
+#
+# Each window entry:
+#   name            (required) tmux window name
+#   editor          (optional) If true, opens `nvim .` after commands
+#   commands        (optional) Commands run only in this window
+#
+# Reusable layouts live under `x-*` keys (ignored by p4m) and are pulled
+# into a session with a YAML anchor, e.g. `windows: *full`.
+
+x-layouts:
+  full: &full
+    - { name: code, editor: true }
+    - { name: shell }
+    - { name: server }
+    - { name: db }
+  simple: &simple
+    - { name: code, editor: true }
+    - { name: shell }
+    - { name: claude }
 
 ats:
-  virtualenv: ats3.9
   path: ~/Documents/Workstation/In2Dialog/I2D_ATS/
   env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
   proxy: PROD
+  global_commands:
+    - "source ./.venv/bin/activate"
+  windows: *full
 
 prod:
-  virtualenv: ats3.9
   path: ~/Documents/Workstation/In2Dialog/prod/
   env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
   proxy: PROD
+  global_commands:
+    - "source ./.venv/bin/activate"
+  windows: *full
 
 staging:
-  virtualenv: ats3.9
   path: ~/Documents/Workstation/In2Dialog/staging/
   env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
   proxy: STAGING
+  global_commands:
+    - "source ./.venv/bin/activate"
+  windows: *full
 
 bot:
   virtualenv: bot3.9
   path: ~/Documents/Workstation/In2Dialog/I2D_Companion/
   env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
+  windows: *full
 
 i2c:
   path: ~/Documents/Workstation/In2Dialog/i2c/
+  windows: *full
 
 shen:
   path: ~/shenfiles/
+  windows: *simple
 
 oshen:
   path: ~/Documents/pf4/Oshen.nvim/
-
-djq:
-  path: ~/Documents/pf4/djq/
+  windows: *simple
 
 manifest:
   path: ~/Documents/Workstation/In2Dialog/KubernetesManifests/
+  windows: *full
 
 interview:
   path: ~/Documents/pf4/interview/
+  windows: *simple
 
-p4md:
-  path: ~/Documents/pf4/p4md/
+dsag:
+  path: ~/Documents/pf4/algo/
+  global_commands:
+    - "source ./.venv/bin/activate"
+  windows:
+    - name: code
+      editor: true
+    - name: shell
+    - name: tests
+      commands:
+        - "make test"
+    - name: claude

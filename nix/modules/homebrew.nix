@@ -53,6 +53,7 @@
       "mpv"
       "git-filter-repo"
       "rtk"
+      "tuxedo"
     ];
     casks = [
       "firefox"

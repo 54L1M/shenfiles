@@ -194,6 +194,10 @@ export PATH="$HOME/.emacs.d/bin:$PATH"
 export ANDROID_HOME=~/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin
 
+export TODO_DIR="$HOME/Documents/todo"
+export TODO_FILE="$TODO_DIR/todo.txt"
+export DONE_FILE="$TODO_DIR/done.txt"
+
 eval "$(direnv hook zsh)"
 
 . "$HOME/.local/bin/env"

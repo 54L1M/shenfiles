@@ -42,6 +42,7 @@ function show_help() {
   p4_cmd "p4e" "" "Show the environment active in this pane"
   p4_cmd "p4e switch, s" "<proj>.<env>" "Switch to a profile (e.g. 'ats.dev')"
   p4_cmd "p4e switch, s" "[proj]" "Switch with interactive selection"
+  p4_cmd "p4e clear, c" "" "Unset the active profile's variables in this pane"
   p4_cmd "p4e link" "[proj]" "Symlink <proj>/.env -> $LINK_TARGET"
   p4_cmd "p4e list, ls" "" "List projects and their available profiles"
   p4_cmd "p4e edit, e" "" "Edit the configuration file"
@@ -185,6 +186,24 @@ function fzf_pick() {
   fzf --height=40% --reverse --header="$header" --color="$FZF_COLORS"
 }
 
+# Echo the active "project:env" for this pane: the per-pane @p4e_env tmux flag,
+# falling back to the inherited P4E_CURRENT_ENV shell var. Empty if neither set.
+function get_active_target() {
+  local target=""
+  if [ -n "${TMUX:-}" ]; then
+    target=$(tmux show-options -p -v -t "$TMUX_PANE" @p4e_env 2>/dev/null || true)
+  fi
+  [ -z "$target" ] && target="${P4E_CURRENT_ENV:-}"
+  echo "$target"
+}
+
+# Echo the variable names assigned in an env file, one per line. Matches
+# `KEY=` and `export KEY=` lines; skips comments and blanks.
+function extract_env_keys() {
+  local file="$1"
+  sed -n -E 's/^[[:space:]]*(export[[:space:]]+)?([A-Za-z_][A-Za-z0-9_]*)=.*/\2/p' "$file"
+}
+
 # ==========================================
 # COMMANDS
 # ==========================================
@@ -196,6 +215,54 @@ function show_active() {
   else
     p4_warn "No environment active in this shell (P4E_CURRENT_ENV not set)"
     p4_tip "Run 'p4e switch <proj>.<env>' to activate one"
+  fi
+}
+
+# Unset the active profile's variables in the current pane. Parses the keys
+# straight out of the active ENV/.env (the file that was sourced) and sends an
+# `unset` for each, plus P4E_CURRENT_ENV, then clears the tmux status flag.
+# It only knows the current profile's keys — it does not restore prior values
+# nor unset stale keys left by an earlier profile.
+function clear_environment() {
+  local target project env project_path env_file keys
+
+  target=$(get_active_target)
+  if [ -z "$target" ]; then
+    p4_warn "No active p4e environment to clear in this pane."
+    return 0
+  fi
+
+  project="${target%%:*}"
+  env="${target#*:}"
+
+  project_path=$(resolve_project_path "$project") || return 1
+  env_file="$project_path/$ENV_DIR_NAME/$ACTIVE_ENV_FILE"
+
+  if [ -f "$env_file" ]; then
+    keys=$(extract_env_keys "$env_file" | sort -u | tr '\n' ' ')
+  else
+    p4_warn "Active env file not found: $env_file"
+    p4_tip "Only P4E_CURRENT_ENV will be cleared."
+    keys=""
+  fi
+
+  # Always include the p4e marker var
+  case " $keys " in
+    *" P4E_CURRENT_ENV "*) : ;;
+    *) keys="$keys P4E_CURRENT_ENV" ;;
+  esac
+  keys=$(echo "$keys" | xargs)   # collapse whitespace
+
+  p4_step "Clearing environment $(p4_highlight "$target")"
+  p4_info "Unsetting: $keys"
+
+  if [ -n "${TMUX:-}" ]; then
+    tmux send-keys -t "$TMUX_PANE" "unset $keys" Enter
+    tmux set-option -p -u -t "$TMUX_PANE" @p4e_env 2>/dev/null || true
+    p4_success "Cleared. Status flag reset."
+  else
+    p4_warn "Not in tmux. Run this to clear your shell:"
+    echo "  unset $keys"
   fi
 }
 
@@ -459,6 +526,10 @@ function parse_args() {
     s|switch)
       check_config || exit 1
       switch_target "${1:-}"
+      ;;
+    c|clear)
+      check_config || exit 1
+      clear_environment
       ;;
     link)
       check_config || exit 1

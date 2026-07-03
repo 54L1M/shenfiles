@@ -73,10 +73,8 @@ pf4:
   path: ~/Documents/pf4/
   windows: *simple
 
-dsag:
-  path: ~/Documents/pf4/algo/
-  global_commands:
-    - "source ./.venv/bin/activate"
+dsago:
+  path: ~/Documents/pf4/algo-go/
   windows:
     - name: code
       editor: true

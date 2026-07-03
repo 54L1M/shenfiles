@@ -67,6 +67,7 @@ A utility for swapping `.env` profiles per project across deployment environment
 - `p4e switch <proj>.<env>` (alias `s`) — assemble and source a specific profile, e.g. `p4e switch ats.dev`.
 - `p4e switch <proj>` — pick the profile interactively (`fzf`).
 - `p4e switch` — pick both project and profile interactively.
+- `p4e clear` (alias `c`) — unset the active profile's variables in the current pane and reset the status flag. See the note below.
 - `p4e list` (alias `ls`) — list projects and their available profiles, marking the active one.
 - `p4e link [proj]` — symlink the project-root `.env` → `ENV/.env`, for apps that expect `.env` in the root.
 - `p4e edit` (alias `e`) — open the config file.
@@ -77,6 +78,7 @@ A utility for swapping `.env` profiles per project across deployment environment
 
 - Re-switching to the already-active profile is a no-op unless the underlying template changed, in which case the active file is rebuilt.
 - Inside `tmux`, the active `project:env` is written to a per-pane option consumed by the status bar (`scripts/tmux/p4e.sh`), and is also reachable from the `prefix + Space` menu → **Environment**.
+- `clear` parses the variable names out of the active `ENV/.env` (the file that was sourced) and sends an `unset` for each — plus `P4E_CURRENT_ENV` — into the pane, then unsets the status flag. It is manual by design (`switch` never auto-clears). Two limits: it only unsets keys defined in the *current* profile (stale keys left by an earlier profile aren't touched), and it cannot restore a variable's pre-source value. Outside `tmux` it prints the `unset` command for you to run.
 
 ---
 

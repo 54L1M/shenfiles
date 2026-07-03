@@ -7,9 +7,22 @@ return {
 	end,
 	opts = {
 		preset = "helix",
-		-- your configuration comes here
-
-		-- or leave it empty to use the default settings
-		-- refer to the configuration section below
+		spec = {
+			{ "<leader>b", group = "buffer" },
+			{ "<leader>c", group = "code" },
+			{ "<leader>D", group = "debug" },
+			{ "<leader>Ds", group = "step" },
+			{ "<leader>f", group = "find" },
+			{ "<leader>g", group = "git" },
+			{ "<leader>gh", group = "hunks" },
+			{ "<leader>l", group = "lsp" },
+			{ "<leader>m", group = "harpoon" },
+			{ "<leader>p", group = "python" },
+			{ "<leader>q", group = "quit" },
+			{ "<leader>s", group = "split" },
+			{ "<leader>t", group = "tab" },
+			{ "<leader>u", group = "ui/toggle" },
+			{ "<leader>w", group = "write" },
+		},
 	},
 }

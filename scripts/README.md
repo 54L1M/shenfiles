@@ -18,7 +18,7 @@ The installer also has options for forcing updates and uninstalling scripts. Use
 
 ## Available Scripts
 
-Here is a summary of the scripts located in the `bin/` directory:
+Here is a summary of the scripts in `bin/` (installed to your `PATH`) and the `tmux/` integration hub:
 
 ---
 
@@ -57,14 +57,26 @@ The configuration is located at `~/.config/p4/p4m.yaml`. The script will generat
 
 **Project Environment Switcher**
 
-A utility for managing `.env` files for different projects and deployment environments (e.g., dev, staging, prod). Its configuration is located at `~/.config/p4/p4e.yaml`.
+A utility for swapping `.env` profiles per project across deployment environments (e.g. dev, staging, prod). Configuration lives at `~/.config/p4/p4e.yaml` and is auto-created with a commented example on first run.
 
-**What it does:**
+**Layout it expects:** each project has an `ENV/` folder holding profile templates (`.env.dev`, `.env.staging`, …). `p4e` assembles the chosen template — plus a small metadata header — into `ENV/.env`, then sources it in the current `tmux` pane.
 
-- Uses `fzf` for interactively selecting a project and an associated environment profile (e.g., `.env.dev`, `.env.prod`).
-- Copies the selected profile to a standard `ENV/.env` file that can be sourced.
-- Can automatically source the new environment file in the current `tmux` pane.
-- Provides a `link` command to symlink the project's root `.env` to the active one in `ENV/.env`, which is useful for applications that expect it in the root.
+**Commands:**
+
+- `p4e` — show the environment active in this pane.
+- `p4e switch <proj>.<env>` (alias `s`) — assemble and source a specific profile, e.g. `p4e switch ats.dev`.
+- `p4e switch <proj>` — pick the profile interactively (`fzf`).
+- `p4e switch` — pick both project and profile interactively.
+- `p4e list` (alias `ls`) — list projects and their available profiles, marking the active one.
+- `p4e link [proj]` — symlink the project-root `.env` → `ENV/.env`, for apps that expect `.env` in the root.
+- `p4e edit` (alias `e`) — open the config file.
+
+**Options:** `-c, --config <file>` to use an alternative config; `-h, --help` for usage.
+
+**Notes:**
+
+- Re-switching to the already-active profile is a no-op unless the underlying template changed, in which case the active file is rebuilt.
+- Inside `tmux`, the active `project:env` is written to a per-pane option consumed by the status bar (`scripts/tmux/p4e.sh`), and is also reachable from the `prefix + Space` menu → **Environment**.
 
 ---
 
@@ -116,6 +128,24 @@ DB_PORT_PROD="5433"
 
 - `p4p start [profile_name]`: Start the proxy for a specific profile, or interactively select one.
 - `p4p stop [profile_name]`: Stop the proxy for a specific profile, or interactively select a running one.
+
+---
+
+### `tmux/menus.sh`
+
+**Tmux Popup & Menu Hub**
+
+Centralized handler for the themed `tmux` popups and menus. Everything is styled with the oshen palette (shared `FZF_COLORS`) and wired to the `p4*` tools. It is invoked from keybindings defined in `tmux/tmux.conf`.
+
+**Keybindings:**
+
+- `prefix + Space` — open the **p4 Manager** menu: a single hub linking the Session Manager, Window Manager, Cloud SQL proxy start/stop, K8s context, GCloud project, environment switcher (`p4e`), logs, and dotfiles quick-edit.
+- `prefix + s` — jump straight to the **Session Manager**.
+- `prefix + w` — jump straight to the **Window Manager** (replaces the native window tree with a floated, themed one).
+
+**Session Manager:** an `fzf` popup listing live `tmux` sessions and configured `p4m` layouts that aren't running yet. `enter` switches to (or launches, via `p4m`) the selection; `C-x` kills the highlighted session; `C-n` creates a new ad-hoc session. For a live session the preview shows its window list plus a live capture of the active window's content; for a not-yet-running `p4m` layout it shows the configured path and windows.
+
+**Window Manager:** an `fzf` popup listing the current session's windows (active window marked). `enter` switches to a window; `C-x` kills it; `C-n` creates a new window. The preview shows a live capture of each pane in the highlighted window, so it mirrors the window's real state.
 
 ---
 

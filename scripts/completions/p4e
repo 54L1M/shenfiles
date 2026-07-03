@@ -44,7 +44,13 @@ _p4e() {
       local -a p4e_commands
       p4e_commands=(
         'switch:Switch to a specific environment'
+        's:Switch to a specific environment'
         'link:Create symlink for project .env'
+        'list:List projects and their available profiles'
+        'ls:List projects and their available profiles'
+        'edit:Edit the configuration file'
+        'e:Edit the configuration file'
+        'help:Show help message'
       )
       _describe 'command' p4e_commands
       ;;
@@ -56,7 +62,7 @@ _p4e() {
         switch|s)
           local -a completions projects
           local project project_path env_dir env_file filename env_name
-          projects=($(command yq eval 'keys | .[]' "$config_file" 2>/dev/null))
+          projects=($(command yq eval 'keys | .[]' "$config_file" 2>/dev/null | command grep -v '^x-'))
 
           for project in "${projects[@]}"; do
             project_path=$(command yq eval -r ".${project}.path" "$config_file" 2>/dev/null)
@@ -64,6 +70,9 @@ _p4e() {
             if [[ -z "$project_path" || "$project_path" == "null" ]]; then
                 continue
             fi
+
+            # Bare project name enables the interactive-env form: `p4e s <proj>`
+            completions+=("$project")
 
             project_path=${project_path/#\~/$HOME}
             env_dir="$project_path/ENV"
@@ -83,7 +92,7 @@ _p4e() {
           ;;
         link)
           local -a projects
-          projects=($(yq eval 'keys | .[]' "$config_file" 2>/dev/null))
+          projects=($(command yq eval 'keys | .[]' "$config_file" 2>/dev/null | command grep -v '^x-'))
           _describe 'project' projects
           ;;
       esac

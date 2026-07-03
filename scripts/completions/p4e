@@ -45,6 +45,8 @@ _p4e() {
       p4e_commands=(
         'switch:Switch to a specific environment'
         's:Switch to a specific environment'
+        'clear:Unset the active profile'\''s variables in this pane'
+        'c:Unset the active profile'\''s variables in this pane'
         'link:Create symlink for project .env'
         'list:List projects and their available profiles'
         'ls:List projects and their available profiles'

@@ -27,16 +27,54 @@ return {
 		vim.api.nvim_create_autocmd("LspAttach", {
 			group = vim.api.nvim_create_augroup("UserLspConfig", { clear = true }),
 			callback = function(ev)
-				local opts = { buffer = ev.buf, silent = true }
+				-- Buffer-local map helper: only active where an LSP is attached.
+				local map = function(keys, fn, desc, opts)
+					opts = vim.tbl_extend("force", { buffer = ev.buf, silent = true, desc = desc }, opts or {})
+					local mode = opts.mode or "n"
+					opts.mode = nil
+					vim.keymap.set(mode, keys, fn, opts)
+				end
 
-				opts.desc = "Code Action"
-				vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
+				-- Hover
+				map("K", vim.lsp.buf.hover, "Hover")
 
-				opts.desc = "Rename Symbol"
-				vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+				-- Goto (Snacks pickers)
+				map("gd", function()
+					Snacks.picker.lsp_definitions()
+				end, "Goto Definition")
+				map("gD", function()
+					Snacks.picker.lsp_declarations()
+				end, "Goto Declaration")
+				map("gr", function()
+					Snacks.picker.lsp_references()
+				end, "References", { nowait = true })
+				map("gI", function()
+					Snacks.picker.lsp_implementations()
+				end, "Goto Implementation")
+				map("gy", function()
+					Snacks.picker.lsp_type_definitions()
+				end, "Goto Type Definition")
+				map("gai", function()
+					Snacks.picker.lsp_incoming_calls()
+				end, "Calls Incoming")
+				map("gao", function()
+					Snacks.picker.lsp_outgoing_calls()
+				end, "Calls Outgoing")
 
-				opts.desc = "LSP Hover"
-				vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+				-- Code (<leader>c)
+				map("<leader>ca", vim.lsp.buf.code_action, "Code Action", { mode = { "n", "v" } })
+				map("<leader>cr", vim.lsp.buf.rename, "Rename Symbol")
+
+				-- Symbols / info (<leader>l)
+				map("<leader>ls", function()
+					Snacks.picker.lsp_symbols()
+				end, "Document Symbols")
+				map("<leader>lS", function()
+					Snacks.picker.lsp_workspace_symbols()
+				end, "Workspace Symbols")
+				map("<leader>lc", function()
+					Snacks.picker.lsp_config()
+				end, "LSP Info")
 			end,
 		})
 

@@ -89,6 +89,8 @@ function check_config() {
 #   proxy           (optional) Cloud SQL proxy profile to auto-start (p4p)
 #   global_commands (optional) Commands run in EVERY window
 #   windows         (required) Ordered list of windows to create
+#   extra_windows   (optional) Extra windows appended after `windows` — use to
+#                              add a window to a shared *anchor layout for one session
 #
 # Each window entry:
 #   name            (required) tmux window name
@@ -166,12 +168,19 @@ function get_global_commands() {
   yq eval "explode(.) | .${session_name}.global_commands // []" "$CONFIG_FILE" 2>/dev/null | yq eval '.[]' 2>/dev/null
 }
 
+# yq fragment for a session's effective window list: the anchored `windows`
+# layout followed by any per-session `extra_windows`. explode(.) resolves
+# anchors/aliases so a shared layout (e.g. `windows: *full`) expands first.
+function windows_expr() {
+  local session_name="$1"
+  echo "((.${session_name}.windows // []) + (.${session_name}.extra_windows // []))"
+}
+
 # Get the number of windows configured for a session
 function get_window_count() {
   local session_name="$1"
   local count
-  # explode(.) resolves YAML anchors/aliases so `length` sees the real list
-  count=$(yq eval "explode(.) | (.${session_name}.windows // []) | length" "$CONFIG_FILE" 2>/dev/null)
+  count=$(yq eval "explode(.) | $(windows_expr "$session_name") | length" "$CONFIG_FILE" 2>/dev/null)
   # Guard against null/empty output under `set -e`
   if [[ ! "$count" =~ ^[0-9]+$ ]]; then
     count=0
@@ -184,7 +193,7 @@ function get_window_name() {
   local session_name="$1"
   local window_index="$2"
 
-  yq eval ".${session_name}.windows[${window_index}].name // \"\"" "$CONFIG_FILE" 2>/dev/null
+  yq eval "explode(.) | $(windows_expr "$session_name")[${window_index}].name // \"\"" "$CONFIG_FILE" 2>/dev/null
 }
 
 # Get a window's editor flag by list index (true/false)
@@ -192,7 +201,7 @@ function get_window_editor() {
   local session_name="$1"
   local window_index="$2"
 
-  yq eval ".${session_name}.windows[${window_index}].editor // false" "$CONFIG_FILE" 2>/dev/null
+  yq eval "explode(.) | $(windows_expr "$session_name")[${window_index}].editor // false" "$CONFIG_FILE" 2>/dev/null
 }
 
 # Get window-specific commands by list index
@@ -200,9 +209,8 @@ function get_window_commands() {
   local session_name="$1"
   local window_index="$2"
 
-  # Get window-specific commands by index into the windows list
   # explode(.) resolves anchors so commands defined in a shared layout still emit
-  yq eval "explode(.) | .${session_name}.windows[${window_index}].commands // []" "$CONFIG_FILE" 2>/dev/null | yq eval '.[]' 2>/dev/null
+  yq eval "explode(.) | $(windows_expr "$session_name")[${window_index}].commands // []" "$CONFIG_FILE" 2>/dev/null | yq eval '.[]' 2>/dev/null
 }
 
 # List configured session names (excludes helper keys prefixed with `x-`)
@@ -263,7 +271,7 @@ function list_available_sessions() {
       local window_name window_commands_count
       window_name=$(get_window_name "$session" "$window_index")
       [ -z "$window_name" ] && window_name="window$window_index"
-      window_commands_count=$(yq eval "explode(.) | (.${session}.windows[${window_index}].commands // []) | length" "$CONFIG_FILE" 2>/dev/null || echo "0")
+      window_commands_count=$(yq eval "explode(.) | ($(windows_expr "$session")[${window_index}].commands // []) | length" "$CONFIG_FILE" 2>/dev/null || echo "0")
       if [ "$window_commands_count" != "0" ] && [ "$window_commands_count" != "null" ]; then
         p4_info "  ├─ $window_name ($window_index): $window_commands_count commands"
       else

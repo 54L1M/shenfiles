@@ -2,7 +2,8 @@
 
 _p4n() {
   _arguments \
-    '1:project-name:_directories'
+    '1:project-name:_directories' \
+    '2:language:(go python py ts typescript)'
 }
 
 _p4n "$@"

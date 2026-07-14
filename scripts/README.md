@@ -133,6 +133,40 @@ DB_PORT_PROD="5433"
 
 ---
 
+### `p4v.sh`
+
+**VPS Status Dashboard**
+
+A read-only health dashboard for remote VPS servers, gathered over a single SSH connection and rendered with the oshen palette.
+
+**What it does:**
+
+- Checks reachability, then reports: host/uptime, system health (CPU load, memory, swap, disk), pending apt updates + reboot-required, firewall (UFW) rules, fail2ban jails (banned/failed counts), recent logins and failed SSH attempts, TLS certificate expiry (via certbot), key systemd services, and all Docker containers with status.
+- Firewall and fail2ban require root: the sudo password is **prompted (hidden) each run** and never stored. Sections that can't get sudo degrade to a warning instead of failing.
+- Supports multiple servers via UPPERCASE alias suffixes (`P4V_HOST_<ALIAS>`); `fzf`-selects when more than one is configured.
+
+**Example Configuration (`~/.config/p4/p4v` — gitignored):**
+
+```
+P4V_HOST="203.0.113.10"
+P4V_USER="salim"
+# P4V_SUDO_PASS=""   # optional; unset = prompt each run
+
+# extra server, alias WEB:
+# P4V_HOST_WEB="198.51.100.5"
+# P4V_USER_WEB="salim"
+```
+
+> The config file holds the server IP (and optionally the sudo password), so it is gitignored (`p4/p4v`) even though it lives inside the stow-managed `p4/` directory.
+
+**Usage:**
+
+- `p4v` / `p4v status [alias]`: Show the full dashboard (default).
+- `p4v ssh [alias]`: Open an interactive SSH session to the server.
+- `p4v ls`: List configured servers.
+
+---
+
 ### `tmux/menus.sh`
 
 **Tmux Popup & Menu Hub**

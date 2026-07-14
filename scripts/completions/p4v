@@ -1,0 +1,43 @@
+#compdef p4v
+
+_p4v_aliases() {
+  local config_file="$HOME/.config/p4/p4v"
+  local -a aliases
+
+  if [[ -f "$config_file" ]]; then
+    grep -q "^P4V_HOST=[\"']\?[^\"']" "$config_file" 2>/dev/null && aliases+=('default')
+    while IFS= read -r a; do
+      [[ -n "$a" ]] && aliases+=("${a:l}")
+    done < <(grep "^P4V_HOST_" "$config_file" 2>/dev/null | sed 's/^P4V_HOST_//' | cut -d= -f1)
+  fi
+
+  _describe 'server' aliases
+}
+
+_p4v() {
+  local state
+
+  _arguments -C \
+    '1:command:->commands' \
+    '2:server:->servers' && return 0
+
+  case $state in
+    commands)
+      local -a completions=(
+        'status:Full VPS status dashboard'
+        'ssh:Open an interactive SSH session'
+        'ls:List configured servers'
+        'servers:List configured servers'
+      )
+      _describe 'p4v commands' completions
+      _p4v_aliases
+      ;;
+    servers)
+      case ${line[1]} in
+        status|s|ssh) _p4v_aliases ;;
+      esac
+      ;;
+  esac
+}
+
+_p4v "$@"

@@ -73,6 +73,18 @@ pf4:
   path: ~/Documents/pf4/
   windows: *simple
 
+mini-redis:
+  path: ~/Documents/pf4/mini-redis/
+  windows:
+    - name: code
+      editor: true
+    - name: shell
+    - name: server
+    - name: tests
+    - name: docs
+      commands:
+        - "glow docs"
+
 dsago:
   path: ~/Documents/pf4/algo-go/
   windows:

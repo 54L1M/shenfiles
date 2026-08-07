@@ -101,9 +101,10 @@ function list_pods() {
     current_ns=$("$KUBECTL_CMD" config view --minify -o jsonpath='{..namespace}' 2>/dev/null)
     current_ns="${1:-${current_ns:-default}}"
 
-    local selected
-    selected=$(echo "$pods" | fzf \
-        --header="Pods in namespace: $current_ns | Enter: exec shell" \
+    local output key selected
+    output=$(echo "$pods" | fzf \
+        --header="Pods in namespace: $current_ns | Enter: exec shell | C-w: exec in new window" \
+        --expect=ctrl-w \
         --preview="
             KUBE=$KUBECTL_CMD
             NS=$current_ns
@@ -117,7 +118,19 @@ function list_pods() {
         --height=80% --reverse \
         --color="header:blue,prompt:yellow,pointer:red")
 
+    key=$(head -1 <<< "$output")
+    selected=$(tail -n +2 <<< "$output")
     [[ -z "$selected" ]] && exit 0
+
+    if [[ "$key" == "ctrl-w" ]]; then
+        if [[ -z "$TMUX" ]]; then
+            p4_warn "Not inside tmux — execing here instead"
+        else
+            tmux new-window -n "$selected" \
+                "\"$KUBECTL_CMD\" exec -it \"$selected\" -n \"$current_ns\" -- bash 2>/dev/null || \"$KUBECTL_CMD\" exec -it \"$selected\" -n \"$current_ns\" -- sh"
+            exit 0
+        fi
+    fi
 
     p4_info "Execing into pod: $selected (ns: $current_ns)"
     if ! "$KUBECTL_CMD" exec -it "$selected" -n "$current_ns" -- bash 2>/dev/null; then

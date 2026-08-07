@@ -10,6 +10,7 @@ source "$SCRIPT_DIR/../lib/colors/colors.sh"
 
 SELF="$SCRIPT_DIR/menus.sh"
 P4M_CONFIG="$HOME/.config/p4/p4m.yaml"
+PINS_FILE="$HOME/.config/p4/pinned-sessions"
 
 CMD="$1"
 
@@ -30,6 +31,7 @@ case "$CMD" in
       "Start SQL Proxy"  p  "display-popup -E -w 40% -h 40% -T '#[align=centre,fg=${P4_OSHEN_PEACH}] Start Proxy ' 'bash $BIN_DIR/p4p.sh start'" \
       "Stop SQL Proxy"   x  "display-popup -E -w 40% -h 40% -T '#[align=centre,fg=${P4_OSHEN_PEACH}] Stop Proxy ' 'bash $BIN_DIR/p4p.sh stop'" \
       "K8s Context"      k  "display-popup -E -w 50% -h 50% -T '#[align=centre,fg=${P4_OSHEN_PEACH}] K8s Context ' 'bash $BIN_DIR/p4k.sh ctx'" \
+      "K8s Pods"         o  "display-popup -E -w 80% -h 80% -T '#[align=centre,fg=${P4_OSHEN_PEACH}] K8s Pods ' 'bash $BIN_DIR/p4k.sh pods'" \
       "GCloud Project"   g  "display-popup -E -w 40% -h 40% -T '#[align=centre,fg=${P4_OSHEN_PEACH}] GCloud Project ' 'bash $BIN_DIR/p4g.sh proj'" \
       "Environment"      e  "display-popup -E -w 50% -h 60% -T '#[align=centre,fg=${P4_OSHEN_PEACH}] Environment ' 'TMUX_PANE=#{pane_id} bash $BIN_DIR/p4e.sh switch'" \
       "" \
@@ -42,6 +44,7 @@ case "$CMD" in
   # ---------------------------------------------------------------------------
   # session_manager — switch, launch (from p4m layout), kill, or create.
   #   enter : open (switch if running, else create from p4m layout)
+  #   C-p   : toggle pin (pinned sessions always sort to the top)
   #   C-x   : kill the highlighted session
   #   C-n   : create a new empty session (prompts for name)
   # ---------------------------------------------------------------------------
@@ -49,10 +52,11 @@ case "$CMD" in
     selection=$(bash "$SELF" session_list | \
       fzf --reverse --ansi \
         --delimiter='\t' --with-nth=2 \
-        --header 'enter: open   C-x: kill   C-n: new' \
+        --header $'enter: open   C-p: pin\nC-x: kill     C-n: new' \
         --preview "bash $SELF session_preview {3}" \
         --preview-window 'right:55%' \
         --color="$FZF_COLORS" \
+        --bind "ctrl-p:execute-silent(bash $SELF toggle_pin {3})+reload(bash $SELF session_list)" \
         --bind "ctrl-x:execute-silent(tmux kill-session -t {3})+reload(bash $SELF session_list)" \
         --bind "ctrl-n:execute(bash $SELF new_session)+abort")
 
@@ -78,25 +82,57 @@ case "$CMD" in
   #   columns (tab-delimited): kind <TAB> display <TAB> name
   #   kind = run  -> a live tmux session
   #   kind = new  -> a p4m layout that is not currently running
+  #   Pinned sessions (one name per line in $PINS_FILE) sort to the top and
+  #   carry an amber pin marker. Ranks: 0 pinned live, 1 pinned layout,
+  #   2 live, 3 layout — a stable sort keeps tmux/config order within a rank.
   # ---------------------------------------------------------------------------
   session_list)
     current=$(tmux display-message -p '#S' 2>/dev/null)
     active=$(tmux list-sessions -F '#{session_name}' 2>/dev/null)
+    pins=""
+    [ -f "$PINS_FILE" ] && pins=$(cat "$PINS_FILE")
 
-    # Live sessions (skip the current one — nothing to switch to)
-    while IFS= read -r name; do
-      [ -z "$name" ] && continue
-      [ "$name" = "$current" ] && continue
-      printf 'run\t%b● %s%b\t%s\n' "$P4_GREEN" "$name" "$P4_RESET" "$name"
-    done <<< "$active"
-
-    # p4m layouts that are not already running
-    if [ -f "$P4M_CONFIG" ]; then
+    {
+      # Live sessions (skip the current one — nothing to switch to)
       while IFS= read -r name; do
         [ -z "$name" ] && continue
-        grep -qxF "$name" <<< "$active" && continue
-        printf 'new\t%b○ %s%b\t%s\n' "$P4_MAGENTA" "$name" "$P4_RESET" "$name"
-      done < <(yq eval 'keys | .[]' "$P4M_CONFIG" 2>/dev/null | grep -v '^x-')
+        [ "$name" = "$current" ] && continue
+        if grep -qxF "$name" <<< "$pins"; then
+          printf '0\trun\t%b󰐃 %b● %s%b\t%s\n' "$P4_YELLOW" "$P4_GREEN" "$name" "$P4_RESET" "$name"
+        else
+          printf '2\trun\t%b● %s%b\t%s\n' "$P4_GREEN" "$name" "$P4_RESET" "$name"
+        fi
+      done <<< "$active"
+
+      # p4m layouts that are not already running
+      if [ -f "$P4M_CONFIG" ]; then
+        while IFS= read -r name; do
+          [ -z "$name" ] && continue
+          grep -qxF "$name" <<< "$active" && continue
+          if grep -qxF "$name" <<< "$pins"; then
+            printf '1\tnew\t%b󰐃 %b○ %s%b\t%s\n' "$P4_YELLOW" "$P4_MAGENTA" "$name" "$P4_RESET" "$name"
+          else
+            printf '3\tnew\t%b○ %s%b\t%s\n' "$P4_MAGENTA" "$name" "$P4_RESET" "$name"
+          fi
+        done < <(yq eval 'keys | .[]' "$P4M_CONFIG" 2>/dev/null | grep -v '^x-')
+      fi
+    } | sort -s -t$'\t' -k1,1n | cut -f2-
+    ;;
+
+  # ---------------------------------------------------------------------------
+  # toggle_pin <name> — add/remove a session from the pinned list (internal).
+  # ---------------------------------------------------------------------------
+  toggle_pin)
+    name="$2"
+    [ -z "$name" ] && exit 0
+    mkdir -p "$(dirname "$PINS_FILE")"
+    touch "$PINS_FILE"
+    if grep -qxF "$name" "$PINS_FILE"; then
+      # grep -v exits 1 when nothing remains — still a successful filter
+      grep -vxF "$name" "$PINS_FILE" > "${PINS_FILE}.tmp" || true
+      mv "${PINS_FILE}.tmp" "$PINS_FILE"
+    else
+      printf '%s\n' "$name" >> "$PINS_FILE"
     fi
     ;;
 
@@ -233,7 +269,7 @@ case "$CMD" in
     ;;
 
   *)
-    echo "Usage: $0 {manager|session_manager|session_list|session_preview|new_session|window_manager|window_list|window_preview|new_window|dotfiles_menu}"
+    echo "Usage: $0 {manager|session_manager|session_list|session_preview|toggle_pin|new_session|window_manager|window_list|window_preview|new_window|dotfiles_menu}"
     exit 1
     ;;
 esac

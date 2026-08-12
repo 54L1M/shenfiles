@@ -254,6 +254,126 @@ exit 0
 REMOTE
 }
 
+# Remote cert renewal. Lists certbot certs, renews any expired or expiring
+# within $THRESHOLD days, then re-lists. Emits the same tagged lines as
+# run_remote() plus "RENEW|name|status|msg".
+function run_remote_certs() {
+    local pass="$1" opts
+    ssh_opts opts
+    ssh "${opts[@]}" "${SSH_USER}@${SSH_HOST}" \
+        "P4V_SUDO_PASS=$(printf '%q' "$pass") bash -s" <<'REMOTE'
+_sudo() {
+    if [ -n "$P4V_SUDO_PASS" ]; then
+        echo "$P4V_SUDO_PASS" | sudo -S -p '' "$@" 2>/dev/null
+    else
+        sudo -n "$@" 2>/dev/null
+    fi
+}
+# Same as _sudo but keeps stderr — certbot reports renewal errors there.
+_sudo_err() {
+    if [ -n "$P4V_SUDO_PASS" ]; then
+        echo "$P4V_SUDO_PASS" | sudo -S -p '' "$@" 2>&1
+    else
+        sudo -n "$@" 2>&1
+    fi
+}
+
+THRESHOLD=30
+
+echo "SEC|TLS Certificates"
+if ! command -v certbot >/dev/null 2>&1; then
+    echo "NOTE|certbot is not installed"
+    exit 0
+fi
+
+list_certs() {
+    _sudo certbot certificates 2>/dev/null | awk '
+        /Certificate Name:/ { name=$3 }
+        /Expiry Date:/ {
+            edate=$3" "$4
+            days="?"
+            if (match($0, /VALID: [0-9]+ day/)) { d=substr($0,RSTART+7); sub(/ day.*/,"",d); days=d }
+            else if (match($0, /INVALID|EXPIRED/)) { days="EXPIRED" }
+            print name"|"days"|"edate
+        }'
+}
+
+certs=$(list_certs)
+if [ -z "$certs" ]; then
+    echo "NOTE|Could not read certbot certificates (sudo needed, or none issued)"
+    exit 0
+fi
+
+due=""
+while IFS='|' read -r name days edate; do
+    echo "CERT|$name|$days|$edate"
+    case "$days" in
+        EXPIRED) due="$due$name " ;;
+        ''|*[!0-9]*) ;;
+        *) [ "$days" -lt "$THRESHOLD" ] && due="$due$name " ;;
+    esac
+done <<EOF
+$certs
+EOF
+
+echo "SEC|Renewal"
+if [ -z "$due" ]; then
+    echo "NOTE|All certificates valid for ${THRESHOLD}+ days — nothing to renew"
+    exit 0
+fi
+
+# Standalone auth needs to bind port 80. If a docker container (reverse
+# proxy) holds it, stop it for the duration of the renewals and restart it
+# after — the restart also makes it pick up the renewed certs.
+PROXY=""
+if command -v docker >/dev/null 2>&1; then
+    PROXY=$(docker ps --filter "publish=80" --format '{{.Names}}' 2>/dev/null | head -1)
+fi
+if [ -n "$PROXY" ]; then
+    echo "NOTE|Port 80 held by container '$PROXY' — stopping it during renewal (brief downtime)"
+    if ! docker stop "$PROXY" >/dev/null 2>&1; then
+        echo "NOTE|Could not stop '$PROXY' — renewals will likely fail to bind port 80"
+        PROXY=""
+    else
+        trap 'docker start "$PROXY" >/dev/null 2>&1' EXIT
+    fi
+elif ss -tln 2>/dev/null | grep -qE ':80\b'; then
+    echo "NOTE|Port 80 is in use by a non-docker process — standalone renewal may fail"
+fi
+
+renewed=0
+for name in $due; do
+    out=$(_sudo_err certbot renew --cert-name "$name" --no-random-sleep-on-renew)
+    rc=$?
+    if [ $rc -ne 0 ]; then
+        err=$(echo "$out" | grep -iE 'error|failed|problem' | head -1)
+        echo "RENEW|$name|failed|${err:-see /var/log/letsencrypt/letsencrypt.log}"
+    elif echo "$out" | grep -q "No renewals were attempted"; then
+        echo "RENEW|$name|skipped|certbot considers it not yet due (renew_before_expiry)"
+    else
+        renewed=$((renewed+1))
+        echo "RENEW|$name|ok|"
+    fi
+done
+
+if [ -n "$PROXY" ]; then
+    trap - EXIT
+    if docker start "$PROXY" >/dev/null 2>&1; then
+        echo "NOTE|Restarted '$PROXY'"
+    else
+        echo "NOTE|FAILED to restart '$PROXY' — run manually: docker start $PROXY"
+    fi
+fi
+
+if [ "$renewed" -gt 0 ]; then
+    echo "SEC|After Renewal"
+    list_certs | while IFS= read -r l; do echo "CERT|$l"; done
+fi
+
+exit 0
+REMOTE
+}
+
 # ── Rendering ─────────────────────────────────────────────────────────────────
 function render() {
     local G R Y SUB RST BOLD
@@ -339,6 +459,15 @@ function render() {
                     printf "  ${BOLD}%-22s${RST} ${R}%s${RST}  (%s)\n" "$cn" "${cdays:-?}" "$cexp"
                 fi
                 ;;
+            RENEW)
+                local rname rstat rmsg
+                IFS='|' read -r rname rstat rmsg <<<"$rest"
+                case "$rstat" in
+                    ok)      printf "  ${BOLD}%-22s${RST} ${G}renewed${RST}\n" "$rname" ;;
+                    skipped) printf "  ${BOLD}%-22s${RST} ${Y}skipped${RST}  %s\n" "$rname" "$rmsg" ;;
+                    *)       printf "  ${BOLD}%-22s${RST} ${R}FAILED${RST}  %s\n" "$rname" "$rmsg" ;;
+                esac
+                ;;
             LOGIN)
                 printf "  ${G}✓${RST} %s\n" "$rest"
                 ;;
@@ -381,12 +510,40 @@ function do_status() {
     echo
 }
 
+function do_certs() {
+    local alias="${1:-}"
+    [[ -z "$alias" ]] && alias=$(pick_alias)
+    [[ -z "$alias" ]] && exit 0
+    resolve_server "$alias"
+
+    p4_header "p4v — TLS Cert Renewal: ${SSH_USER}@${SSH_HOST}${SSH_PORT:+:$SSH_PORT}"
+
+    # Reachability probe first (fast, no sudo).
+    local opts; ssh_opts opts
+    if ! ssh "${opts[@]}" "${SSH_USER}@${SSH_HOST}" true 2>/tmp/p4v_ssh_err; then
+        p4_error "Cannot reach ${SSH_USER}@${SSH_HOST}"
+        [[ -s /tmp/p4v_ssh_err ]] && p4_info "$(cat /tmp/p4v_ssh_err)"
+        rm -f /tmp/p4v_ssh_err
+        exit 1
+    fi
+    rm -f /tmp/p4v_ssh_err
+    p4_success "Reachable"
+
+    local pass; pass=$(get_sudo_pass)
+
+    p4_step "Checking certificates and renewing any expiring within 30 days..."
+    local out; out=$(run_remote_certs "$pass")
+    printf '%s\n' "$out" | render
+    echo
+}
+
 function show_help() {
     p4_header "p4v - VPS Status Dashboard"
     p4_info "Usage: p4v [command] [server-alias]"
     echo
     p4_title "Commands:"
     p4_cmd "status" "[alias]" "Full dashboard: health, firewall, fail2ban, services (default)"
+    p4_cmd "certs, renew" "[alias]" "Renew TLS certs that are expired or expiring within 30 days"
     p4_cmd "ssh" "[alias]" "Open an interactive SSH session to the server"
     p4_cmd "ls, servers" "" "List configured servers"
     p4_cmd "-h, --help" "" "Show this help"
@@ -414,6 +571,10 @@ case "${1:-status}" in
     status|s)
         load_config
         do_status "$2"
+        ;;
+    certs|renew|c)
+        load_config
+        do_certs "$2"
         ;;
     ssh)
         do_ssh "$2"

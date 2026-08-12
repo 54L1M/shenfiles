@@ -25,6 +25,8 @@ _p4v() {
     commands)
       local -a completions=(
         'status:Full VPS status dashboard'
+        'certs:Renew expired or expiring TLS certs'
+        'renew:Renew expired or expiring TLS certs'
         'ssh:Open an interactive SSH session'
         'ls:List configured servers'
         'servers:List configured servers'
@@ -34,7 +36,7 @@ _p4v() {
       ;;
     servers)
       case ${line[1]} in
-        status|s|ssh) _p4v_aliases ;;
+        status|s|certs|renew|c|ssh) _p4v_aliases ;;
       esac
       ;;
   esac

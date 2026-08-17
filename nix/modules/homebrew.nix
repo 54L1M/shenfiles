@@ -71,7 +71,7 @@
     ];
     masApps = {};
     onActivation.cleanup = "zap";
-    onActivation.autoUpdate = true;
-    onActivation.upgrade = true;
+    onActivation.autoUpdate = false;
+    onActivation.upgrade = false;
   };
 }

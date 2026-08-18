@@ -9,6 +9,14 @@
     coreutils-prefixed   # gls for dired (doesn't shadow BSD tools)
     cmake                # vterm module compilation
     libtool              # vterm module compilation
+    # macOS builds (e.g. emacs vterm's bundled libvterm) invoke GNU
+    # libtool as `glibtool` (homebrew's naming); nix installs it
+    # unprefixed, so expose it under both names.
+    (pkgs.runCommand "glibtool" { } ''
+      mkdir -p $out/bin
+      ln -s ${pkgs.libtool}/bin/libtool $out/bin/glibtool
+      ln -s ${pkgs.libtool}/bin/libtoolize $out/bin/glibtoolize
+    '')
     git
     tmuxifier
     rustup

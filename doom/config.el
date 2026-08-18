@@ -97,7 +97,10 @@
 ;; PATH, which nix provides).
 (after! lsp-pyright
   (setq lsp-pyright-type-checking-mode "off"
-        lsp-pyright-diagnostic-mode "workspace"
+        ;; "openFilesOnly" (pyright default): workspace-wide analysis is
+        ;; pointless here since all pyright diagnostics are ignored anyway
+        ;; (ruff lints); also stops the "analyzing N files" modeline churn.
+        lsp-pyright-diagnostic-mode "openFilesOnly"
         lsp-pyright-auto-search-paths t
         lsp-pyright-extra-paths [])
   ;; settings lsp-pyright doesn't expose as variables
@@ -188,3 +191,8 @@
 
 ;; Better debugging
 (use-package! dape)   
+
+;; jk to escape insert mode (evil-escape ships with Doom's evil module)
+(after! evil-escape
+  (setq evil-escape-key-sequence "jk"
+        evil-escape-delay 0.15))

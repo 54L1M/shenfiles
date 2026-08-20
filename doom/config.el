@@ -33,11 +33,11 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'catppuccin)
-(setq catppuccin-flavor 'macchiato) ; or 'frappe 'latte, 'macchiato, or 'mocha
+(setq catppuccin-flavor 'mocha) ; or 'frappe 'latte, 'macchiato, or 'mocha
 (load-theme 'catppuccin t)
-;; set transparency... I don't think this works so TODO
-(set-frame-parameter (selected-frame) 'alpha '(85 85))
-(add-to-list 'default-frame-alist '(alpha 85 85))
+;; set transparency... 
+(set-frame-parameter (selected-frame) 'alpha '(75 75))
+(add-to-list 'default-frame-alist '(alpha 75 75))
 
 ;; Open every frame maximized. Swap 'maximized for 'fullboth if you want
 ;; native macOS fullscreen (its own Space) instead.
@@ -196,3 +196,35 @@
 (after! evil-escape
   (setq evil-escape-key-sequence "jk"
         evil-escape-delay 0.15))
+
+;; Capture templates: personal (fast, single-key) + work (w submenu).
+;; Relative filenames resolve against org-directory (~/org/).
+;; %? = cursor after insert, %i = selected region, %u = date stamp,
+;; %a = link back to where you captured from (jump back with RET).
+(after! org
+  (setq org-capture-templates
+        '(("t" "Personal todo" entry
+           (file+headline "personal.org" "Inbox")
+           "* TODO %?\n%i\n%a" :prepend t)
+          ("n" "Personal note" entry
+           (file+headline "personal.org" "Notes")
+           "* %u %?\n%i" :prepend t)
+          ("w" "Work")
+          ("wt" "Work todo" entry
+           (file+headline "work.org" "Inbox")
+           "* TODO %?\n%i\n%a" :prepend t)
+          ("wn" "Work note" entry
+           (file+headline "work.org" "Notes")
+           "* %u %?\n%i" :prepend t)
+          ("wm" "Meeting" entry
+           (file+headline "work.org" "Meetings")
+           "* %u %? :meeting:\n%i" :prepend t))))
+
+;; org-roam: linked notes / knowledge base. Lives in its own subdir so
+;; agenda files (work/personal) and knowledge notes stay separate.
+(setq org-roam-directory "~/org/roam/")
+
+;; Keep the vertico childframe popup fully opaque (it would otherwise
+;; inherit the main frame's 85% alpha and get hard to read).
+(after! vertico-posframe
+  (setq vertico-posframe-parameters '((alpha . 100))))

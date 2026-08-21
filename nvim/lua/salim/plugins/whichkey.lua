@@ -17,6 +17,7 @@ return {
 			{ "<leader>gh", group = "hunks" },
 			{ "<leader>l", group = "lsp" },
 			{ "<leader>m", group = "harpoon" },
+			{ "<leader>n", group = "notes (moor)" },
 			{ "<leader>p", group = "python" },
 			{ "<leader>q", group = "quit" },
 			{ "<leader>s", group = "split" },

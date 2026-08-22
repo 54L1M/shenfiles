@@ -23,19 +23,26 @@ return {
 
 		todo = {
 			dir = "todo", -- todos live in <notes_dir>/todo/<project>.md
-			toggle_states = { " ", "x" }, -- cycle order; add "-" for a cancelled state
+			toggle_states = { " ", "x", "-" }, -- cycle order; add "-" for a cancelled state
 		},
 
 		dashboard = {
 			window = { width = 0.7, height = 0.7, border = "rounded", title = " open todos " },
 			-- View-only icons; files on disk keep plain "- [ ]" markdown.
 			-- icons = false shows the raw brackets.
-			icons = { open = "○", done = "✓" },
+			icons = { open = "○", done = "✓", cancelled = "✗" },
 			maps = { toggle = "t", jump = "<CR>", jump_context = "gd", sort = "s", refresh = "r", close = "q" },
 		},
 
 		links = {
 			new_note_dir = "", -- where notes created from [[missing links]] land, rel. to notes_dir
+			completion = true, -- complete note titles when typing [[ (false disables)
+		},
+
+		-- Signs on code lines that have an open todo moored to them.
+		-- Set moorings = false to disable.
+		moorings = {
+			sign = "⚓",
 		},
 
 		-- Global keymaps, applied by setup(). keymaps = false defines none;
@@ -51,6 +58,9 @@ return {
 			follow_link = "<leader>nf",
 			backlinks = "<leader>nb",
 			open_todo = "<leader>no",
+			mooring = "<leader>nm", -- jump from a moored code line to its todo
+			find_note = "<leader>ns", -- pick any note and open it
+			insert_link = "<leader>ni", -- pick a note, insert [[link]] at the cursor
 		},
 	},
 }

@@ -31,6 +31,8 @@ return {
 			-- View-only icons; files on disk keep plain "- [ ]" markdown.
 			-- icons = false shows the raw brackets.
 			icons = { open = "○", done = "✓", cancelled = "✗" },
+			-- "due tomorrow" / "due in 3d" / "overdue 3d" instead of due:YYYY-MM-DD.
+			friendly_dates = true,
 			maps = { toggle = "t", jump = "<CR>", jump_context = "gd", sort = "s", refresh = "r", close = "q" },
 		},
 

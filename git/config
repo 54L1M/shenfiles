@@ -11,3 +11,5 @@
 
 [core]
   excludesfile = ~/.config/git/ignore
+[init]
+	defaultBranch = master

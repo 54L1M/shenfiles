@@ -84,42 +84,66 @@ function switch_namespace() {
     [[ -n "$TMUX" ]] && tmux refresh-client -S
 }
 
+# Prints "name <colored status letter>" lines for fzf. Hidden subcommand so
+# fzf reload binds can re-invoke it without inline quoting gymnastics.
+function print_pod_list() {
+    require_kubectl
+    local ns="$1" mode="${2:-all}"
+    local sel=()
+    [[ "$mode" == "running" ]] && sel=(--field-selector=status.phase=Running)
+
+    "$KUBECTL_CMD" get pods -n "$ns" "${sel[@]}" --no-headers 2>/dev/null | awk \
+        -v grn="$P4_GREEN" -v red="$P4_RED" -v amb="$P4_YELLOW" \
+        -v dim="$P4_DIM" -v lav="$P4_MAGENTA" -v rst="$P4_RESET" '
+    {
+        s = $3; c = lav
+        if (s == "Running") c = grn
+        else if (s == "Completed" || s == "Succeeded") c = dim
+        else if (s ~ /Err|Fail|Crash|BackOff|Evicted/) c = red
+        else if (s == "Pending" || s ~ /Creating|Init|Terminating/) c = amb
+        printf "%-45s %s%s%s\n", $1, c, substr(s, 1, 1), rst
+    }'
+}
+
 function list_pods() {
     require_kubectl
-    local ns_flag=""
-    [[ -n "$1" ]] && ns_flag="-n $1"
+
+    local current_ns
+    current_ns=$("$KUBECTL_CMD" config view --minify -o jsonpath='{..namespace}' 2>/dev/null)
+    current_ns="${1:-${current_ns:-default}}"
 
     local pods
-    pods=$("$KUBECTL_CMD" get pods $ns_flag --no-headers 2>/dev/null | awk '{print $1}')
+    pods=$(print_pod_list "$current_ns")
 
     if [[ -z "$pods" ]]; then
         p4_warn "No pods found"
         exit 0
     fi
 
-    local current_ns
-    current_ns=$("$KUBECTL_CMD" config view --minify -o jsonpath='{..namespace}' 2>/dev/null)
-    current_ns="${1:-${current_ns:-default}}"
+    local header="Pods in namespace: $current_ns"$'\n'"Enter: exec | C-w: new window | C-r: running only | C-a: all"
 
     local output key selected
     output=$(echo "$pods" | fzf \
-        --header="Pods in namespace: $current_ns | Enter: exec shell | C-w: exec in new window" \
+        --ansi \
+        --header="$header" \
         --expect=ctrl-w \
+        --bind="ctrl-r:reload(\"$0\" __pods-list \"$current_ns\" running)" \
+        --bind="ctrl-a:reload(\"$0\" __pods-list \"$current_ns\")" \
         --preview="
             KUBE=$KUBECTL_CMD
             NS=$current_ns
             echo '=== Status & Uptime ==='
-            \"\$KUBE\" get pod {} -n \"\$NS\" 2>/dev/null
+            \"\$KUBE\" get pod {1} -n \"\$NS\" 2>/dev/null
             echo ''
             echo '=== Describe ==='
-            \"\$KUBE\" describe pod {} -n \"\$NS\" 2>/dev/null | head -35
+            \"\$KUBE\" describe pod {1} -n \"\$NS\" 2>/dev/null | head -35
         " \
         --preview-window=right:60%:wrap \
         --height=80% --reverse \
         --color="header:blue,prompt:yellow,pointer:red")
 
     key=$(head -1 <<< "$output")
-    selected=$(tail -n +2 <<< "$output")
+    selected=$(tail -n +2 <<< "$output" | awk '{print $1}')
     [[ -z "$selected" ]] && exit 0
 
     if [[ "$key" == "ctrl-w" ]]; then
@@ -151,6 +175,7 @@ case "${1:-ctx}" in
     ctx|context) switch_context ;;
     ns|namespace) switch_namespace ;;
     pods|p) list_pods "${2:-}" ;;
+    __pods-list) print_pod_list "${2:-default}" "${3:-all}" ;;
     status|s) show_status ;;
     -h|--help) show_help ;;
     *)

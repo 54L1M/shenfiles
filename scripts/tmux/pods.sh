@@ -21,7 +21,7 @@ NS=$("$KUBECTL_CMD" config view --minify -o jsonpath='{..namespace}' 2>/dev/null
 CTX=$("$KUBECTL_CMD" config current-context 2>/dev/null)
 NS="${NS:-default}"
 
-COUNT=$("$KUBECTL_CMD" get pods -n "$NS" --no-headers --request-timeout=2s 2>/dev/null | wc -l | tr -d ' ')
+COUNT=$("$KUBECTL_CMD" get pods -n "$NS" --field-selector=status.phase=Running --no-headers --request-timeout=2s 2>/dev/null | wc -l | tr -d ' ')
 COUNT="${COUNT:-0}"
 
 echo "#[fg=${P4_OSHEN_OVERLAY0},bg=${P4_OSHEN_BASE},none]│#[fg=${P4_OSHEN_TEAL},bg=${P4_OSHEN_BASE}] 󱃾 ${CTX}·${COUNT} "

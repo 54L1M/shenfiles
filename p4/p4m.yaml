@@ -30,21 +30,21 @@ x-layouts:
     - { name: shell }
     - { name: claude }
 
-ats:
+UP:
   path: ~/Documents/Workstation/In2Dialog/I2D_ATS/
   env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
   global_commands:
     - "source ./.venv/bin/activate"
   windows: *dev
 
-prod:
+UP-prod:
   path: ~/Documents/Workstation/In2Dialog/prod/
   env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
   global_commands:
     - "source ./.venv/bin/activate"
   windows: *dev
 
-staging:
+UP-staging:
   path: ~/Documents/Workstation/In2Dialog/staging/
   env_file: ~/Documents/Workstation/In2Dialog/I2D_ATS/.env
   global_commands:
@@ -56,6 +56,12 @@ staging:
 i2c:
   path: ~/Documents/Workstation/In2Dialog/i2c/
   windows: *dev
+
+http-layer:
+  path: ~/Documents/Workstation/In2Dialog/i2d-api/
+  windows: *dev
+  extra_windows:
+    - name: claude
 
 shen:
   path: ~/shenfiles/

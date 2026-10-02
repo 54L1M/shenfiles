@@ -13,7 +13,8 @@ return {
 		capture = {
 			-- Destination for note captures, relative to notes_dir. os.date()
 			-- tokens expand: "Daily Notes/%Y-%m-%d.md" turns captures into daily notes.
-			note_file = "Captures.md",
+			-- quick/ is the vault's scratch folder; notes_dir is inbox/, so step up one level.
+			note_file = "../quick/Captures.md",
 			-- Heading above each capture, as an os.date() format. false = raw append.
 			timestamp = "## %Y-%m-%d %H:%M",
 			window = { width = 0.5, height = 0.3, border = "rounded", title = " moor " },

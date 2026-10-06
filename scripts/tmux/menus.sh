@@ -175,10 +175,28 @@ case "$CMD" in
     ;;
 
   # ---------------------------------------------------------------------------
-  # new_session — create an empty, ad-hoc session (prompts for a name).
+  # new_session — create an empty, ad-hoc session. Prompts for a name and a
+  # start directory (defaults to the pane the popup was opened from; editable,
+  # tab-completable, ~ expands).
   # ---------------------------------------------------------------------------
   new_session)
-    bash -i -c "read -p \"Session name: \" name; if [ -n \"\$name\" ]; then tmux new-session -d -s \"\$name\" && tmux switch-client -t \"\$name\"; fi"
+    default_dir=$(tmux display-message -p '#{pane_current_path}' 2>/dev/null)
+    [ -d "$default_dir" ] || default_dir="$PWD"
+
+    read -r -p "Session name: " name
+    [ -z "$name" ] && exit 0
+
+    read -r -e -i "$default_dir" -p "Directory: " dir
+    dir="${dir/#\~/$HOME}"
+    [ -z "$dir" ] && dir="$default_dir"
+
+    if [ ! -d "$dir" ]; then
+      p4_error "Not a directory: $dir"
+      sleep 1
+      exit 1
+    fi
+
+    tmux new-session -d -s "$name" -c "$dir" && tmux switch-client -t "$name"
     ;;
 
   # ---------------------------------------------------------------------------

@@ -4,7 +4,7 @@
   environment.systemPackages = with pkgs; [
     mkalias
     neovim
-    emacs30              # doom emacs (config in shenfiles/doom)
+    emacs              # doom emacs (config in shenfiles/doom)
     fd                   # doom dependency (fast file finding)
     coreutils-prefixed   # gls for dired (doesn't shadow BSD tools)
     cmake                # vterm module compilation
@@ -20,7 +20,7 @@
     git
     tmuxifier
     rustup
-    go_1_25
+    go_1_27
     gopls
     bat
     ripgrep
@@ -53,6 +53,6 @@
     isort
     djlint
     shfmt
-    nixfmt-rfc-style
+    nixfmt
   ];
 }

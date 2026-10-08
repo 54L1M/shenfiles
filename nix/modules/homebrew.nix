@@ -4,9 +4,6 @@
   homebrew = {
     enable = true;
     taps = [
-       "nikitabobko/tap"
-       "FelixKratz/formulae"
-       "FelixKratz/formulae"
        #"railwaycat/emacsmacport"
     ];
 
@@ -71,7 +68,7 @@
     ];
     masApps = {};
     onActivation.cleanup = "zap";
-    onActivation.autoUpdate = false;
-    onActivation.upgrade = false;
+    onActivation.autoUpdate = true;
+    onActivation.upgrade = true;
   };
 }

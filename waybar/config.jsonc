@@ -1,6 +1,7 @@
 // Waybar, p4nda theme (colors in style.css). Docs: https://github.com/Alexays/Waybar/wiki
-// Icons are Nerd Font codepoints written as \u escapes (supplementary ones as
-// surrogate pairs) so editors can't mangle them.
+// Icons are Nerd Font glyphs (JetBrainsMono Nerd Font). Each module's comment
+// names its codepoints, in case an editor drops a glyph: re-enter it, or
+// write it as a \u escape (codepoints above U+FFFF as a surrogate pair).
 {
   "layer": "top",
   "position": "top",

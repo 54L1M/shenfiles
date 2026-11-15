@@ -57,4 +57,4 @@
 
 ;; Better debugging
 (package! dape)
-(package! pbcopy)
+(package! pbcopy :disable (not (featurep :system 'macos)))  ; macOS only

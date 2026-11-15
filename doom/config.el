@@ -139,9 +139,10 @@
   )
 
 ;; use system clipboard
-;; macos
-(require 'pbcopy)
-(turn-on-pbcopy)
+;; macos: pbcopy (terminal Emacs). Not installed elsewhere, see packages.el
+(when (featurep :system 'macos)
+  (require 'pbcopy)
+  (turn-on-pbcopy))
 
 ;; use fish shell by default
 

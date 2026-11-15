@@ -22,6 +22,7 @@ bind("V", hl.dsp.window.float({ action = "toggle" }))
 bind("F", hl.dsp.window.fullscreen())
 bind("P", hl.dsp.window.pseudo())
 bind("T", hl.dsp.layout("togglesplit")) -- dwindle only (default is SUPER+J, now focus down)
+bind("SHIFT + W", hl.dsp.exec_cmd("pkill -SIGUSR2 waybar")) -- reload Waybar config
 
 -- Focus with arrows or hjkl; SHIFT moves the window instead
 local directions = {

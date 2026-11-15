@@ -1,0 +1,86 @@
+// Waybar, p4nda theme (colors in style.css). Docs: https://github.com/Alexays/Waybar/wiki
+// Icons are Nerd Font codepoints written as \u escapes (supplementary ones as
+// surrogate pairs) so editors can't mangle them.
+{
+    "layer": "top",
+    "position": "top",
+    "height": 32,
+    "spacing": 6,
+    "reload_style_on_change": true,
+
+    "modules-left": ["hyprland/workspaces", "hyprland/window"],
+    "modules-right": ["custom/gpu", "cpu", "memory", "network", "pulseaudio", "clock", "tray"],
+
+    // Clicking a button does nothing: Waybar 0.15 sends pre-Lua dispatch
+    // commands that Hyprland's Lua config rejects. Scrolling uses the Lua form.
+    "hyprland/workspaces": {
+        "format": "{id}",
+        "persistent-workspaces": { "*": 5 },
+        "on-scroll-up":   "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'",
+        "on-scroll-down": "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'"
+    },
+
+    "hyprland/window": {
+        "format": "{title}",
+        "max-length": 60,
+        "separate-outputs": true
+    },
+
+    // nf-md-expansion_card (U+F08AE)
+    "custom/gpu": {
+        "exec": "nvidia-smi --query-gpu=utilization.gpu,temperature.gpu --format=csv,noheader,nounits | awk -F', ' '{ print $1 \"% \" $2 \"°C\" }'",
+        "format": "󰢮 {}",
+        "interval": 5,
+        "tooltip": false
+    },
+
+    // nf-oct-cpu (U+F4BC)
+    "cpu": {
+        "format": " {usage}%",
+        "interval": 5,
+        "tooltip": false
+    },
+
+    // nf-md-memory (U+F035B)
+    "memory": {
+        "format": "󰍛 {percentage}%",
+        "interval": 5,
+        "tooltip-format": "{used:0.1f} / {total:0.1f} GiB"
+    },
+
+    // nf-fa-wifi (U+F1EB), nf-md-ethernet (U+F0200), nf-md-wifi_off (U+F05AA)
+    "network": {
+        "format-wifi": "  {essid}",
+        "format-ethernet": "󰈀 wired",
+        "format-linked": "󰈀 no IP",
+        "format-disconnected": "󰖪 offline",
+        "tooltip-format": "{ifname}: {ipaddr}/{cidr} via {gwaddr}",
+        "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ifname}: {ipaddr}/{cidr}",
+        "on-click": "nm-connection-editor"
+    },
+
+    // nf-fa-volume_off/down/up (U+F026-F028), nf-fa-headphones (U+F025),
+    // nf-md-headset (U+F02CE), nf-md-volume_off (U+F075F)
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "󰝟 muted",
+        "format-icons": {
+            "headphone": "",
+            "headset": "󰋎",
+            "default": ["", "", ""]
+        },
+        "scroll-step": 5,
+        "on-click": "pavucontrol",
+        "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+    },
+
+    // nf-fa-clock (U+F017)
+    "clock": {
+        "format": " {:%a %d %b  %H:%M}",
+        "tooltip-format": "<tt><small>{calendar}</small></tt>"
+    },
+
+    "tray": {
+        "spacing": 8
+    }
+}

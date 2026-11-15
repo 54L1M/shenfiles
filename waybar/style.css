@@ -1,0 +1,92 @@
+/* p4nda: same palette as ghostty/config and tmux/p4nda-tmux-palette.conf.
+   Edits apply live (reload_style_on_change). */
+
+@define-color bg       #0e1117;
+@define-color surface  #090c12;
+@define-color border   #344f6a;
+@define-color text     #f1faee;
+@define-color dim      #8899aa;
+@define-color amber    #ffb703;
+@define-color teal     #abdadc;
+@define-color lavender #c3a0d8;
+@define-color green    #a8c97f;
+@define-color red      #e05c6e;
+
+* {
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 13px;
+    min-height: 0;
+    border: none;
+    border-radius: 0;
+}
+
+window#waybar {
+    background: alpha(@bg, 0.85);
+    color: @text;
+}
+
+.modules-left  { margin-left: 8px; }
+.modules-right { margin-right: 8px; }
+
+/* Pills */
+#workspaces,
+#window,
+#custom-gpu,
+#cpu,
+#memory,
+#network,
+#pulseaudio,
+#clock,
+#tray {
+    background: @surface;
+    border: 1px solid alpha(@border, 0.6);
+    border-radius: 6px;
+    margin: 4px 0;
+    padding: 0 10px;
+}
+
+/* Hide the title pill on empty workspaces */
+window#waybar.empty #window {
+    background: transparent;
+    border-color: transparent;
+}
+
+/* Workspaces */
+#workspaces { padding: 0 4px; }
+
+#workspaces button {
+    color: @dim;
+    background: transparent;
+    padding: 0 6px;
+    border-radius: 4px;
+}
+
+#workspaces button.empty  { color: alpha(@dim, 0.45); }
+#workspaces button.active { color: @amber; }
+#workspaces button.urgent { color: @red; }
+
+#workspaces button:hover {
+    background: alpha(@border, 0.4);
+    box-shadow: none;
+    text-shadow: none;
+}
+
+/* Module colors */
+#window       { color: @text; }
+#custom-gpu   { color: @green; }
+#cpu          { color: @teal; }
+#memory       { color: @lavender; }
+#network      { color: @teal; }
+#pulseaudio   { color: @amber; }
+#clock        { color: @text; }
+
+#network.disconnected { color: @red; }
+#pulseaudio.muted     { color: @dim; }
+
+tooltip {
+    background: @surface;
+    border: 1px solid @border;
+    border-radius: 6px;
+}
+
+tooltip label { color: @text; }

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Tmux Cloud SQL Proxy Status Plugin
 # Detects sessions started by p4p.sh (sql-proxy-*)

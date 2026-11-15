@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # fzf-git.sh - Run fzf-git.sh pickers (files, branches, hashes, ...) in a
 # tmux popup and paste the selection into the pane the popup was opened from.

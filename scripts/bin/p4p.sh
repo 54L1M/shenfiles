@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Cloud SQL Proxy Manager
 # P4_DESC: Cloud SQL Proxy — start/stop GCP database tunnels in background tmux sessions

@@ -127,7 +127,7 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
 #pip
-export PATH=$PATH:$HOME/.local/bin/
+export PATH=$PATH:$HOME/.local/bin
 #cargo
 export PATH=$PATH:$HOME/.cargo/bin/
 
@@ -221,3 +221,4 @@ eval "$(direnv hook zsh)"
 
 # Custom script completions
 fpath+=($HOME/.zsh/completions $fpath)
+

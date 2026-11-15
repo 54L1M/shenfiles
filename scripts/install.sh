@@ -3,6 +3,7 @@
 
 # Get script directory for sourcing colors in help
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
+FIND=$(command -v gfind || command -v find)  # GNU find: gfind on macOS, find on Linux
 
 # Parse command line arguments
 FORCE_INSTALL=false
@@ -195,7 +196,7 @@ create_symlinks() {
       p4_info "Created symlink: $display_name -> $script"
       ((CREATED_COUNT++))
     fi
-  done < <(gfind "$source_dir" $find_pattern -not -path "*/\.*")
+  done < <("$FIND" "$source_dir" $find_pattern -not -path "*/\.*")
 }
 
 # Function to get all installed custom tools
@@ -212,7 +213,7 @@ get_installed_tools() {
       if [ -L "$target_path" ] && [ "$(readlink "$target_path")" = "$script" ]; then
         tools+=("$symlink_name")
       fi
-    done < <(gfind "$BIN_DIR" -type f -executable -not -path "*/\.*")
+    done < <("$FIND" "$BIN_DIR" -type f -executable -not -path "*/\.*")
   fi
   
   # Check lib directory tools
@@ -224,7 +225,7 @@ get_installed_tools() {
       if [ -L "$target_path" ] && [ "$(readlink "$target_path")" = "$script" ]; then
         tools+=("lib/$relative_path")
       fi
-    done < <(gfind "$LIB_DIR" -type f -not -path "*/\.*")
+    done < <("$FIND" "$LIB_DIR" -type f -not -path "*/\.*")
   fi
   
   printf '%s\n' "${tools[@]}"

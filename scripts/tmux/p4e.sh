@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Tmux p4e Environment Plugin
 # Displays the current active p4e environment for the active pane

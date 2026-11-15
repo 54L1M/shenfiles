@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # tmux-menus.sh - Centralized handler for Tmux popups and menus
 # Usage: ./menus.sh [command]

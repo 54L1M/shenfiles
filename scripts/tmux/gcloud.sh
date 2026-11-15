@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Tmux GCloud Auth Status Plugin
 # Shows online (authenticated) or offline (needs p4g login)
@@ -8,12 +8,12 @@ source "$SCRIPT_DIR/../lib/colors/colors.sh"
 
 ICON_CLOUD="󰅟"
 
-export PATH="/Users/54l1m/Downloads/google-cloud-sdk/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
+export PATH="$HOME/Downloads/google-cloud-sdk/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
 
 cd "$HOME" 2>/dev/null
 
 GCLOUD_CMD=""
-for _p in "/Users/54l1m/Downloads/google-cloud-sdk/bin/gcloud" "/opt/homebrew/bin/gcloud" "$(command -v gcloud 2>/dev/null)"; do
+for _p in "$HOME/Downloads/google-cloud-sdk/bin/gcloud" "/opt/homebrew/bin/gcloud" "$(command -v gcloud 2>/dev/null)"; do
     [[ -x "$_p" ]] && GCLOUD_CMD="$_p" && break
 done
 

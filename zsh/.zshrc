@@ -1,7 +1,7 @@
 ##########################
 #ZSH STUFF
 ##########################
-fpath=(/Users/54l1m/shenfiles/scripts/completions $fpath)
+fpath=($HOME/shenfiles/scripts/completions $fpath)
 
 export ZSH="$HOME/.oh-my-zsh"
 export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
@@ -10,7 +10,7 @@ ZSH_THEME="muse"
 # ZSH_THEME_RANDOM_CANDIDATES=( "robbyrussell" "agnoster" )
 
 # zsh update reminder
-zstyle ':omz:update' mode reminder  
+zstyle ':omz:update' mode reminder
 
 # waiting dots
 # e.g. COMPLETION_WAITING_DOTS="%F{yellow}waiting...%f"
@@ -25,7 +25,7 @@ plugins=(git
     docker
 #    zsh-vi-mode
     z       )
-source $ZSH/oh-my-zsh.sh
+[[ -r $ZSH/oh-my-zsh.sh ]] && source $ZSH/oh-my-zsh.sh
 
 # set edtitor to neovim
 export EDITOR='nvim'
@@ -45,16 +45,21 @@ alias vim="nvim"
 v(){
   if [[ -z $1 ]]; then
     nvim .
-  else 
+  else
     nvim $1
   fi
 }
 alias nvimconf="cd ~/.config/nvim && nvim ."
 # kubectl
 alias k="kubectl"
-# nix
-alias nixconf="cd ~/shenfiles/nix/ && nvim ."
-alias rn="sudo darwin-rebuild switch --impure --flake ~/shenfiles/nix#54L1M"
+# nix (per machine)
+if [[ "$OSTYPE" == darwin* ]]; then
+  alias nixconf="cd ~/shenfiles/nix/ && nvim ."
+  alias rn="sudo darwin-rebuild switch --impure --flake ~/shenfiles/nix#54L1M"
+else
+  alias nixconf="cd ~/server/ && nvim ."
+  alias rn="sudo nixos-rebuild switch --flake ~/server#pc"
+fi
 # alias zshconfig="mate ~/.zshrc"
 
 # file navigation
@@ -68,9 +73,11 @@ alias sf="cd ${HOME}/shenfiles"
 alias vids="cd ${HOME}/Videos"
 alias docs="cd ${HOME}/Documents"
 alias downs="cd ${HOME}/Downloads"
-tgl() {
-  cd "${HOME}/Library/Mobile Documents/iCloud~md~obsidian/Documents/TheGreatLibrary"
-}
+if [[ "$OSTYPE" == darwin* ]]; then
+  tgl() {
+    cd "${HOME}/Library/Mobile Documents/iCloud~md~obsidian/Documents/TheGreatLibrary"
+  }
+fi
 alias series="cd ${HOME}/Videos/series"
 alias i2d="cd ${HOME}/Documents/WorkStation/In2Dialog"
 alias ats="cd ${HOME}/Documents/WorkStation/In2Dialog/I2D_ATS"
@@ -96,12 +103,15 @@ alias catc="bat -p"
 alias tf="tmuxifier"
 alias tx="tmux"
 #alias sl="ls"
-alias upd="sudo apt update"
-alias upg="sudo apt upgrade"
-alias lupg="apt list --upgradable"
-alias in="sudo apt install"
-alias unin="sudo apt remove"
-alias are="sudo apt autoremove"
+# apt shortcuts, only where apt exists (Debian/Ubuntu machines)
+if command -v apt >/dev/null; then
+  alias upd="sudo apt update"
+  alias upg="sudo apt upgrade"
+  alias lupg="apt list --upgradable"
+  alias in="sudo apt install"
+  alias unin="sudo apt remove"
+  alias are="sudo apt autoremove"
+fi
 alias lg="lazygit"
 alias gca="p4g login"
 ##########################
@@ -116,7 +126,7 @@ alias gca="p4g login"
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
-#pip 
+#pip
 export PATH=$PATH:$HOME/.local/bin/
 #cargo
 export PATH=$PATH:$HOME/.cargo/bin/
@@ -125,16 +135,7 @@ export PATH=$PATH:$HOME/.cargo/bin/
 # go configs
 export PATH=$PATH:/usr/local/go/bin
 export GOPATH=$HOME/go
-export PATH="$PATH:$(go env GOPATH)/bin"
-# virtualenvwrapper
-export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
-export WORKON_HOME=$HOME/.virtualenvs
-export VIRTUALENVWRAPPER_SCRIPT=/opt/homebrew/bin/virtualenvwrapper.sh
-source /opt/homebrew/bin/virtualenvwrapper_lazy.sh
-#export WORKON_HOME=$HOME/.virtualenvs
-#export VIRTUALENVWRAPPER_PYTHON=/Library/Frameworks/Python.framework/Versions/3.12/bin/python3
-#export VIRTUALENVWRAPPER_VIRTUALENV=/Library/Frameworks/Python.framework/Versions/3.12/bin/virtualenv
-#source /Library/Frameworks/Python.framework/Versions/3.12/bin/virtualenvwrapper.sh
+command -v go >/dev/null && export PATH="$PATH:$(go env GOPATH)/bin"
 # add user bin to pass
 export PATH=$PATH:$HOME/bin
 
@@ -150,25 +151,38 @@ export PATH=$PATH:$HOME/bin
 
 # eval $(thefuck --alias)
 # neofetch
-fm6000 -r -c "random"
-export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
+command -v fm6000 >/dev/null && fm6000 -r -c "random"
+
+# Homebrew (Mac only)
+if [[ "$OSTYPE" == darwin* ]]; then
+  export PATH="/opt/homebrew/opt/mysql-client/bin:$PATH"
+fi
 fpath+=($HOME/.zsh/completions)
 fpath+=~/.zfunc
 autoload -Uz compinit
 compinit -D
 
-export PATH="/opt/homebrew/bin:$PATH"
+if [[ "$OSTYPE" == darwin* ]]; then
+  export PATH="/opt/homebrew/bin:$PATH"
+fi
 
 source <(fzf --zsh)
 
-bindkey "ç" fzf-cd-widget
+# Clipboard command for fzf's CTRL-Y: pbcopy on the Mac, wl-copy on Wayland
+if [[ "$OSTYPE" == darwin* ]]; then
+  _clip="pbcopy"
+  bindkey "ç" fzf-cd-widget   # Option+C on the Mac keyboard
+else
+  _clip="wl-copy"
+fi
 export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-# CTRL-Y to copy the command into clipboard using pbcopy
+# CTRL-Y to copy the command into clipboard
 export FZF_CTRL_R_OPTS="
-  --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
+  --bind 'ctrl-y:execute-silent(echo -n {2..} | $_clip)+abort'
   --color header:italic
   --header 'Press CTRL-Y to copy command into clipboard'"
+unset _clip
 # Preview file content using bat (https://github.com/sharkdp/bat)
 export FZF_CTRL_T_OPTS="
   --preview 'bat -n --color=always {}'
@@ -178,21 +192,23 @@ export FZF_ALT_C_COMMAND='fd --type d --strip-cwd-prefix --hidden --follow --exc
 export FZF_ALT_C_OPTS="
   --preview 'tree -C {}'"
 
-source /Users/54l1m/.config/zsh/fzf-git.sh
+[[ -r "$ZDOTDIR/fzf-git.sh" ]] && source "$ZDOTDIR/fzf-git.sh"
 # The next line updates PATH for the Google Cloud SDK.
-if [ -f '/Users/54l1m/Downloads/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/54l1m/Downloads/google-cloud-sdk/path.zsh.inc'; fi
+if [ -f "$HOME/Downloads/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/Downloads/google-cloud-sdk/path.zsh.inc"; fi
 
 # The next line enables shell command completion for gcloud.
 
-if [ -f '/Users/54l1m/Downloads/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/54l1m/Downloads/google-cloud-sdk/completion.zsh.inc'; fi
+if [ -f "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc" ]; then . "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc"; fi
 eval "$(starship init zsh)"
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
 
-export PATH="/Users/54l1m/.dotnet/tools:$PATH"
+export PATH="$HOME/.dotnet/tools:$PATH"
 export PATH="$HOME/.emacs.d/bin:$PATH"
 
-export ANDROID_HOME=~/Library/Android/sdk
-export PATH=$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin
+if [[ "$OSTYPE" == darwin* ]]; then
+  export ANDROID_HOME=~/Library/Android/sdk
+  export PATH=$PATH:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin
+fi
 
 export TODO_DIR="$HOME/Documents/todo"
 export TODO_FILE="$TODO_DIR/todo.txt"
@@ -200,7 +216,7 @@ export DONE_FILE="$TODO_DIR/done.txt"
 
 eval "$(direnv hook zsh)"
 
-. "$HOME/.local/bin/env"
+[[ -r "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
 
 
 # Custom script completions

@@ -44,7 +44,9 @@ echo "Nix configured with Flakes support."
 
 # Step 3: Apply the Nix-Darwin configuration from this repository
 echo "Applying nix-darwin configuration with your Flake..."
-if [ -d "$FLAKE_PATH" ]; then
+# nix/ is a git submodule (54L1M/nix); fetch it if the clone wasn't recursive.
+git -C "$REPO_ROOT" submodule update --init nix
+if [ -f "$FLAKE_PATH/flake.nix" ]; then
     # The first time, 'nix run' is needed to install nix-darwin.
     # Subsequent runs can use 'darwin-rebuild'. We'll use a robust command.
     nix run nix-darwin -- switch --flake "$FLAKE_PATH"

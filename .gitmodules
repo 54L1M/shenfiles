@@ -1,3 +1,4 @@
-[submodule "server"]
-	path = server
-	url = https://github.com/54L1M/server.git
+[submodule "nix"]
+	path = nix
+	url = git@github.com:54L1M/nix.git
+	branch = master

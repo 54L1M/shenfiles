@@ -84,7 +84,7 @@ This repository contains several powerful custom scripts to streamline workflows
 
 ## Structure
 
-- **`nix/`**: Contains the core `flake.nix` and modules for the `nix-darwin` configuration.
+- **`nix/`**: Git submodule ([54L1M/nix](https://github.com/54L1M/nix)): the flake for every machine (Mac via nix-darwin, PC and VPS via NixOS). Clone with `--recurse-submodules`.
 - **`repos`**: A plain text file listing personal git repositories to be cloned by the setup process.
 - **`nvim/`**, **`tmux/`**, etc.: Application-specific configuration files (dotfiles).
 - **`scripts/`**: Custom shell scripts, including the main `setup.sh` script.

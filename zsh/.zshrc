@@ -55,10 +55,10 @@ alias k="kubectl"
 # nix (per machine)
 if [[ "$OSTYPE" == darwin* ]]; then
   alias nixconf="cd ~/shenfiles/nix/ && nvim ."
-  alias rn="sudo darwin-rebuild switch --impure --flake ~/shenfiles/nix#54L1M"
+  alias rn="sudo darwin-rebuild switch --flake ~/shenfiles/nix#54L1M"
 else
-  alias nixconf="cd ~/server/ && nvim ."
-  alias rn="sudo nixos-rebuild switch --flake ~/server#pc"
+  alias nixconf="cd ~/shenfiles/nix/ && nvim ."
+  alias rn="sudo nixos-rebuild switch --flake ~/shenfiles/nix#pc"
 fi
 # alias zshconfig="mate ~/.zshrc"
 

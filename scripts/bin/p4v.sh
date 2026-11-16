@@ -99,7 +99,7 @@ function get_sudo_pass() {
         return
     fi
     local p
-    read -rs -p "$(printf '%b' "${P4_ICON_QUESTION} ${P4_CYAN}sudo password for ${SSH_USER}@${SSH_HOST} (empty = skip firewall/fail2ban): ${P4_RESET}")" p
+    read -rs -p "$(printf '%b' "${P4_ICON_QUESTION} ${P4_CYAN}sudo password for ${SSH_USER}@${SSH_HOST} (empty = skip firewall rules, fail2ban, failed logins): ${P4_RESET}")" p
     echo >&2
     printf '%s' "$p"
 }
@@ -134,7 +134,12 @@ echo "SEC|Host & Uptime"
 echo "KV|Hostname|$(hostname)"
 . /etc/os-release 2>/dev/null; echo "KV|OS|${PRETTY_NAME:-unknown}"
 echo "KV|Kernel|$(uname -r)"
-echo "KV|Uptime|$(uptime -p 2>/dev/null | sed 's/^up //')"
+up=$(uptime -p 2>/dev/null | sed 's/^up //')
+if [ -z "$up" ]; then   # uptime on NixOS has no -p
+    s=$(cut -d. -f1 /proc/uptime)
+    up="$((s/86400)) days, $((s%86400/3600)) hours, $((s%3600/60)) minutes"
+fi
+echo "KV|Uptime|$up"
 echo "KV|Load (1/5/15m)|$(cut -d' ' -f1-3 /proc/loadavg)"
 
 # ── System health ──
@@ -145,31 +150,92 @@ free -m 2>/dev/null | awk '/^Swap:/{if($2>0) printf "KV|Swap|%d / %d MB used\n",
 df -h / 2>/dev/null | awk 'NR==2{printf "KV|Disk /|%s / %s used (%s)\n", $3, $2, $5}'
 
 # ── Updates & patches ──
-echo "SEC|Updates & Patches"
-if [ -x /usr/lib/update-notifier/apt-check ]; then
-    ac=$(/usr/lib/update-notifier/apt-check 2>&1)   # prints "updates;security" on stderr
-    echo "UPD|${ac%;*}|${ac#*;}"
+if [ -e /etc/NIXOS ]; then
+    # NixOS has no pending-updates list: the system is whatever the last deploy
+    # built. Show how old that is, and whether the running kernel is behind it.
+    echo "SEC|NixOS System"
+    ver=$(nixos-version 2>/dev/null | cut -d' ' -f1)
+    echo "KV|Version|${ver:-unknown}"
+    pin=$(echo "$ver" | cut -d. -f3)          # nixpkgs commit date, YYYYMMDD
+    case "$pin" in
+        [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])
+            pin_s=$(date -d "$pin" +%s 2>/dev/null)
+            [ -n "$pin_s" ] && echo "AGE|$(( ($(date +%s) - pin_s) / 86400 ))" ;;
+    esac
+    prof=/nix/var/nix/profiles/system
+    gen=$(readlink "$prof" 2>/dev/null | sed 's/^system-\([0-9]*\)-link$/\1/')
+    echo "KV|Generation|${gen:-?} (deployed $(stat -c %y "$prof" 2>/dev/null | cut -d: -f1,2))"
+    kver() { readlink "$1/kernel" 2>/dev/null | sed 's/.*-linux-\([0-9][0-9.]*\).*/\1/'; }
+    changed=""
+    for part in kernel initrd kernel-modules; do
+        [ "$(readlink /run/booted-system/$part)" != "$(readlink $prof/$part)" ] && changed="$changed$part "
+    done
+    if [ -n "$changed" ]; then
+        b=$(kver /run/booted-system); n=$(kver "$prof")
+        if [ "$b" != "$n" ]; then echo "REBOOT|yes|kernel $b running, $n installed"
+        else echo "REBOOT|yes|changed: $changed"; fi
+    else
+        echo "REBOOT|no|"
+    fi
 else
-    upd=$(apt-get -s -o Debug::NoLocking=true upgrade 2>/dev/null | grep -c '^Inst')
-    echo "UPD|${upd:-0}|?"
-fi
-if [ -f /var/run/reboot-required ]; then
-    echo "REBOOT|yes|$(sort -u /var/run/reboot-required.pkgs 2>/dev/null | tr '\n' ' ')"
-else
-    echo "REBOOT|no|"
+    echo "SEC|Updates & Patches"
+    if [ -x /usr/lib/update-notifier/apt-check ]; then
+        ac=$(/usr/lib/update-notifier/apt-check 2>&1)   # prints "updates;security" on stderr
+        echo "UPD|${ac%;*}|${ac#*;}"
+    else
+        upd=$(apt-get -s -o Debug::NoLocking=true upgrade 2>/dev/null | grep -c '^Inst')
+        echo "UPD|${upd:-0}|?"
+    fi
+    if [ -f /var/run/reboot-required ]; then
+        echo "REBOOT|yes|$(sort -u /var/run/reboot-required.pkgs 2>/dev/null | tr '\n' ' ')"
+    else
+        echo "REBOOT|no|"
+    fi
 fi
 
 # ── Firewall ──
-echo "SEC|Firewall (UFW)"
 if command -v ufw >/dev/null 2>&1; then
+    echo "SEC|Firewall (UFW)"
     fw=$(_sudo ufw status verbose)
     if [ -n "$fw" ]; then
         echo "$fw" | while IFS= read -r l; do [ -n "$l" ] && echo "FW|$l"; done
     else
         echo "NOTE|Could not read UFW status (sudo password needed or denied)"
     fi
+elif [ -e /etc/NIXOS ]; then
+    # NixOS firewall: firewall.service (iptables, chain nixos-fw) or nftables.service.
+    echo "SEC|Firewall (NixOS)"
+    if [ "$(systemctl is-active firewall 2>/dev/null)" = active ]; then
+        echo "FW|Status: active"
+        rules=$(_sudo iptables -S nixos-fw)
+        if [ -n "$rules" ]; then
+            echo "$rules" | awk '/ -j nixos-fw-accept/ {
+                proto=""; port=""; iface=""
+                for (i = 1; i <= NF; i++) {
+                    if ($i == "-p") proto = $(i+1)
+                    if ($i == "--dport" || $i == "--dports") port = $(i+1)
+                    if ($i == "-i") iface = $(i+1)
+                }
+                if (port != "") printf "FW|allow %-4s %s%s\n", proto, port, (iface != "" ? " on " iface : "")
+                else if (iface != "" && iface != "lo") print "FW|allow all  on " iface
+            }'
+        else
+            echo "NOTE|Could not read firewall rules (sudo password needed or denied)"
+        fi
+    elif [ "$(systemctl is-active nftables 2>/dev/null)" = active ]; then
+        echo "FW|Status: active"
+        rules=$(_sudo nft list ruleset)
+        if [ -n "$rules" ]; then
+            echo "$rules" | grep -E 'dport|iifname' | sed 's/^[[:space:]]*/FW|/'
+        else
+            echo "NOTE|Could not read firewall rules (sudo password needed or denied)"
+        fi
+    else
+        echo "FW|Status: inactive"
+    fi
 else
-    echo "NOTE|ufw is not installed"
+    echo "SEC|Firewall"
+    echo "NOTE|No supported firewall found (ufw or the NixOS firewall)"
 fi
 
 # ── Fail2ban ──
@@ -206,6 +272,23 @@ else
 fi
 
 # ── TLS certificates ──
+# NixOS ACME: one directory per certificate under /var/lib/acme. The files are
+# not readable without root, so ask the local web server what it actually serves.
+# Prints "name|days|expiry-date" per certificate.
+acme_certs() {
+    for d in /var/lib/acme/*/; do
+        name=$(basename "$d")
+        [ "$name" = acme-challenge ] && continue
+        exp=$(curl -svI --max-time 8 --resolve "$name:443:127.0.0.1" "https://$name" 2>&1 \
+            | sed -n 's/^\*  *expire date: //p' | head -1)
+        exp_s=$(date -d "$exp" +%s 2>/dev/null)
+        if [ -n "$exp" ] && [ -n "$exp_s" ]; then
+            echo "$name|$(( (exp_s - $(date +%s)) / 86400 ))|$(date -d "$exp" +%Y-%m-%d)"
+        else
+            echo "$name|?|not served on port 443"
+        fi
+    done
+}
 echo "SEC|TLS Certificates"
 if command -v certbot >/dev/null 2>&1; then
     certout=$(_sudo certbot certificates 2>/dev/null)
@@ -222,16 +305,27 @@ if command -v certbot >/dev/null 2>&1; then
     else
         echo "NOTE|Could not read certbot certificates (sudo needed, or none issued)"
     fi
+elif [ -d /var/lib/acme ]; then
+    acme_certs | while IFS= read -r l; do echo "CERT|$l"; done
+    timers=$(systemctl list-timers 'acme-renew-*' --no-legend --no-pager 2>/dev/null | grep -c .)
+    echo "KV|Renewal|automatic, $timers timers active"
 else
-    echo "NOTE|certbot is not installed"
+    echo "NOTE|No certificates found (certbot or NixOS ACME)"
 fi
 
 # ── System services ──
 echo "SEC|System Services"
-for svc in ssh docker fail2ban; do
-    state=$(systemctl is-active "$svc" 2>/dev/null)
-    [ -n "$state" ] && echo "SVC|$svc|$state"
+for svc in ssh sshd nginx docker fail2ban tailscaled gitea; do
+    # Only units that exist on this host (ssh on Debian, sshd on NixOS, ...).
+    systemctl list-unit-files "$svc.service" --no-legend 2>/dev/null | grep -q . || continue
+    echo "SVC|$svc|$(systemctl is-active "$svc" 2>/dev/null)"
 done
+failed=$(systemctl --failed --no-legend --plain --no-pager 2>/dev/null | awk '{print $1}')
+if [ -n "$failed" ]; then
+    for u in $failed; do echo "SVC|$u|failed"; done
+else
+    echo "KV|Failed units|none"
+fi
 
 # ── Docker containers ──
 echo "SEC|Docker Containers"
@@ -280,9 +374,65 @@ _sudo_err() {
 
 THRESHOLD=30
 
+# NixOS ACME: one directory per certificate under /var/lib/acme. The files are
+# not readable without root, so ask the local web server what it actually serves.
+# Prints "name|days|expiry-date" per certificate.
+acme_certs() {
+    for d in /var/lib/acme/*/; do
+        name=$(basename "$d")
+        [ "$name" = acme-challenge ] && continue
+        exp=$(curl -svI --max-time 8 --resolve "$name:443:127.0.0.1" "https://$name" 2>&1 \
+            | sed -n 's/^\*  *expire date: //p' | head -1)
+        exp_s=$(date -d "$exp" +%s 2>/dev/null)
+        if [ -n "$exp" ] && [ -n "$exp_s" ]; then
+            echo "$name|$(( (exp_s - $(date +%s)) / 86400 ))|$(date -d "$exp" +%Y-%m-%d)"
+        else
+            echo "$name|?|not served on port 443"
+        fi
+    done
+}
+
 echo "SEC|TLS Certificates"
+if ! command -v certbot >/dev/null 2>&1 && [ -d /var/lib/acme ]; then
+    # NixOS: renewal is a systemd service per certificate, normally run by its
+    # timer. Starting it by hand is safe: it only orders a new certificate when
+    # the current one is close to expiry, and reloads the web server itself.
+    certs=$(acme_certs)
+    due=""
+    while IFS='|' read -r name days edate; do
+        [ -z "$name" ] && continue
+        echo "CERT|$name|$days|$edate"
+        case "$days" in
+            ''|*[!0-9-]*) due="$due$name " ;;
+            *) [ "$days" -lt "$THRESHOLD" ] && due="$due$name " ;;
+        esac
+    done <<EOF
+$certs
+EOF
+    echo "SEC|Renewal"
+    if [ -z "$due" ]; then
+        echo "NOTE|All certificates valid for ${THRESHOLD}+ days — nothing to renew"
+        exit 0
+    fi
+    for name in $due; do
+        before=$(echo "$certs" | awk -F'|' -v n="$name" '$1 == n {print $3}')
+        out=$(_sudo_err systemctl start "acme-order-renew-$name.service")
+        rc=$?
+        after=$(acme_certs | awk -F'|' -v n="$name" '$1 == n {print $3}')
+        if [ $rc -ne 0 ]; then
+            echo "RENEW|$name|failed|${out:-see: journalctl -u acme-order-renew-$name}"
+        elif [ "$after" = "$before" ]; then
+            echo "RENEW|$name|skipped|the ACME service ran but kept the current certificate"
+        else
+            echo "RENEW|$name|ok|"
+        fi
+    done
+    echo "SEC|After Renewal"
+    acme_certs | while IFS= read -r l; do echo "CERT|$l"; done
+    exit 0
+fi
 if ! command -v certbot >/dev/null 2>&1; then
-    echo "NOTE|certbot is not installed"
+    echo "NOTE|No certificates found (certbot or NixOS ACME)"
     exit 0
 fi
 
@@ -438,6 +588,13 @@ function render() {
                 printf "  ${SUB}%-16s${RST} ${c}%s packages (%s security)${RST}\n" \
                     "Updates" "${upd:-0}" "${sec:-0}"
                 ;;
+            AGE)
+                # Days since the nixpkgs revision the system was built from.
+                local c="$G"
+                (( rest > 30 )) && c="$Y"
+                (( rest > 90 )) && c="$R"
+                printf "  ${SUB}%-16s${RST} ${c}%s days old${RST}\n" "nixpkgs" "$rest"
+                ;;
             REBOOT)
                 local need="${rest%%|*}" pkgs="${rest#*|}"
                 if [[ "$need" == "yes" ]]; then
@@ -543,7 +700,7 @@ function show_help() {
     echo
     p4_title "Commands:"
     p4_cmd "status" "[alias]" "Full dashboard: health, firewall, fail2ban, services (default)"
-    p4_cmd "certs, renew" "[alias]" "Renew TLS certs that are expired or expiring within 30 days"
+    p4_cmd "certs, renew" "[alias]" "Renew TLS certs expiring within 30 days (certbot, or NixOS ACME)"
     p4_cmd "ssh" "[alias]" "Open an interactive SSH session to the server"
     p4_cmd "ls, servers" "" "List configured servers"
     p4_cmd "-h, --help" "" "Show this help"

@@ -48,6 +48,16 @@ hl.window_rule({
     float = true,
 })
 
+-- Wallpaper picker (walls pick): floating, centered
+hl.window_rule({
+    name  = "float-walls-picker",
+    match = { class = "^walls$" },
+
+    float  = true,
+    size   = "monitor_w*0.7 monitor_h*0.7",
+    center = true,
+})
+
 -- "Smart gaps" (no gaps when only one window), uncomment to enable:
 -- hl.workspace_rule({ workspace = "w[tv1]", gaps_out = 0, gaps_in = 0 })
 -- hl.workspace_rule({ workspace = "f[1]",   gaps_out = 0, gaps_in = 0 })

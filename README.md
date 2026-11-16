@@ -1,91 +1,76 @@
 # 54L1M's Shenanigans - Dotfiles
 
-This repository contains personal dotfiles and system configuration for macOS. The setup is managed primarily by [Nix](https://nixos.org) and [nix-darwin](https://github.com/LnL7/nix-darwin), with a collection of custom scripts to automate common workflows.
+Personal dotfiles for two machines: a MacBook (nix-darwin) and a desktop PC (NixOS with Hyprland). The system configuration for both, and for a VPS, lives in the `nix/` git submodule ([54L1M/nix](https://github.com/54L1M/nix)).
 
-## Philosophy
+Two layers, kept apart on purpose:
 
-The goal is to create a reproducible and declarative development environment that is easy for others to adapt and use.
+- **`nix/` decides what is installed.** Packages, services, system settings, users. Changing it needs a rebuild.
+- **Everything else here is plain config files.** They are symlinked into `~/.config`, so an edit applies immediately with no rebuild.
 
-- **Declarative System Management:** `nix-darwin` is used to manage system-level settings, services, and packages. This ensures the core environment is consistent and can be rebuilt from the configuration files.
-- **Hybrid Package Management:** The setup uses a combination of [Nix Flakes](https://nixos.wiki/wiki/Flakes) and [Homebrew](https://brew.sh) (via `nix-homebrew`).
-- **Custom Scripting:** A set of custom scripts in the `scripts/` directory provides automation for project management, environment setup, and other common tasks.
-
-## Quick Start
-
-This repository can be used to set up a new macOS machine from scratch.
-
-### 1. Clone the Repository
-
-Clone this repository to a location of your choice on your Mac. For example:
-
-```bash
-git clone https://github.com/54L1M/shenfiles.git ~/dotfiles
-```
-
-### 2. Customize (Optional)
-
-This repository contains configurations for cloning personal projects. You can customize this by editing the `repos` file in the root of this repository. Simply add or remove lines to control which git repositories are cloned by the setup script.
-
-### 3. Run the Setup Script
-
-The main setup script will install Nix, apply the system configuration, and set up your environment.
-
-```bash
-# Navigate to the cloned directory
-cd ~/dotfiles
-
-# Run the setup script
-./scripts/bin/setup.sh
-```
-
-By default, the setup script will also create a personalized directory structure and clone the repositories defined in the `repos` file. If you wish to install only the applications and system settings without creating personal directories, use the `--no-dirs` flag:
-
-```bash
-./scripts/bin/setup.sh --no-dirs
-```
-
-The `setup.sh` script will:
-
-1. Install Nix if it's not already present.
-2. Enable Flakes support for Nix.
-3. Apply the `nix-darwin` configuration, which installs all managed packages and applications.
-4. If run without `--no-dirs`, it will execute the `create_dirs.sh` script to set up a personal directory structure and clone project repositories from the `repos` file.
-
-## Managed Applications
-
-This configuration manages a wide array of applications and tools, including:
-
-**Development:**
-
-- Neovim, VSCode
-- Git & Lazygit
-- Tmux & Tmuxifier
-- Rust, Go, Node, Python
-- Docker
-- LSPs (Ruff, Pyright, gopls, etc.) and Formatters
-
-**Terminal & Shell:**
-
-- Alacritty, Ghostty
-- Zsh, Starship, eza, bat, fzf, ripgrep
-
-**GUI Applications:**
-
-- Firefox, Google Chrome
-- Slack, Discord, ChatGPT, Obsidian, Postman
-
-**Window Management:**
-
-- Aerospace, Sketchybar, Borders
-
-## Custom Scripts
-
-This repository contains several powerful custom scripts to streamline workflows. For a detailed breakdown of what each script does, please see the [Scripts README](./scripts/README.md).
+The repo is expected at `~/shenfiles`; the shell aliases and the PC's Home Manager config use that path.
 
 ## Structure
 
-- **`nix/`**: Git submodule ([54L1M/nix](https://github.com/54L1M/nix)): the flake for every machine (Mac via nix-darwin, PC and VPS via NixOS). Clone with `--recurse-submodules`.
-- **`repos`**: A plain text file listing personal git repositories to be cloned by the setup process.
-- **`nvim/`**, **`tmux/`**, etc.: Application-specific configuration files (dotfiles).
-- **`scripts/`**: Custom shell scripts, including the main `setup.sh` script.
-- **`_archive/`**: Older or unused configurations.
+| Path | What it is |
+|---|---|
+| `nix/` | Submodule: one flake for the Mac, the PC and the VPS. See its [README](https://github.com/54L1M/nix#readme) |
+| `nvim/` | Neovim config (has its own [README](./nvim/README.md)) |
+| `tmux/` | tmux config, colors, tmuxifier layouts |
+| `zsh/` | `.zshrc` and fzf-git |
+| `git/` | Global git config and ignore file |
+| `ghostty/`, `bat/`, `starship/`, `yazi/` | Terminal, pager theme, prompt, file manager |
+| `hypr/`, `waybar/` | Hyprland and Waybar, used on the PC only |
+| `p4/` | Config files for the `p4*` scripts |
+| `scripts/` | Custom scripts, their completions and the installer. See the [Scripts README](./scripts/README.md) |
+| `repos` | List of personal repositories that `create_dirs.sh` clones |
+| `_archive/` | Configs no longer in use (Alacritty, WezTerm, Sketchybar, Borders, AeroSpace, glow) |
+
+## Clone
+
+```bash
+git clone --recurse-submodules git@github.com:54L1M/shenfiles.git ~/shenfiles
+```
+
+Run this once in every clone so the `nix/` submodule stays on its `master` branch:
+
+```bash
+cd ~/shenfiles
+git -C nix switch master
+git config submodule.nix.update merge
+```
+
+Without it, each `git pull` leaves `nix/` on a detached HEAD (`HEAD (no branch)`), and commits made there belong to no branch. The setting is stored in `.git/config`, so it is not synced between machines. If `nix/` is empty after a plain clone, run `git submodule update --init nix`.
+
+## Mac setup
+
+```bash
+cd ~/shenfiles
+./scripts/bin/setup.sh    # install Nix, enable flakes, apply the nix-darwin config
+stow .                    # link the config directories into ~/.config
+./scripts/install.sh      # link the scripts into ~/.local/bin, install zsh completions
+```
+
+- `setup.sh` also creates a personal directory layout under `~/Documents` and clones the repositories listed in `repos`. Pass `--no-dirs` to skip that part.
+- `stow` reads `.stowrc`, which targets `~/.config` and skips `scripts/` and `_archive/`.
+- After the first run, rebuild with `just mac` inside `nix/`, or the `rn` alias.
+
+## PC setup
+
+Installing NixOS on the PC is covered in [`nix/hosts/pc/README.md`](https://github.com/54L1M/nix/blob/master/hosts/pc/README.md).
+
+There is no stow or `install.sh` step on the PC. Home Manager (`nix/hosts/pc/home.nix`) creates the same symlinks: the config directories into `~/.config`, the scripts into `~/.local/bin`, and the completions. The links point at this checkout, so edits still apply without a rebuild. Rebuild with `just pc` inside `nix/`, or the `rn` alias.
+
+## What is installed
+
+The package lists are the source of truth; this is only where to look.
+
+| What | Where |
+|---|---|
+| Base tools on every machine (Neovim, git, ripgrep, fd, bat, eza) | `nix/modules/common/packages.nix` |
+| Dev tools on the Mac and the PC (Go, Rust, language servers, formatters, yazi) | `nix/modules/desktop/packages.nix` |
+| Mac apps and CLI tools from Homebrew (Ghostty, Firefox, Obsidian, Slack, tmux, starship) | `nix/hosts/mac/homebrew.nix` |
+| PC desktop (Hyprland, Waybar, Ghostty, Firefox) | `nix/hosts/pc/default.nix` |
+
+## Scripts
+
+`scripts/bin/` holds the `p4*` tools (tmux sessions, project environments, repository sync, Cloud SQL proxy, VPS status), `shensync` (commit and push this repo's changes file by file) and the setup scripts. Each one is described in the [Scripts README](./scripts/README.md).

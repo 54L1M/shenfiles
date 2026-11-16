@@ -39,6 +39,7 @@ It symlinks the executables from `bin/` into `~/.local/bin/`, the libraries from
 | [`p4v`](#p4vsh) | Read-only status dashboard for a VPS |
 | [`p4n`](#p4nsh) | Scaffold a new project with a Nix flake and direnv |
 | [`bbox`](#bboxsh) | Encrypt and decrypt a file with a passphrase |
+| [`walls`](#wallssh) | Pick and set the Hyprland wallpaper (PC only) |
 | [`shensync`](#shensyncsh) | Older dotfiles-only version of `p4s` |
 | [`setup.sh`](#setupsh), [`create_dirs.sh`](#create_dirssh) | New-machine bootstrap |
 | [`tmux/`](#tmuxmenussh) | Menus, pickers and status-bar segments |
@@ -357,6 +358,23 @@ Encrypts or decrypts a single file with a passphrase, using `openssl` (AES-256-C
 - `-o <output>`: override the output path.
 
 A wrong passphrase fails cleanly and leaves no partial output file.
+
+---
+
+### `walls.sh`
+
+**Wallpaper Picker (PC only)**
+
+Sets the Hyprland wallpaper through `hyprpaper`. Images come from the [walls](https://github.com/54L1M/walls) repo, which Home Manager links to `~/Pictures/walls`. The choice is saved as the symlink `~/.local/state/wallpaper`, which `hypr/hyprpaper.conf` loads at login.
+
+**Usage:**
+
+- `walls pick` (or SUPER+W): thumbnail grid in `swayimg`. Enter sets the selected image and quits, Space opens it full size, Esc goes back or quits.
+- `walls set <image>`: a path, or a file name inside `~/Pictures/walls`.
+- `walls restore`: start `hyprpaper` with the saved wallpaper (run at login from `hypr/salim/autostart.lua`).
+- `walls current`: print the saved wallpaper path.
+
+New images pushed to the walls repo show up after `nix flake update walls` and a rebuild.
 
 ---
 

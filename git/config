@@ -13,3 +13,5 @@
   excludesfile = ~/.config/git/ignore
 [init]
 	defaultBranch = master
+[submodule]
+	recurse = true

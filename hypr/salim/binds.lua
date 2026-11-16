@@ -23,6 +23,7 @@ bind("F", hl.dsp.window.fullscreen())
 bind("P", hl.dsp.window.pseudo())
 bind("T", hl.dsp.layout("togglesplit")) -- dwindle only (default is SUPER+J, now focus down)
 bind("SHIFT + W", hl.dsp.exec_cmd("pkill -SIGUSR2 waybar")) -- reload Waybar config
+bind("W", hl.dsp.exec_cmd(os.getenv("HOME") .. "/.local/bin/walls pick")) -- wallpaper picker (~/.local/bin isn't on Hyprland's PATH)
 
 -- Focus with arrows or hjkl; SHIFT moves the window instead
 local directions = {

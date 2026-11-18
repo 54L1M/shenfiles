@@ -18,8 +18,8 @@ show_help() {
   p4_info "Usage: p4s [profile] [options]"
   echo
   p4_title "Description:"
-  p4_example  "This script creates a separate commit for each changed file and pushes"
-  p4_example   "to the remote repository for a specified git directory."
+  p4_example  "Pulls remote changes, creates a separate commit for each changed file,"
+  p4_example   "and pushes to the remote repository for a specified git directory."
   echo
   p4_title "Modes:"
   p4_cmd "p4s" "" "Run in interactive mode, using fzf to select a profile."
@@ -53,7 +53,41 @@ check_dependencies() {
   fi
 }
 
-# The main sync logic
+# Bring in remote commits before committing local work. Uncommitted edits are
+# stashed around the rebase (autostash), so a dirty tree is fine.
+pull_remote() {
+  if ! git rev-parse --abbrev-ref '@{u}' >/dev/null 2>&1; then
+    p4_warn "No upstream branch; skipping pull."
+    return 0
+  fi
+
+  if [ "$(git rev-list --count 'HEAD..@{u}')" -eq 0 ]; then
+    p4_success "Already up to date with remote."
+    return 0
+  fi
+
+  p4_step "Pulling remote changes..."
+  if ! git rebase --autostash '@{u}'; then
+    # Unpushed local commits clash with the remote: go back to where we were.
+    if [ -d "$(git rev-parse --git-path rebase-merge)" ] || [ -d "$(git rev-parse --git-path rebase-apply)" ]; then
+      git rebase --abort || true
+    fi
+    p4_error "Pull failed; nothing was changed. Resolve by hand in $(pwd)"
+    exit 1
+  fi
+
+  # The pull worked but re-applying the uncommitted edits did not.
+  local conflicted
+  conflicted=$(git diff --name-only --diff-filter=U)
+  if [ -n "$conflicted" ]; then
+    p4_error "Your uncommitted edits conflict with pulled changes in:"
+    echo "$conflicted"
+    p4_tip "Fix the conflict markers, then run p4s again. The original edits are also in 'git stash list'."
+    exit 1
+  fi
+}
+
+# The main sync logic: pull, commit each changed file, push
 run_sync() {
   local repo_path="$1"
   local message_template="$2" # This can be empty
@@ -77,61 +111,59 @@ run_sync() {
     exit 1
   fi
 
+  p4_step "Fetching from remote..."
+  git fetch origin
+
+  pull_remote
+
   # Check for changes
   p4_info "Checking for local changes..."
   local changes
   changes=$(git status --porcelain)
 
   if [ -z "$changes" ]; then
-    p4_success "Repository is clean. Nothing to sync."
-    # Optional: also check if local is behind remote
-    p4_info "Checking remote status..."
-    git fetch origin
-    if [[ $(git rev-parse HEAD) == $(git rev-parse @{u}) ]]; then
-        p4_success "Local branch is up-to-date with remote."
-    else
-        p4_warn "Local branch is not in sync with remote. Consider pulling."
-    fi
-    exit 0
-  fi
-  
-  # Fetch from remote
-  p4_step "Fetching from remote..."
-  git fetch origin
+    p4_success "No local changes to commit."
+  else
+    # Per-file commit logic
+    p4_step "Committing changes file-by-file..."
+    while IFS= read -r line; do
+      local status
+      local file
+      local commit_message
 
-  # Per-file commit logic
-  p4_step "Committing changes file-by-file..."
-  while IFS= read -r line; do
-    local status
-    local file
-    local commit_message
-    
-    status=${line:0:2}
-    file=${line:3}
-    
-    # Determine action and stage file
-    local action
-    case "$status" in
-      " M" | " M") action="Update"; git add "$file" ;;
-      "A " | "A ") action="Add"; git add "$file" ;;
-      " D" | "D ") action="Remove"; git rm "$file" ;;
-      "??" ) action="Add"; git add "$file" ;;
-      * ) p4_warn "Skipping unhandled status '$status' for file '$file'"; continue ;;
-    esac
+      status=${line:0:2}
+      file=${line:3}
 
-    # Generate commit message
-    if [ -n "$message_template" ]; then
+      # Determine action and stage file
+      local action
+      case "$status" in
+        " M") action="Update"; git add "$file" ;;
+        "A ") action="Add"; git add "$file" ;;
+        " D" | "D ") action="Remove"; git rm "$file" ;;
+        "??") action="Add"; git add "$file" ;;
+        *) p4_warn "Skipping unhandled status '$status' for file '$file'"; continue ;;
+      esac
+
+      # Generate commit message
+      if [ -n "$message_template" ]; then
         commit_message="${message_template//\$file_name/$file}"
-    else
+      else
         commit_message="$action $file"
-    fi
-    
-    p4_info "Committing: $(p4_highlight "$commit_message")"
-    git commit -m "$commit_message"
-  done <<< "$changes"
+      fi
 
-  p4_step "Pushing changes to remote..."
-  git push origin "$(git_current_branch)"
+      p4_info "Committing: $(p4_highlight "$commit_message")"
+      git commit -m "$commit_message"
+    done <<< "$changes"
+  fi
+
+  # Push only when there is something the remote does not have
+  if git rev-parse --abbrev-ref '@{u}' >/dev/null 2>&1 \
+     && [ "$(git rev-list --count '@{u}..HEAD')" -eq 0 ]; then
+    p4_success "Nothing to push."
+  else
+    p4_step "Pushing changes to remote..."
+    git push origin "$(git_current_branch)"
+  fi
 
   p4_success "Successfully synced repository!"
 }

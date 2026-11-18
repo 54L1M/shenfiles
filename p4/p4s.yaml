@@ -3,3 +3,6 @@ shen:
   template: "chore(dotfiles): sync $file_name"
   submodules:
     - "nix"
+redis:
+  path: ~/Documents/pf4/mini-redis
+  template: "wip: $file_name"

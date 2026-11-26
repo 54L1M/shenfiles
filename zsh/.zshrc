@@ -193,6 +193,10 @@ export FZF_ALT_C_OPTS="
   --preview 'tree -C {}'"
 
 [[ -r "$ZDOTDIR/fzf-git.sh" ]] && source "$ZDOTDIR/fzf-git.sh"
+
+# Atuin: synced shell history. Loaded after fzf so it takes over CTRL-R;
+# the up arrow stays with history-substring-search.
+command -v atuin >/dev/null && eval "$(atuin init zsh --disable-up-arrow)"
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f "$HOME/Downloads/google-cloud-sdk/path.zsh.inc" ]; then . "$HOME/Downloads/google-cloud-sdk/path.zsh.inc"; fi
 

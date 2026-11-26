@@ -1,0 +1,7 @@
+# Atuin client. The sync server runs on the VPS, reachable over Tailscale only
+# (nix/hosts/vps/services/atuin.nix). The encryption key and the local history
+# database live in ~/.local/share/atuin, not here.
+sync_address = "http://vps:8888"
+
+# The package comes from Nix; no need to phone home for new versions.
+update_check = false
